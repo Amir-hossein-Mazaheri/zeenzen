@@ -91,12 +91,7 @@ import { EmailSubscriptionModule } from './email-subscription/email-subscription
       inject: [ConfigService],
       driver: ApolloDriver,
       useFactory: (config: ConfigService) => ({
-        autoSchemaFile: join(
-          process.cwd(),
-          config.get('NODE_ENV') === 'production'
-            ? 'dist/schema.gql'
-            : 'src/schema.gql',
-        ),
+        autoSchemaFile: join(process.cwd(), 'graphql/schema.gql'),
         sortSchema: true,
         playground: false,
         plugins: [
