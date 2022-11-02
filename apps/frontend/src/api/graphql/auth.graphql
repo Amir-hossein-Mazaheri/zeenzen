@@ -1,0 +1,41 @@
+mutation PreSignUp($preSignUpInput: PreSignUpInput!) {
+  preSignUp(preSignUpInput: $preSignUpInput) {
+    id
+    email
+    expiresAt
+  }
+}
+
+mutation RemoveEmailValidationCode(
+  $removePreSignUpInput: RemovePreSignUpInput!
+) {
+  removePreSignUpCode(removePreSignUpInput: $removePreSignUpInput) {
+    id
+  }
+}
+
+mutation SignUp($signUpInput: SignUpInput!) {
+  signUp(signUpInput: $signUpInput) {
+    id
+    email
+  }
+}
+
+mutation SignIn($signInInput: SignInInput!) {
+  signIn(signInInput: $signInInput) {
+    id
+    firstname
+    lastname
+    email
+    role
+  }
+}
+
+mutation Logout {
+  logout {
+    message
+    userEmail
+    userId
+    userRole
+  }
+}

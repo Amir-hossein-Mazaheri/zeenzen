@@ -1,0 +1,43 @@
+mutation AddCartItem($addCartItemInput: AddCartItemInput!) {
+  addCartItem(addCartItemInput: $addCartItemInput) {
+    id
+  }
+}
+
+mutation DecrementCartItem($decrementCartItem: DecrementCartItemInput!) {
+  decrementCartItem(decrementCartItem: $decrementCartItem) {
+    id
+  }
+}
+
+query Cart($cartId: String!) {
+  cart(id: $cartId) {
+    id
+    createdAt
+    totalPrice
+    totalPriceWithDiscount
+
+    cartItems {
+      id
+      unitPrice
+      unitPriceWithDiscount
+
+      course {
+        id
+        title
+        price
+
+        instructors {
+          user {
+            firstname
+            lastname
+          }
+        }
+
+        image {
+          image
+        }
+      }
+    }
+  }
+}

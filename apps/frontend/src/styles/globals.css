@@ -1,0 +1,11 @@
+@import url("vazirmatn/misc/Farsi-Digits/Vazirmatn-FD-font-face.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Vazirmatn FD", sans-serif;
+  text-align: right;
+  direction: rtl;
+}
