@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  backend:
+    depends_on:
+      - redis
+      - postgres
+    build: ./
+    environment:
+      PORT: 5000
+      DATABASE: myshop
+      DATABASE_PORT: 5432
+      DATABASE_HOST: postgres
+      DATABASE_USERNAME: admin
+      DATABASE_PASSWORD: '@mir1990'
+      SESSION_SECRET: 'kYp3s6v9y$B&E)H@McQfTjWmZq4t7w!z%C*F-JaNdRgUkXp2r5u8x/A?D(G+KbPeShVmYq3t6v9y$B&E)H@McQfTjWnZr4u7x!z%C*F-JaNdRgUkXp2s5v8y/B?D(G+KbPeShVmYq3t6w9z$C&F)H@McQfTjWnZr4u7x!A%D*G-KaNdRgUkXp2s5v8y/B?E(H+MbQeShVmYq3t6w9z$C&F)J@NcRfUjWnZr4u7x!A%D*G-KaPdSgVkYp3s5v8y/B?E(H+MbQeThWmZq4t7w9z$C&F)J@NcRfUjXn2r5u8x/A%D*G-KaPdSgVkYp3s6v9y$B&E(H+MbQeThWmZq4t7w!z%C*F-J@NcRfUjXn2r5u8x/A?D(G+KbPdSgVkYp3s6v9y$B&E)H@McQfThWmZq4t7w!z%C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeSh'
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: '@mir1990_redis'
+      REDIS_HOST: redis
+    ports:
+      - 5000:5000
+    volumes:
+      - ./src:/app/src
+  redis:
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=@mir1990_redis
+    ports:
+      - 6379:6379
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=myshop
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=@mir1990
+    ports:
+      - 5432:5432
