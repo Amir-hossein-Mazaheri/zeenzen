@@ -1,5 +1,6 @@
 export * from './Alert';
 export * from './Alerts';
+export * from './Accordion';
 export * from './AppButton';
 export * from './AppInput';
 export * from './AppLink';
