@@ -1,11 +1,9 @@
-import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlay, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faClock } from '@fortawesome/free-regular-svg-icons';
 import { animated, useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
-// import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-// import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-// import WatchLaterIcon from "@mui/icons-material/WatchLater";
 
 import AppButton from './AppButton';
 
@@ -38,7 +36,7 @@ const List: React.FC<ListProps> = ({ title, duration, onChange, children }) => {
         <div className="flex gap-1 items-center">
           <div>
             {/* <PlayArrowIcon fontSize="large" /> */}
-            <FontAwesomeIcon icon={solid('play')} />
+            <FontAwesomeIcon icon={faPlay} />
           </div>
 
           <div>
@@ -51,7 +49,7 @@ const List: React.FC<ListProps> = ({ title, duration, onChange, children }) => {
             <AppButton outline>
               <p className="flex items-center gap-1">
                 {/* <WatchLaterIcon /> */}
-                <FontAwesomeIcon icon={regular('clock')} />
+                <FontAwesomeIcon icon={faClock} />
                 <p className="mr-px">{duration}</p>
                 <p>دقیقه</p>
               </p>
@@ -60,7 +58,7 @@ const List: React.FC<ListProps> = ({ title, duration, onChange, children }) => {
 
           <div>
             {/* <KeyboardArrowDownIcon fontSize="medium" /> */}
-            <FontAwesomeIcon icon={solid('chevron-down')} />
+            <FontAwesomeIcon icon={faChevronDown} />
           </div>
         </div>
       </div>

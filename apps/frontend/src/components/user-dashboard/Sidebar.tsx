@@ -1,12 +1,13 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-// import PersonIcon from "@mui/icons-material/Person";
-// import SchoolIcon from "@mui/icons-material/School";
-// import UpdateIcon from "@mui/icons-material/Update";
-// import LogoutIcon from "@mui/icons-material/Logout";
-// import DashboardIcon from "@mui/icons-material/Dashboard";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import {
+  faTableColumns,
+  faUsers,
+  faChalkboardUser,
+  faStar,
+  faRightFromBracket,
+} from '@fortawesome/free-solid-svg-icons';
 
 import { UserActionMenuItem } from '../../types';
 import useLogout from '../../hooks/useLogout';
@@ -15,31 +16,26 @@ export const userActions: UserActionMenuItem[] = [
   {
     title: 'داشبرد',
     link: '/',
-    // icon: <DashboardIcon />,
-    icon: <FontAwesomeIcon icon={regular('table-columns')} />,
+    icon: <FontAwesomeIcon icon={faTableColumns} />,
   },
   {
     title: 'پروفایل من',
     link: '/profile',
-    // icon: <PersonIcon />,
-    icon: <FontAwesomeIcon icon={solid('user')} />,
+    icon: <FontAwesomeIcon icon={faUsers} />,
   },
   {
     title: 'دوره های من',
     link: '/courses',
-    // icon: <SchoolIcon />,
-    icon: <FontAwesomeIcon icon={solid('chalkboard-user')} />,
+    icon: <FontAwesomeIcon icon={faChalkboardUser} />,
   },
   {
     title: 'امتیاز های من',
     link: '/scores',
-    // icon: <UpdateIcon />,
-    icon: <FontAwesomeIcon icon={solid('hundred-points')} />,
+    icon: <FontAwesomeIcon icon={faStar} />,
   },
   {
     title: 'خروج از حساب کاربری',
-    // icon: <LogoutIcon />,
-    icon: <FontAwesomeIcon icon={solid('right-from-bracket')} />,
+    icon: <FontAwesomeIcon icon={faRightFromBracket} />,
   },
 ].map((action) => {
   if (action.link) {

@@ -1,5 +1,5 @@
-import { light } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import React, { useCallback, useState } from 'react';
 // import ClearIcon from '@mui/icons-material/Clear';
 import { animated, useSpring } from 'react-spring';
@@ -56,7 +56,7 @@ const Badge: React.FC<BadgeProps> = ({
           className="flex items-center justify-center cursor-pointer rounded-full bg-white p-1 h-6 w-6"
         >
           {/* <ClearIcon fontSize="inherit" /> */}
-          <FontAwesomeIcon icon={light('xmark')} />
+          <FontAwesomeIcon icon={faXmark} />
         </div>
       )}
     </animated.div>

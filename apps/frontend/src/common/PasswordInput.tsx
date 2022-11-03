@@ -1,8 +1,6 @@
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
-// import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import AppInput, { AppInputProps } from './AppInput';
 
@@ -19,9 +17,9 @@ const PasswordInput: React.FC<AppInputProps> = (props) => {
           className="absolute left-5 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
         >
           {showPassword ? (
-            <FontAwesomeIcon icon={solid('eye')} />
+            <FontAwesomeIcon icon={faEye} />
           ) : (
-            <FontAwesomeIcon icon={solid('eye-slash')} />
+            <FontAwesomeIcon icon={faEyeSlash} />
           )}
         </div>
       )}

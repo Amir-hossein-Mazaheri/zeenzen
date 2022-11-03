@@ -6,10 +6,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import useDigitInput from 'react-digit-input';
 import { useRouter } from 'next/router';
-// import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import Head from 'next/head';
 import dayjs from 'dayjs';
 import { SubmitHandler, useForm, FormProvider } from 'react-hook-form';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import {
   usePreSignUpMutation,
   useRemoveEmailValidationCodeMutation,
@@ -36,8 +37,6 @@ import signUpIllustration from '../src/assets/images/signin-signup/signup.svg';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getPasswordRegex from '../src/utils/getPasswordRegex';
 import { GetServerSideProps } from 'next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 const Countdown = dynamic(() => import('react-countdown'));
 
@@ -206,7 +205,7 @@ const SignUpPage: NextPageWithLayout = () => {
             <div className="absolute flex flex-col justify-center gap-3 font-bold items-center left-0 bottom-full mb-5 bg-white shadow-mild-shadow px-12 py-5 rounded-xl">
               <div className="flex items-center gap-1">
                 {/* <WatchLaterIcon fontSize="medium" /> */}
-                <FontAwesomeIcon icon={solid('stopwatch')} size="lg" />
+                <FontAwesomeIcon icon={faStopwatch} size="lg" />
                 <Countdown
                   date={expiresAt}
                   zeroPadDays={0}

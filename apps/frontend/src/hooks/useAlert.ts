@@ -1,6 +1,7 @@
-import { SweetAlertIcon } from "sweetalert2";
-import colors from "../constants/colors";
-import { getSwal } from "../utils/getSwal";
+import { SweetAlertIcon } from 'sweetalert2';
+
+import colors from '../constants/colors';
+import { getSwal } from '../utils/getSwal';
 
 interface UseAlertOptions {
   title: string;
@@ -17,7 +18,7 @@ export default function useAlert() {
       html,
       text: description,
       showConfirmButton: true,
-      confirmButtonText: "حله",
-      confirmButtonColor: colors["light-red"],
+      confirmButtonText: 'حله',
+      confirmButtonColor: colors['light-red'],
     });
 }

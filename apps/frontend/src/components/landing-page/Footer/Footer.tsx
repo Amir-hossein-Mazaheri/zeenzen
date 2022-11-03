@@ -1,11 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
-// import LinkedInIcon from "@mui/icons-material/LinkedIn";
-// import GitHubIcon from "@mui/icons-material/GitHub";
-// import InstagramIcon from "@mui/icons-material/Instagram";
-// import YouTubeIcon from "@mui/icons-material/YouTube";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { brands } from '@fortawesome/fontawesome-svg-core/import.macro';
+import {
+  faLinkedinIn,
+  faGithub,
+  faInstagram,
+  faYoutube,
+} from '@fortawesome/free-brands-svg-icons';
 
 import Newsletter from './Newsletter';
 import zeenzenLogo from '../../../assets/images/zeenzen-logo.png';
@@ -67,20 +68,16 @@ const Footer = () => {
 
           <div className="flex gap-5 items-center">
             <a href="#" target="_blank">
-              {/* <LinkedInIcon fontSize="large" /> */}
-              <FontAwesomeIcon icon={brands('linkedin-in')} size="xl" />
+              <FontAwesomeIcon icon={faLinkedinIn} size="xl" />
             </a>
             <a href="#" target="_blank">
-              {/* <GitHubIcon fontSize="large" /> */}
-              <FontAwesomeIcon icon={brands('github')} size="xl" />
+              <FontAwesomeIcon icon={faGithub} size="xl" />
             </a>
             <a href="#" target="_blank">
-              {/* <InstagramIcon fontSize="large" /> */}
-              <FontAwesomeIcon icon={brands('instagram')} size="xl" />
+              <FontAwesomeIcon icon={faInstagram} size="xl" />
             </a>
             <a href="#" target="_blank">
-              {/* <YouTubeIcon fontSize="large" /> */}
-              <FontAwesomeIcon icon={brands('youtube')} size="xl" />
+              <FontAwesomeIcon icon={faYoutube} size="xl" />
             </a>
           </div>
         </div>

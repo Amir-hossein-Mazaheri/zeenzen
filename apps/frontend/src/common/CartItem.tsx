@@ -1,12 +1,10 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-// import DeleteIcon from "@mui/icons-material/Delete";
-// import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import tomanSymbol from '../assets/images/toman.svg';
 import makePriceCleaner from '../utils/makePriceCleaner';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 interface CartItemProps {
   id: string;
@@ -68,7 +66,7 @@ const CartItem: React.FC<CartItemProps> = ({
                 </p>
                 <div>
                   {/* <KeyboardBackspaceIcon /> */}
-                  <FontAwesomeIcon icon={solid('arrow-right')} />
+                  <FontAwesomeIcon icon={faArrowRight} />
                 </div>
               </>
             )}
@@ -87,7 +85,6 @@ const CartItem: React.FC<CartItemProps> = ({
             className={sm ? '' : `scale-110`}
             src={tomanSymbol}
             alt="تومان"
-            layout="intrinsic"
           />
         </div>
 
@@ -97,7 +94,7 @@ const CartItem: React.FC<CartItemProps> = ({
             className="flex items-center cursor-pointer justify-center rounded-lg bg-light-red text-white w-8 h-8"
           >
             {/* <DeleteIcon fontSize="small" /> */}
-            <FontAwesomeIcon icon={solid('trash')} />
+            <FontAwesomeIcon icon={faTrash} />
           </div>
         )}
       </div>

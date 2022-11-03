@@ -1,8 +1,7 @@
 import React, { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
-// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 
 import useCart from '../hooks/useCart';
 import CartItem from './CartItem';
@@ -39,7 +38,7 @@ const CartIcon = () => {
 
               <div className={`${open ? 'text-text-black' : 'text-white '}`}>
                 {/* <ShoppingCartIcon /> */}
-                <FontAwesomeIcon icon={solid('cart-shopping')} />
+                <FontAwesomeIcon icon={faCartShopping} />
               </div>
             </div>
           </Popover.Button>

@@ -1,7 +1,10 @@
-import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import {
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import React, { memo, MouseEventHandler } from 'react';
-// import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 interface PaginationProps {
   pages: number[];
@@ -29,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={onPrev}
         className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
       >
-        <FontAwesomeIcon icon={solid('chevron-right')} />
+        <FontAwesomeIcon icon={faChevronRight} />
       </div>
       <div
         className={`${sharedClasses} overflow-hidden h-12 flex justify-between`}
@@ -52,7 +55,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={onNext}
         className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
       >
-        <FontAwesomeIcon icon={solid('chevron-left')} />
+        <FontAwesomeIcon icon={faChevronLeft} />
       </div>
     </div>
   );

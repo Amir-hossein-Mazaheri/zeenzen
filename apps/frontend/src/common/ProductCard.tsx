@@ -1,18 +1,20 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Course } from '@zeenzen/data';
-// import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-// import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
-// import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faChartSimple,
+  faClock,
+  faListUl,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
 
 import Property from './Property';
 import partsIcon from '../assets/images/landing-page/courses/Dust.svg';
 import AppButton from './AppButton';
 import makePriceCleaner from '../utils/makePriceCleaner';
-import Link from 'next/link';
 import courseLevelTranslator from '../utils/courseLevelTranslator';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { duotone, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 type Size = 'sm' | 'default';
 
@@ -78,23 +80,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <div className={`flex gap-12 mt-4 ${actOnSm(size, 'text-sm', '')}`}>
           <div className="flex flex-col justify-between gap-[0.6rem]">
             <Property
-              renderIcon={<FontAwesomeIcon icon={solid('clock')} />}
+              renderIcon={<FontAwesomeIcon icon={faClock} />}
               text="ساعت"
               property={hoursCount}
             />
             <Property
-              renderIcon={<FontAwesomeIcon icon={duotone('chart-simple')} />}
+              renderIcon={<FontAwesomeIcon icon={faChartSimple} />}
               text={courseLevelTranslator(level)}
             />
           </div>
           <div className="flex flex-col justify-between gap-[0.6rem]">
             <Property
-              renderIcon={<FontAwesomeIcon icon={solid('tally')} />}
+              renderIcon={<FontAwesomeIcon icon={faListUl} />}
               text="قسمت"
               property={lecturesCount}
             />
             <Property
-              renderIcon={<FontAwesomeIcon icon={duotone('users')} />}
+              renderIcon={<FontAwesomeIcon icon={faUsers} />}
               text="شرکت کننده"
               property={participantsCount}
             />

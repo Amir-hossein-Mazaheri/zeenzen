@@ -8,12 +8,16 @@ import {
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactElement, ReactNode, useRef, useState } from 'react';
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 
 import '../src/styles/globals.css';
 import { Provider } from 'react-redux';
 import store from '../src/store/configStore';
 import SkeletonContext from '../src/context/SkeletonContext';
 import { SkeletonAnimation } from '../src/types';
+
+config.autoAddCss = false;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {

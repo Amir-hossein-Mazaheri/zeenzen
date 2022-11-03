@@ -1,17 +1,13 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  duotone,
-  regular,
-  solid,
-} from '@fortawesome/fontawesome-svg-core/import.macro';
+  faChartSimple,
+  faClock,
+  faListUl,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { Course, useAddCartItemMutation, useCourseQuery } from '@zeenzen/data';
-// import { ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
-// import {
-//   ChartBarIcon,
-//   QueueListIcon,
-//   UserGroupIcon,
-// } from '@heroicons/react/24/solid';
 
 import AppButton from '../../common/AppButton';
 import ProgressBar from '../../common/ProgressBar';
@@ -106,24 +102,24 @@ const CourseProperties: React.FC<Course> = ({
     <ShadowBox title="مشخصات دوره" titleSize="lg">
       <div className="space-y-9 mt-5">
         <Property
-          renderIcon={<FontAwesomeIcon icon={solid('clock')} />}
+          renderIcon={<FontAwesomeIcon icon={faClock} />}
           gap="gap-3"
           text="ساعت"
           property={hoursCount}
         />
         <Property
-          renderIcon={<FontAwesomeIcon icon={duotone('chart-simple')} />}
+          renderIcon={<FontAwesomeIcon icon={faChartSimple} />}
           gap="gap-3"
           text={courseLevelTranslator(level)}
         />
         <Property
-          renderIcon={<FontAwesomeIcon icon={solid('tally')} />}
+          renderIcon={<FontAwesomeIcon icon={faListUl} />}
           gap="gap-3"
           text="قسمت"
           property={lecturesCount}
         />
         <Property
-          renderIcon={<FontAwesomeIcon icon={duotone('users')} />}
+          renderIcon={<FontAwesomeIcon icon={faUsers} />}
           gap="gap-3"
           text="شرکت کننده"
           property={participantsCount}
@@ -152,7 +148,7 @@ const CourseProperties: React.FC<Course> = ({
         {isInCart ? (
           <>
             {/* <CheckCircleIcon width={30} height={30} /> */}
-            <FontAwesomeIcon icon={regular('circle-check')} />
+            <FontAwesomeIcon icon={faCircleCheck} />
             <p className="text-sm">به سبد خرید اضافه شده است.</p>
           </>
         ) : (

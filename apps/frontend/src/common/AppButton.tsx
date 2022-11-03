@@ -1,11 +1,11 @@
-import React, { MouseEventHandler, useMemo } from "react";
-import Link from "next/link";
-import PuffLoader from "react-spinners/PuffLoader";
+import React, { MouseEventHandler, useMemo } from 'react';
+import Link from 'next/link';
+import PuffLoader from 'react-spinners/PuffLoader';
 
 interface AppButtonProps {
   link?: boolean;
   outline?: boolean;
-  type?: "button" | "reset" | "submit";
+  type?: 'button' | 'reset' | 'submit';
   href?: string;
   className?: string;
   rounded?: boolean;
@@ -19,10 +19,10 @@ interface AppButtonProps {
 const AppButton: React.FC<AppButtonProps> = ({
   children,
   outline = false,
-  type = "button",
+  type = 'button',
   link = false,
   className,
-  href = "/",
+  href = '/',
   rounded = false,
   disabled = false,
   loading = false,
@@ -32,7 +32,7 @@ const AppButton: React.FC<AppButtonProps> = ({
   const outlineStyle = useMemo(
     () =>
       `border ${
-        disabled || loading ? "border-gray-300" : "border-light-red"
+        disabled || loading ? 'border-gray-300' : 'border-light-red'
       } bg-transparent font-black text-light-red`,
     [disabled, loading]
   );
@@ -41,8 +41,8 @@ const AppButton: React.FC<AppButtonProps> = ({
     () =>
       `border-none ${
         disabled || loading
-          ? "bg-gray-300 text-text-black"
-          : "bg-light-red text-white"
+          ? 'bg-gray-300 text-text-black'
+          : 'bg-light-red text-white'
       }`,
     [disabled, loading]
   );
@@ -50,10 +50,10 @@ const AppButton: React.FC<AppButtonProps> = ({
   const style = useMemo(
     () =>
       `${outline ? outlineStyle : defaultStyle} ${
-        disabled || loading ? "" : "cursor-pointer"
+        disabled || loading ? '' : 'cursor-pointer'
       } outline-none px-8 py-2 text-base ${
-        rounded ? "rounded-full" : "rounded-[8.73529px]"
-      } ${loading ? "flex justify-center items-center" : ""} ${className}`,
+        rounded ? 'rounded-full' : 'rounded-[8.73529px]'
+      } ${loading ? 'flex justify-center items-center' : ''} ${className}`,
     [className, defaultStyle, disabled, loading, outline, outlineStyle, rounded]
   );
 
@@ -62,9 +62,7 @@ const AppButton: React.FC<AppButtonProps> = ({
       {loading ? (
         <PuffLoader size={loadingSpinnerSize} color="inherit" />
       ) : (
-        <a>
-          <div className={style}>{children}</div>
-        </a>
+        <div className={style}>{children}</div>
       )}
     </Link>
   ) : (
