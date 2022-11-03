@@ -1,12 +1,12 @@
-import React from "react";
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
 
-import introImage from "../../assets/images/landing-page/intro/intro-illustration.svg";
+import introImage from '../../assets/images/landing-page/intro/intro-illustration.svg';
 
 const Intro = () => {
   return (
     <div className="flex gap-10 items-center justify-center">
-      <div className="flex items-center justify-center bg-white rounded-full shadow-spread-shadow">
+      <div className="flex items-center aspect-square justify-center bg-white rounded-full shadow-spread-shadow">
         <Image
           className="scale-125 grow"
           width={500}
