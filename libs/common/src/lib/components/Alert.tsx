@@ -1,38 +1,51 @@
-import React, { forwardRef } from 'react';
-import MUIAlert, {
-  AlertColor,
-  AlertProps as MUIAlertProps,
-} from '@mui/material/Alert';
+import React, { MouseEventHandler, ReactNode, useMemo } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
-export type AlertMessage = { text: string; type: AlertColor };
+import { AlertColor } from '../types';
 
-export type AlertMessageSet = Set<AlertMessage>;
-
-interface AlertProps extends Omit<MUIAlertProps, 'onClose'> {
-  messages?: AlertMessageSet;
-  onClose?: (message: AlertMessage) => void;
+export interface AlertProps {
+  children: ReactNode;
+  onClose?: MouseEventHandler<SVGSVGElement>;
+  color: AlertColor;
+  className?: string;
 }
 
-export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  { messages, onClose, ...rest },
-  ref
-) {
-  if (!messages || messages.size === 0) {
-    return <></>;
-  }
+export const Alert: React.FC<AlertProps> = ({
+  color,
+  onClose,
+  className,
+  children,
+}) => {
+  const style = useMemo(() => {
+    switch (color) {
+      case 'success':
+        return 'text-green-700 bg-green-200';
+      case 'error':
+        return 'text-red-700 bg-red-200';
+      case 'warn':
+        return 'text-yellow-700 bg-yellow-200';
+      case 'info':
+        return 'text-sky-700 bg-sky-200';
+    }
+  }, [color]);
 
   return (
-    <div ref={ref} className="space-y-4">
-      {[...messages].map((message) => (
-        <MUIAlert
-          onClose={() => onClose && onClose(message)}
-          key={message.text}
-          severity={message.type}
-          {...rest}
-        >
-          {message.text}
-        </MUIAlert>
-      ))}
+    <div
+      className={`flex justify-between px-8 py-3 rounded ${style} ${className}`}
+    >
+      {children}
+
+      {onClose && (
+        <FontAwesomeIcon
+          icon={faXmark}
+          size="lg"
+          className="leading-none w-5 h-5 m-0 p-0 cursor-pointer"
+          onClick={onClose}
+        />
+      )}
     </div>
   );
-});
+};
+
+export default Alert;
