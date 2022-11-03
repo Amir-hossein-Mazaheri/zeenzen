@@ -42,3 +42,5 @@ Thumbs.db
 .next
 
 graphql/schema.gql
+
+public/uploads
