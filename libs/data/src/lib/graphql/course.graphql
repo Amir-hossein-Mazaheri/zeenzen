@@ -1,0 +1,71 @@
+query Course($courseId: Int!) {
+  course(id: $courseId) {
+    id
+    title
+    description
+    preRequirementsDescription
+    shortDescription
+    hoursCount
+    lecturesCount
+    level
+    participantsCount
+    price
+    progress
+    createdAt
+    updatedAt
+
+    image {
+      id
+      image
+      coverImage
+    }
+
+    instructors {
+      id
+      user {
+        firstname
+        lastname
+      }
+      expertises {
+        id
+        label
+        level
+        isPrimary
+      }
+      user {
+        avatar {
+          id
+          fullPath
+        }
+      }
+    }
+  }
+}
+
+query PaginatedCourses(
+  $paginatedCoursesFilterInput: PaginatedCoursesFilterInput
+) {
+  paginatedCourses(paginatedCoursesFilterInput: $paginatedCoursesFilterInput) {
+    page
+    totalPages
+    hasNext
+    hasPrev
+    courses {
+      id
+      title
+      shortDescription
+      description
+      hoursCount
+      lecturesCount
+      level
+      participantsCount
+      price
+      createdAt
+      updatedAt
+
+      image {
+        image
+      }
+    }
+  }
+}

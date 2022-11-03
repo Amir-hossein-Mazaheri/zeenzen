@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { animated, useSpring } from "react-spring";
-import useMeasure from "react-use-measure";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import WatchLaterIcon from "@mui/icons-material/WatchLater";
+import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState } from 'react';
+import { animated, useSpring } from 'react-spring';
+import useMeasure from 'react-use-measure';
+// import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+// import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+// import WatchLaterIcon from "@mui/icons-material/WatchLater";
 
-import AppButton from "./AppButton";
+import AppButton from './AppButton';
 
 interface ListProps {
   title: string;
@@ -35,7 +37,8 @@ const List: React.FC<ListProps> = ({ title, duration, onChange, children }) => {
       >
         <div className="flex gap-1 items-center">
           <div>
-            <PlayArrowIcon fontSize="large" />
+            {/* <PlayArrowIcon fontSize="large" /> */}
+            <FontAwesomeIcon icon={solid('play')} />
           </div>
 
           <div>
@@ -47,7 +50,8 @@ const List: React.FC<ListProps> = ({ title, duration, onChange, children }) => {
           <div className="scale-[0.8]">
             <AppButton outline>
               <p className="flex items-center gap-1">
-                <WatchLaterIcon />
+                {/* <WatchLaterIcon /> */}
+                <FontAwesomeIcon icon={regular('clock')} />
                 <p className="mr-px">{duration}</p>
                 <p>دقیقه</p>
               </p>
@@ -55,12 +59,13 @@ const List: React.FC<ListProps> = ({ title, duration, onChange, children }) => {
           </div>
 
           <div>
-            <KeyboardArrowDownIcon fontSize="medium" />
+            {/* <KeyboardArrowDownIcon fontSize="medium" /> */}
+            <FontAwesomeIcon icon={solid('chevron-down')} />
           </div>
         </div>
       </div>
 
-      <animated.div style={{ ...animationProps, overflow: "hidden" }}>
+      <animated.div style={{ ...animationProps, overflow: 'hidden' }}>
         <div className="py-8" ref={ref}>
           {children}
         </div>

@@ -1,18 +1,20 @@
-import React from "react";
-import Image from "next/image";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import React from 'react';
+import Image from 'next/image';
+// import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+// import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
+// import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
-import Property from "./Property";
-import partsIcon from "../assets/images/landing-page/courses/Dust.svg";
-import AppButton from "./AppButton";
-import makePriceCleaner from "../utils/makePriceCleaner";
-import { Course } from "../generated/queries";
-import Link from "next/link";
-import courseLevelTranslator from "../utils/courseLevelTranslator";
+import Property from './Property';
+import partsIcon from '../assets/images/landing-page/courses/Dust.svg';
+import AppButton from './AppButton';
+import makePriceCleaner from '../utils/makePriceCleaner';
+import { Course } from '../generated/queries';
+import Link from 'next/link';
+import courseLevelTranslator from '../utils/courseLevelTranslator';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { duotone, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-type Size = "sm" | "default";
+type Size = 'sm' | 'default';
 
 export interface ProductCardProps extends Course {
   size?: Size;
@@ -27,7 +29,7 @@ type ActOnSm = <T extends string | number>(
 ) => T;
 
 const actOnSm: ActOnSm = (size, smAct, defaultAct) => {
-  return size === "sm" ? smAct : defaultAct;
+  return size === 'sm' ? smAct : defaultAct;
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -41,7 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   price,
   onMouseEnter,
   onMouseLeave,
-  size = "default",
+  size = 'default',
 }) => {
   const singleCourseLink = `/shop/course/${id}`;
 
@@ -65,41 +67,34 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <h2
             className={`font-black ${actOnSm(
               size,
-              "text-xl",
-              "text-2xl"
+              'text-xl',
+              'text-2xl'
             )} text-title-black`}
           >
             {title}
           </h2>
         </Link>
 
-        <div className={`flex gap-12 mt-4 ${actOnSm(size, "text-sm", "")}`}>
+        <div className={`flex gap-12 mt-4 ${actOnSm(size, 'text-sm', '')}`}>
           <div className="flex flex-col justify-between gap-[0.6rem]">
             <Property
-              renderIcon={<HourglassEmptyIcon />}
+              renderIcon={<FontAwesomeIcon icon={solid('clock')} />}
               text="ساعت"
               property={hoursCount}
             />
             <Property
-              renderIcon={<InsertChartOutlinedIcon />}
+              renderIcon={<FontAwesomeIcon icon={duotone('chart-simple')} />}
               text={courseLevelTranslator(level)}
             />
           </div>
           <div className="flex flex-col justify-between gap-[0.6rem]">
             <Property
-              renderIcon={
-                <Image
-                  src={partsIcon}
-                  alt="parts icon"
-                  width={37}
-                  height={33}
-                />
-              }
+              renderIcon={<FontAwesomeIcon icon={solid('tally')} />}
               text="قسمت"
               property={lecturesCount}
             />
             <Property
-              renderIcon={<PeopleAltIcon />}
+              renderIcon={<FontAwesomeIcon icon={duotone('users')} />}
               text="شرکت کننده"
               property={participantsCount}
             />
@@ -110,21 +105,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className={`flex items-center justify-between px-5 py-4 ${actOnSm(
           size,
-          "mt-2",
-          "mt-3"
+          'mt-2',
+          'mt-3'
         )}`}
       >
         <div
           className={`flex items-center gap-1 text-light-blue font-extrabold ${actOnSm(
             size,
-            "text-xl",
-            "text-2xl"
+            'text-xl',
+            'text-2xl'
           )}`}
         >
           <p>{makePriceCleaner(price)}</p>
           <p>تومان</p>
         </div>
-        <div className={actOnSm(size, "scale-90", "scale-100")}>
+        <div className={actOnSm(size, 'scale-90', 'scale-100')}>
           <AppButton link href={singleCourseLink}>
             <span className="font-black text-sm">مشاهده و ثبت نام</span>
           </AppButton>

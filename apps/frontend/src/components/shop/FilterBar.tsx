@@ -1,14 +1,14 @@
-import React from "react";
-import { SelectChangeEvent } from "@mui/material/Select";
-import Skeleton from "@mui/material/Skeleton";
+import React from 'react';
+// import { SelectChangeEvent } from "@mui/material/Select";
+// import Skeleton from "@mui/material/Skeleton";
 
-import SelectDropDown from "../../common/SelectDropDown";
-import { CourseLevel, useCategoriesQuery } from "../../generated/queries";
-import graphqlClient from "../../api/graphql-client";
+import SelectDropDown from '../../common/SelectDropDown';
+import { CourseLevel, useCategoriesQuery } from '../../generated/queries';
+import graphqlClient from '../../api/graphql-client';
 
-const animation = "wave";
+const animation = 'wave';
 
-export type FilterEven = (event: SelectChangeEvent<unknown>) => void;
+export type FilterEven = (event: any) => void;
 
 interface FilterBarProps {
   courseLevelValue?: string;
@@ -31,7 +31,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
     <div className="relative flex justify-between items-center w-full">
       {isFetching ? (
         <>
-          <Skeleton
+          {/* <Skeleton
             variant="rectangular"
             animation={animation}
             width={300}
@@ -45,7 +45,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             width={300}
             height={50}
             className="rounded-full"
-          />
+          /> */}
         </>
       ) : (
         <>
@@ -68,19 +68,19 @@ const FilterBar: React.FC<FilterBarProps> = ({
             rounded
             items={[
               {
-                text: "آسان",
+                text: 'آسان',
                 value: CourseLevel.Elementary,
               },
               {
-                text: "متوسط",
+                text: 'متوسط',
                 value: CourseLevel.Intermediate,
               },
               {
-                text: "پیشرفته",
+                text: 'پیشرفته',
                 value: CourseLevel.Advanced,
               },
               {
-                text: "همه سطوح",
+                text: 'همه سطوح',
                 value: CourseLevel.Mixed,
               },
             ]}

@@ -1,10 +1,12 @@
-import React from "react";
-import Image, { StaticImageData } from "next/image";
-import DeleteIcon from "@mui/icons-material/Delete";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import React from 'react';
+import Image, { StaticImageData } from 'next/image';
+// import DeleteIcon from "@mui/icons-material/Delete";
+// import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
-import tomanSymbol from "../assets/images/toman.svg";
-import makePriceCleaner from "../utils/makePriceCleaner";
+import tomanSymbol from '../assets/images/toman.svg';
+import makePriceCleaner from '../utils/makePriceCleaner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 interface CartItemProps {
   id: string;
@@ -39,7 +41,7 @@ const CartItem: React.FC<CartItemProps> = ({
         <div className="flex flex-col justify-center gap-2">
           <h2
             className={`m-0 ${
-              sm ? " font-bold" : "text-2xl font-black"
+              sm ? ' font-bold' : 'text-2xl font-black'
             } text-title-black`}
           >
             {title}
@@ -48,7 +50,7 @@ const CartItem: React.FC<CartItemProps> = ({
           {instructors.map((instructor) => (
             <p
               key={instructor}
-              className={`text-text-black ${sm ? "text-sm" : ""}`}
+              className={`text-text-black ${sm ? 'text-sm' : ''}`}
             >
               {instructor}
             </p>
@@ -64,8 +66,9 @@ const CartItem: React.FC<CartItemProps> = ({
                 <p className="text-light-red">
                   {makePriceCleaner(priceWithDiscount)}
                 </p>
-                <div className="rotate-180">
-                  <KeyboardBackspaceIcon />
+                <div>
+                  {/* <KeyboardBackspaceIcon /> */}
+                  <FontAwesomeIcon icon={solid('arrow-right')} />
                 </div>
               </>
             )}
@@ -74,14 +77,14 @@ const CartItem: React.FC<CartItemProps> = ({
                 hasDiscount &&
                 priceWithDiscount &&
                 "before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-[2px] before:bg-light-red before:rotate-45"
-              } ${sm ? "text-sm" : ""}`}
+              } ${sm ? 'text-sm' : ''}`}
             >
               <p>{makePriceCleaner(price)}</p>
             </div>
           </div>
 
           <Image
-            className={sm ? "" : `scale-110`}
+            className={sm ? '' : `scale-110`}
             src={tomanSymbol}
             alt="تومان"
             layout="intrinsic"
@@ -93,7 +96,8 @@ const CartItem: React.FC<CartItemProps> = ({
             onClick={() => onDelete(id, title)}
             className="flex items-center cursor-pointer justify-center rounded-lg bg-light-red text-white w-8 h-8"
           >
-            <DeleteIcon fontSize="small" />
+            {/* <DeleteIcon fontSize="small" /> */}
+            <FontAwesomeIcon icon={solid('trash')} />
           </div>
         )}
       </div>

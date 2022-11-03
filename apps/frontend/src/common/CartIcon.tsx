@@ -1,18 +1,18 @@
-import React, { Fragment } from "react";
-import { Popover, Transition } from "@headlessui/react";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import React, { Fragment } from 'react';
+import { Popover, Transition } from '@headlessui/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-import useCart from "../hooks/useCart";
-import CartItem from "./CartItem";
-import AppButton from "./AppButton";
-import Conditional from "./Conditional";
-import TrueCondition from "./TrueCondition";
-import FalseCondition from "./FalseCondition";
-import useRemoveCartItem from "../hooks/useRemoveCartItem";
+import useCart from '../hooks/useCart';
+import CartItem from './CartItem';
+import AppButton from './AppButton';
+import Conditional from './Conditional';
+import TrueCondition from './TrueCondition';
+import FalseCondition from './FalseCondition';
+import useRemoveCartItem from '../hooks/useRemoveCartItem';
 
-interface CartIconProps {}
-
-const CartIcon: React.FC<CartIconProps> = () => {
+const CartIcon = () => {
   const { items, refetchCart, id: cartId, type } = useCart();
 
   const removeCartItem = useRemoveCartItem({
@@ -28,7 +28,7 @@ const CartIcon: React.FC<CartIconProps> = () => {
           <Popover.Button className="outline-none">
             <div
               className={`rounded-full w-10 h-10 relative flex items-center justify-center ${
-                open ? "bg-gray-300" : "bg-light-blue"
+                open ? 'bg-gray-300' : 'bg-light-blue'
               }`}
             >
               {items && items?.length > 0 && (
@@ -37,8 +37,9 @@ const CartIcon: React.FC<CartIconProps> = () => {
                 </div>
               )}
 
-              <div className={`${open ? "text-text-black" : "text-white "}`}>
-                <ShoppingCartIcon />
+              <div className={`${open ? 'text-text-black' : 'text-white '}`}>
+                {/* <ShoppingCartIcon /> */}
+                <FontAwesomeIcon icon={solid('cart-shopping')} />
               </div>
             </div>
           </Popover.Button>

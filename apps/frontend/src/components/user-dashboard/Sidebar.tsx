@@ -1,43 +1,49 @@
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import PersonIcon from "@mui/icons-material/Person";
-import SchoolIcon from "@mui/icons-material/School";
-import UpdateIcon from "@mui/icons-material/Update";
-import LogoutIcon from "@mui/icons-material/Logout";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import React from 'react';
+import { useRouter } from 'next/router';
+// import PersonIcon from "@mui/icons-material/Person";
+// import SchoolIcon from "@mui/icons-material/School";
+// import UpdateIcon from "@mui/icons-material/Update";
+// import LogoutIcon from "@mui/icons-material/Logout";
+// import DashboardIcon from "@mui/icons-material/Dashboard";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { regular, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-import { UserActionMenuItem } from "../../types";
-import useLogout from "../../hooks/useLogout";
+import { UserActionMenuItem } from '../../types';
+import useLogout from '../../hooks/useLogout';
 
 export const userActions: UserActionMenuItem[] = [
   {
-    title: "داشبرد",
-    link: "/",
-    icon: <DashboardIcon />,
+    title: 'داشبرد',
+    link: '/',
+    // icon: <DashboardIcon />,
+    icon: <FontAwesomeIcon icon={regular('table-columns')} />,
   },
   {
-    title: "پروفایل من",
-    link: "/profile",
-    icon: <PersonIcon />,
+    title: 'پروفایل من',
+    link: '/profile',
+    // icon: <PersonIcon />,
+    icon: <FontAwesomeIcon icon={solid('user')} />,
   },
   {
-    title: "دوره های من",
-    link: "/courses",
-    icon: <SchoolIcon />,
+    title: 'دوره های من',
+    link: '/courses',
+    // icon: <SchoolIcon />,
+    icon: <FontAwesomeIcon icon={solid('chalkboard-user')} />,
   },
   {
-    title: "امتیاز های من",
-    link: "/scores",
-    icon: <UpdateIcon />,
+    title: 'امتیاز های من',
+    link: '/scores',
+    // icon: <UpdateIcon />,
+    icon: <FontAwesomeIcon icon={solid('hundred-points')} />,
   },
   {
-    title: "خروج از حساب کاربری",
-    icon: <LogoutIcon />,
+    title: 'خروج از حساب کاربری',
+    // icon: <LogoutIcon />,
+    icon: <FontAwesomeIcon icon={solid('right-from-bracket')} />,
   },
 ].map((action) => {
   if (action.link) {
-    action.link = `/user/dashboard${action.link !== "/" ? action.link : ""}`;
+    action.link = `/user/dashboard${action.link !== '/' ? action.link : ''}`;
   }
   return action;
 });
@@ -55,7 +61,7 @@ const Sidebar = () => {
         <ul className="space-y-8 font-medium">
           {userActions.map(({ title, link, icon }) => (
             <li
-              className={link && link === router.route ? "text-red-500" : ""}
+              className={link && link === router.route ? 'text-red-500' : ''}
               key={link}
             >
               <div

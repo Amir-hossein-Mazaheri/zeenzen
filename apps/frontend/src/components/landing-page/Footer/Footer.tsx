@@ -1,26 +1,23 @@
-import React from "react";
-import Image from "next/image";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import YouTubeIcon from "@mui/icons-material/YouTube";
+import React from 'react';
+import Image from 'next/image';
+// import LinkedInIcon from "@mui/icons-material/LinkedIn";
+// import GitHubIcon from "@mui/icons-material/GitHub";
+// import InstagramIcon from "@mui/icons-material/Instagram";
+// import YouTubeIcon from "@mui/icons-material/YouTube";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { brands } from '@fortawesome/fontawesome-svg-core/import.macro';
 
-import Newsletter from "./Newsletter";
-import zeenzenLogo from "../../../assets/images/zeenzen-logo.png";
-import footerWaves from "../../../assets/images/landing-page/footer/wave-haikei.svg";
-import heartEmoji from "../../../assets/images/landing-page/footer/heart-emoji.svg";
-import muscleEmoji from "../../../assets/images/landing-page/footer/muscle-emoji.svg";
+import Newsletter from './Newsletter';
+import zeenzenLogo from '../../../assets/images/zeenzen-logo.png';
+import footerWaves from '../../../assets/images/landing-page/footer/wave-haikei.svg';
+import heartEmoji from '../../../assets/images/landing-page/footer/heart-emoji.svg';
+import muscleEmoji from '../../../assets/images/landing-page/footer/muscle-emoji.svg';
 
 const Footer = () => {
   return (
     <footer className="relative">
       <div>
-        <Image
-          priority
-          src={footerWaves}
-          alt="footer waves"
-          layout="responsive"
-        />
+        <Image priority fill src={footerWaves} alt="footer waves" />
       </div>
       <div className="bg-dark-blue relative px-16 pt-12 pb-4">
         <Newsletter />
@@ -70,16 +67,20 @@ const Footer = () => {
 
           <div className="flex gap-5 items-center">
             <a href="#" target="_blank">
-              <LinkedInIcon fontSize="large" />
+              {/* <LinkedInIcon fontSize="large" /> */}
+              <FontAwesomeIcon icon={brands('linkedin-in')} size="xl" />
             </a>
             <a href="#" target="_blank">
-              <GitHubIcon fontSize="large" />
+              {/* <GitHubIcon fontSize="large" /> */}
+              <FontAwesomeIcon icon={brands('github')} size="xl" />
             </a>
             <a href="#" target="_blank">
-              <InstagramIcon fontSize="large" />
+              {/* <InstagramIcon fontSize="large" /> */}
+              <FontAwesomeIcon icon={brands('instagram')} size="xl" />
             </a>
             <a href="#" target="_blank">
-              <YouTubeIcon fontSize="large" />
+              {/* <YouTubeIcon fontSize="large" /> */}
+              <FontAwesomeIcon icon={brands('youtube')} size="xl" />
             </a>
           </div>
         </div>

@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "cacheable",
     "dompurify",
     "expertises",
     "formkit",
@@ -12,6 +13,7 @@
     "QLJSON",
     "signup",
     "tanstack",
-    "toman"
+    "toman",
+    "xmark"
   ]
 }

@@ -1,6 +1,8 @@
-import React, { useCallback, useState } from "react";
-import ClearIcon from "@mui/icons-material/Clear";
-import { animated, useSpring } from "react-spring";
+import { light } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useCallback, useState } from 'react';
+// import ClearIcon from '@mui/icons-material/Clear';
+import { animated, useSpring } from 'react-spring';
 
 interface BadgeProps {
   text: string;
@@ -17,13 +19,13 @@ const Badge: React.FC<BadgeProps> = ({
   rounded = true,
   onClose,
   className,
-  px = "px-2",
+  px = 'px-2',
 }) => {
   const [close, setClose] = useState(false);
   const animationProps = useSpring({
     opacity: close ? 0 : 1,
     scale: close ? 0 : 1,
-    position: close ? "absolute" : "static",
+    position: close ? 'absolute' : 'static',
   });
 
   const handleClose = useCallback(
@@ -39,10 +41,11 @@ const Badge: React.FC<BadgeProps> = ({
 
   return (
     <animated.div
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       style={animationProps}
       className={`${
-        rounded ? "rounded-full" : "rounded-lg"
+        rounded ? 'rounded-full' : 'rounded-lg'
       } w-fit ${px} py-1 bg-light-blue/50 flex items-center justify-between gap-3 text-text-black ${className}`}
     >
       <p>{text}</p>
@@ -52,7 +55,8 @@ const Badge: React.FC<BadgeProps> = ({
           onClick={handleClose}
           className="flex items-center justify-center cursor-pointer rounded-full bg-white p-1 h-6 w-6"
         >
-          <ClearIcon fontSize="inherit" />
+          {/* <ClearIcon fontSize="inherit" /> */}
+          <FontAwesomeIcon icon={light('xmark')} />
         </div>
       )}
     </animated.div>

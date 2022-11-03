@@ -1,5 +1,7 @@
-import React, { memo, MouseEventHandler } from "react";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { memo, MouseEventHandler } from 'react';
+// import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 interface PaginationProps {
   pages: number[];
@@ -10,9 +12,9 @@ interface PaginationProps {
 }
 
 const sharedClasses =
-  "rounded-full shadow-md shadow-gray-200 transition-colors duration-200";
-const activePageClasses = "text-white bg-light-red";
-const hoverPageClasses = "hover:text-white hover:bg-light-red";
+  'rounded-full shadow-md shadow-gray-200 transition-colors duration-200';
+const activePageClasses = 'text-white bg-light-red';
+const hoverPageClasses = 'hover:text-white hover:bg-light-red';
 
 const Pagination: React.FC<PaginationProps> = ({
   pages,
@@ -27,7 +29,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={onPrev}
         className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
       >
-        <NavigateNextIcon />
+        <FontAwesomeIcon icon={solid('chevron-right')} />
       </div>
       <div
         className={`${sharedClasses} overflow-hidden h-12 flex justify-between`}
@@ -38,7 +40,7 @@ const Pagination: React.FC<PaginationProps> = ({
             className={`${hoverPageClasses} ${
               index === activePage && activePageClasses
             } transition-colors duration-200 h-12 px-6 cursor-pointer flex justify-center text-center items-center ${
-              index !== 0 && "border-r border-gray-300"
+              index !== 0 && 'border-r border-gray-300'
             }`}
             key={page.toString()}
           >
@@ -50,7 +52,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onClick={onNext}
         className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
       >
-        <NavigateNextIcon className="rotate-180" />
+        <FontAwesomeIcon icon={solid('chevron-left')} />
       </div>
     </div>
   );

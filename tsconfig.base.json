@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@zeenzen/data": ["libs/data/src/index.ts"],
+      "@zeenzen/graphql": ["graphql/**"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -1,10 +1,16 @@
 import React from 'react';
-import { ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  ChartBarIcon,
-  QueueListIcon,
-  UserGroupIcon,
-} from '@heroicons/react/24/solid';
+  duotone,
+  regular,
+  solid,
+} from '@fortawesome/fontawesome-svg-core/import.macro';
+// import { ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+// import {
+//   ChartBarIcon,
+//   QueueListIcon,
+//   UserGroupIcon,
+// } from '@heroicons/react/24/solid';
 
 import AppButton from '../../common/AppButton';
 import ProgressBar from '../../common/ProgressBar';
@@ -104,24 +110,24 @@ const CourseProperties: React.FC<Course> = ({
     <ShadowBox title="مشخصات دوره" titleSize="lg">
       <div className="space-y-9 mt-5">
         <Property
-          renderIcon={<ClockIcon className="w-6 h-6" />}
+          renderIcon={<FontAwesomeIcon icon={solid('clock')} />}
           gap="gap-3"
           text="ساعت"
           property={hoursCount}
         />
         <Property
-          renderIcon={<ChartBarIcon className="w-6 h-6" />}
+          renderIcon={<FontAwesomeIcon icon={duotone('chart-simple')} />}
           gap="gap-3"
           text={courseLevelTranslator(level)}
         />
         <Property
-          renderIcon={<QueueListIcon className="w-6 h-6" />}
+          renderIcon={<FontAwesomeIcon icon={solid('tally')} />}
           gap="gap-3"
           text="قسمت"
           property={lecturesCount}
         />
         <Property
-          renderIcon={<UserGroupIcon className="w-6 h-6" />}
+          renderIcon={<FontAwesomeIcon icon={duotone('users')} />}
           gap="gap-3"
           text="شرکت کننده"
           property={participantsCount}
@@ -149,7 +155,8 @@ const CourseProperties: React.FC<Course> = ({
       >
         {isInCart ? (
           <>
-            <CheckCircleIcon width={30} height={30} />
+            {/* <CheckCircleIcon width={30} height={30} /> */}
+            <FontAwesomeIcon icon={regular('circle-check')} />
             <p className="text-sm">به سبد خرید اضافه شده است.</p>
           </>
         ) : (
