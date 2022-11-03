@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@zeenzen/common-component": ["libs/common-component/src/index.ts"],
       "@zeenzen/data": ["libs/data/src/index.ts"]
     }
   },

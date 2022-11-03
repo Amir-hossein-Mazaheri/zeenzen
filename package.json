@@ -111,6 +111,8 @@
     "@nrwl/react": "15.0.5",
     "@nrwl/web": "15.0.5",
     "@nrwl/workspace": "15.0.5",
+    "@swc/core": "^1.2.173",
+    "@swc/jest": "0.2.20",
     "@testing-library/react": "13.4.0",
     "@types/connect-redis": "^0.0.19",
     "@types/cookie-parser": "^1.4.3",
