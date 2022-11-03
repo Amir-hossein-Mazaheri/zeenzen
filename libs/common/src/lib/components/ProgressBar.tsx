@@ -1,4 +1,3 @@
-import { Box } from '@mui/system';
 import React from 'react';
 
 interface ProgressBarProps {
@@ -11,14 +10,14 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   className,
 }) => {
   return (
-    <Box
-      sx={{
-        ':before': {
-          width: `${progress}%`,
-        },
-      }}
-      className={`rounded-full h-5 w-full bg-white shadow shadow-gray-200/85 relative overflow-hidden before:bg-light-red before:content-[""] before:absolute before:top-0 before:bottom-0 before:left-0 ${className}`}
-    />
+    <div
+      className={`rounded-full h-5 w-full bg-white shadow shadow-gray-200/85 relative overflow-hidden ${className}`}
+    >
+      <div
+        style={{ width: `${progress}%` }}
+        className="bg-light-red absolute top-0 bottom-0 left-0"
+      />
+    </div>
   );
 };
 
