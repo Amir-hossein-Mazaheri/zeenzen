@@ -1,6 +1,6 @@
 import { useCartQuery } from '@zeenzen/data';
+import { graphqlClient, Types } from '@zeenzen/common';
 
-import graphqlClient from '../api/graphql-client';
 import { selectCartItems } from '../store/entities/cart';
 import { useAppSelector } from './useAppSelector';
 import useUser from './useUser';
@@ -18,23 +18,15 @@ export default function useCart() {
     isLoading,
     error,
     refetch: refetchCart,
-  } = useCartQuery(
-    graphqlClient,
-    {
-      cartId: user?.cart.id || '',
-    },
-    {
-      enabled: false,
-    }
-  );
+  } = useCartQuery(graphqlClient, {
+    cartId: user?.cart.id || '',
+  });
 
   const cartItems = useAppSelector(selectCartItems);
 
   console.log('cart errors: ', error);
 
   if (isAuthenticated) {
-    refetchCart();
-
     return {
       type: CartType.DB,
       id: user?.cart?.id,
@@ -42,7 +34,7 @@ export default function useCart() {
       refetchCart,
       totalPrice: data?.cart.totalPrice || 0,
       totalPriceWithDiscount: data?.cart.totalPriceWithDiscount || 0,
-      items: data?.cart.cartItems?.map(
+      items: data?.cart.cartItems?.map<Types.CartItem>(
         ({
           unitPriceWithDiscount,
           unitPrice,

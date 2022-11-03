@@ -1,11 +1,10 @@
-import { Tab } from '@headlessui/react';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import React from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
+import { Tab } from '@headlessui/react';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { graphqlClient, Loadable } from '@zeenzen/common';
 
-import graphqlClient from '../../../src/api/graphql-client';
-import Loadable from '../../../src/common/Loadable';
 import SingleCourseSkeleton from '../../../src/common/Skeleton/SingleCourseSkeleton';
 import ContentTab from '../../../src/components/single-course/ContentTab';
 import Hero from '../../../src/components/single-course/Hero';

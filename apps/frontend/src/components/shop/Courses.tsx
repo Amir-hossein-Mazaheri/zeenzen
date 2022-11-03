@@ -1,8 +1,7 @@
 import React from 'react';
 import { Course } from '@zeenzen/data';
+import { Loadable, ProductCard } from '@zeenzen/common';
 
-import Loadable from '../../common/Loadable';
-import ProductCard from '../../common/ProductCard';
 import CourseSkeleton from '../../common/Skeleton/CourseSkeleton';
 import { ID } from '../../types';
 

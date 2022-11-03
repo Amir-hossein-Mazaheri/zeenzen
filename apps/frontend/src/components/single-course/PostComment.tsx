@@ -2,7 +2,7 @@ import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { usePostCommentMutation } from '@zeenzen/data';
 
-import graphqlClient from '../../api/graphql-client';
+import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
 import AppLink from '../../common/AppLink';
 import Conditional from '../../common/Conditional';
 import FalseCondition from '../../common/FalseCondition';

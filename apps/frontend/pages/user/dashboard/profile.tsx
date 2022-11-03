@@ -3,19 +3,21 @@ import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useLimitedUpdateUserMutation } from '@zeenzen/data';
+import {
+  Avatar,
+  AppButton,
+  AppInput,
+  PasswordInput,
+  graphqlClient,
+  Loadable,
+  uploadAxios,
+} from '@zeenzen/common';
 
 import UserDashboardLayout from '../../../src/layouts/UserDashboardLayout';
 import { NextPageWithLayout } from '../../_app';
-import Avatar from '../../../src/common/Avatar';
-import AppButton from '../../../src/common/AppButton';
-import AppInput from '../../../src/common/AppInput';
-import PasswordInput from '../../../src/common/PasswordInput';
-import graphqlClient from '../../../src/api/graphql-client';
 import useAlert from '../../../src/hooks/useAlert';
 import useProtectedRoute from '../../../src/hooks/useProtectedRoute';
-import Loadable from '../../../src/common/Loadable';
 import getPasswordRegex from '../../../src/utils/getPasswordRegex';
-import uploadAxios from '../../../src/api/uploadAxios';
 import useToast from '../../../src/hooks/useToast';
 
 interface UserProfileFields {

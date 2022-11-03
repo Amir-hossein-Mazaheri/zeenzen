@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePreRequirementsQuery } from '@zeenzen/data';
 
-import graphqlClient from '../../api/graphql-client';
+import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
 import Conditional from '../../common/Conditional';
 import FalseCondition from '../../common/FalseCondition';
 import Loadable from '../../common/Loadable';

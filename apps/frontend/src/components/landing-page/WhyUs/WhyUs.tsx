@@ -1,38 +1,38 @@
-import React from "react";
+import React from 'react';
+import { UnderlinedTitle } from '@zeenzen/common';
 
-import UnderlinedTitle from "../../../common/UnderlinedTitle";
-import Reason from "./Reason";
-import projectBased from "../../../assets/images/landing-page/why-us/Web Programming_Flat.svg";
-import highQuality from "../../../assets/images/landing-page/why-us/Learning_Flat.svg";
-import fairPrice from "../../../assets/images/landing-page/why-us/Money Bag_Flat.svg";
-import newTeachingMethod from "../../../assets/images/landing-page/why-us/Education_Flat.svg";
-import satisfaction from "../../../assets/images/landing-page/why-us/Star_Flat.svg";
+import Reason from './Reason';
+import projectBased from '../../../assets/images/landing-page/why-us/Web Programming_Flat.svg';
+import highQuality from '../../../assets/images/landing-page/why-us/Learning_Flat.svg';
+import fairPrice from '../../../assets/images/landing-page/why-us/Money Bag_Flat.svg';
+import newTeachingMethod from '../../../assets/images/landing-page/why-us/Education_Flat.svg';
+import satisfaction from '../../../assets/images/landing-page/why-us/Star_Flat.svg';
 
 const reasons = [
   {
     img: projectBased,
-    title: "آموزش پروژه محور",
-    description: "پروژه های کاربردی و عمیق کننده",
+    title: 'آموزش پروژه محور',
+    description: 'پروژه های کاربردی و عمیق کننده',
   },
   {
     img: highQuality,
-    title: "کیفیت آموزشی بالا",
+    title: 'کیفیت آموزشی بالا',
     description: `کیفیت تصویر و صوتی بالا به همراه آموزش مفهومی`,
   },
   {
     img: fairPrice,
-    title: "قیمت مناسب",
-    description: "قیمت متناسب با اقتصاد فعلی ایران",
+    title: 'قیمت مناسب',
+    description: 'قیمت متناسب با اقتصاد فعلی ایران',
   },
   {
     img: newTeachingMethod,
-    title: "متد آموزشی متفاوت",
-    description: "استفاده از شیوه آموزشی برای بهره وری بیشتر",
+    title: 'متد آموزشی متفاوت',
+    description: 'استفاده از شیوه آموزشی برای بهره وری بیشتر',
   },
   {
     img: satisfaction,
-    title: "رضایتمندی",
-    description: "رضایتمندی اکثر دانشجویان دوره ها",
+    title: 'رضایتمندی',
+    description: 'رضایتمندی اکثر دانشجویان دوره ها',
   },
 ];
 

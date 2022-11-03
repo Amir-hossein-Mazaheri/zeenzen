@@ -1,5 +1,5 @@
-import React from "react";
-import ShadowBox from "../../common/ShadowBox";
+import React from 'react';
+import { ShadowBox } from '@zeenzen/common';
 
 interface CourseSidebarProps {
   title: string;

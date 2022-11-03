@@ -1,6 +1,6 @@
 import { useDecrementCartItemMutation } from '@zeenzen/data';
+import { graphqlClient } from '@zeenzen/common';
 
-import graphqlClient from '../api/graphql-client';
 import { REMOVE_ITEM } from '../store/entities/cart';
 import getErrorMessages from '../utils/getErrorMessages';
 import { useAppDispatch } from './useAppDispatch';

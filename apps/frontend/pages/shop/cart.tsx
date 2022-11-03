@@ -1,21 +1,23 @@
-import Head from "next/head";
-import Image from "next/image";
-import React, { FormEventHandler, useMemo } from "react";
+import Head from 'next/head';
+import Image from 'next/image';
+import React, { FormEventHandler, useMemo } from 'react';
+import {
+  AppButton,
+  CartItem,
+  Conditional,
+  FalseCondition,
+  Loadable,
+  PriceTag,
+  ShadowBox,
+  TrueCondition,
+} from '@zeenzen/common';
 
-import emptyCartIllustration from "../../src/assets/images/cart/empty-cart.svg";
-import AppButton from "../../src/common/AppButton";
-import CartItem from "../../src/common/CartItem";
-import Conditional from "../../src/common/Conditional";
-import FalseCondition from "../../src/common/FalseCondition";
-import Loadable from "../../src/common/Loadable";
-import PriceTag from "../../src/common/PriceTag";
-import ShadowBox from "../../src/common/ShadowBox";
-import TrueCondition from "../../src/common/TrueCondition";
-import useCart from "../../src/hooks/useCart";
-import useRemoveCartItem from "../../src/hooks/useRemoveCartItem";
-import ShopLayout from "../../src/layouts/ShopLayout";
-import addToTitle from "../../src/utils/addToTitle";
-import { NextPageWithLayout } from "../_app";
+import emptyCartIllustration from '../../src/assets/images/cart/empty-cart.svg';
+import useCart from '../../src/hooks/useCart';
+import useRemoveCartItem from '../../src/hooks/useRemoveCartItem';
+import ShopLayout from '../../src/layouts/ShopLayout';
+import addToTitle from '../../src/utils/addToTitle';
+import { NextPageWithLayout } from '../_app';
 
 const CartPage: NextPageWithLayout = () => {
   const {
@@ -47,7 +49,7 @@ const CartPage: NextPageWithLayout = () => {
 
   return (
     <>
-      <Head>{addToTitle("سبد خرید")}</Head>
+      <Head>{addToTitle('سبد خرید')}</Head>
 
       <Conditional condition={(items?.length || 0) > 0}>
         <FalseCondition>
@@ -106,7 +108,7 @@ const CartPage: NextPageWithLayout = () => {
                         : totalPriceWithDiscount
                     }
                     prefix={
-                      !hasDiscount ? "مجموع پرداختی" : "مجموع پرداختی با تخفیف"
+                      !hasDiscount ? 'مجموع پرداختی' : 'مجموع پرداختی با تخفیف'
                     }
                     fontSize="text-xl"
                   />

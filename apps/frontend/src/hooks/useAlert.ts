@@ -1,6 +1,6 @@
 import { SweetAlertIcon } from 'sweetalert2';
+import { colors } from '@zeenzen/common';
 
-import colors from '../constants/colors';
 import { getSwal } from '../utils/getSwal';
 
 interface UseAlertOptions {

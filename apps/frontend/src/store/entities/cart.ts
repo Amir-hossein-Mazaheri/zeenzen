@@ -1,20 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Types } from '@zeenzen/common';
 
-import CartItem from "../../common/CartItem";
-import persistCart from "../../utils/persistCart";
-import { RootState } from "../configStore";
-
-export type CartItem = {
-  id: string;
-  title: string;
-  thumbnail: string;
-  instructors: string[];
-  price: number;
-  discountedPrice: number;
-};
+import persistCart from '../../utils/persistCart';
+import { RootState } from '../configStore';
 
 export interface Cart {
-  items: CartItem[];
+  items: Types.CartItem[];
 }
 
 const initialState: Cart = {
@@ -22,13 +13,13 @@ const initialState: Cart = {
 };
 
 const cart = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState,
   reducers: {
-    LOAD_ITEMS: (store, action: PayloadAction<{ items: CartItem[] }>) => {
+    LOAD_ITEMS: (store, action: PayloadAction<{ items: Types.CartItem[] }>) => {
       store.items = action.payload.items;
     },
-    ADD_ITEM: (store, action: PayloadAction<{ item: CartItem }>) => {
+    ADD_ITEM: (store, action: PayloadAction<{ item: Types.CartItem }>) => {
       // this loop prevents duplicate cart items.
       for (const item of store.items) {
         if (item.id === action.payload.item.id) {
@@ -42,7 +33,7 @@ const cart = createSlice({
     },
     REMOVE_ITEM: (
       store,
-      action: PayloadAction<{ courseId: CartItem["id"] }>
+      action: PayloadAction<{ courseId: Types.CartItem['id'] }>
     ) => {
       store.items = store.items.filter(
         (item) => item.id !== action.payload.courseId

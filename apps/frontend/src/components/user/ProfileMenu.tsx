@@ -1,15 +1,15 @@
-import React from "react";
-import { Menu, Transition } from "@headlessui/react";
+import React from 'react';
+import { Menu, Transition } from '@headlessui/react';
+import { Avatar } from '@zeenzen/common';
 
-import Avatar from "../../common/Avatar";
-import { userActions } from "../user-dashboard/Sidebar";
-import { useRouter } from "next/router";
-import useLogout from "../../hooks/useLogout";
+import { userActions } from '../user-dashboard/Sidebar';
+import { useRouter } from 'next/router';
+import useLogout from '../../hooks/useLogout';
 
 interface ProfileMenuProps {
   fullname?: string;
   avatar?: string;
-  direction?: "right" | "left";
+  direction?: 'right' | 'left';
 }
 
 const menuItems = userActions.slice(1);
@@ -17,7 +17,7 @@ const menuItems = userActions.slice(1);
 const ProfileMenu: React.FC<ProfileMenuProps> = ({
   fullname,
   avatar,
-  direction = "left",
+  direction = 'left',
 }) => {
   const router = useRouter();
 
@@ -41,7 +41,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
         <Menu.Items
           as="ul"
           className={`space-y-2 outline-none absolute overflow-hidden top-full p-2 ${
-            direction === "left" ? "-left-4" : "right-0"
+            direction === 'left' ? '-left-4' : 'right-0'
           } mt-4 bg-white shadow-md shadow-gray-300/80 rounded-xl min-w-[14rem] text-gray-500 font-medium text-sm`}
         >
           {menuItems.map(({ title, icon, link }) => (
@@ -49,10 +49,10 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
               {({ active }) => (
                 <div
                   className={`flex gap-1 items-center pl-8 pr-3 py-3 cursor-pointer rounded-lg ${
-                    active ? "bg-light-red  text-white" : ""
+                    active ? 'bg-light-red  text-white' : ''
                   }`}
                   onClick={() => {
-                    console.log("link: ", link, title);
+                    console.log('link: ', link, title);
                     if (link) {
                       return router.push(link);
                     }

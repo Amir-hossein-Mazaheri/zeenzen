@@ -1,6 +1,5 @@
-import React from "react";
-
-import AppButton from "../../../common/AppButton";
+import React from 'react';
+import { AppButton } from '@zeenzen/common';
 
 const Newsletter = () => {
   return (

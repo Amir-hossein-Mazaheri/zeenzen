@@ -1,17 +1,21 @@
-import React, { useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import React, { useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import {
+  AppButton,
+  CartIcon,
+  Conditional,
+  TrueCondition,
+  FalseCondition,
+} from '@zeenzen/common';
 
-import AppButton from "./AppButton";
-import CartIcon from "./CartIcon";
-import useUser from "../hooks/useUser";
-import ProfileMenu from "../components/user/ProfileMenu";
-import Conditional from "./Conditional";
-import TrueCondition from "./TrueCondition";
-import FalseCondition from "./FalseCondition";
-import { useAppDispatch } from "../hooks/useAppDispatch";
-import { LOAD_ITEMS } from "../store/entities/cart";
-import persistCart from "../utils/persistCart";
+import useUser from '../hooks/useUser';
+import ProfileMenu from '../components/user/ProfileMenu';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { LOAD_ITEMS } from '../store/entities/cart';
+import persistCart from '../utils/persistCart';
+import useCart from '../hooks/useCart';
+import useRemoveCartItem from '../hooks/useRemoveCartItem';
 
 interface NavbarProps {
   className?: string;
@@ -19,28 +23,35 @@ interface NavbarProps {
 
 const pages = [
   {
-    title: "خانه",
-    link: "/",
+    title: 'خانه',
+    link: '/',
   },
   {
-    title: "فروشگاه",
-    link: "/shop",
+    title: 'فروشگاه',
+    link: '/shop',
   },
   {
-    title: "درباره من",
-    link: "/about-me",
+    title: 'درباره من',
+    link: '/about-me',
   },
   {
-    title: "راه های ارتباطی",
-    link: "/contact-us",
+    title: 'راه های ارتباطی',
+    link: '/contact-us',
   },
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const { isAuthenticated, user } = useUser();
+  const { items, type, id: cartId, refetchCart } = useCart();
   const { route } = useRouter();
 
   const dispatch = useAppDispatch();
+
+  const removeCartItem = useRemoveCartItem({
+    cartId,
+    refetchCart,
+    type,
+  });
 
   // loads cart items from localStorage
   useEffect(() => {
@@ -52,7 +63,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
       <nav className="flex justify-between items-center font-black text-lg py-3 px-8 bg-white shadow-spread-shadow rounded-full">
         <ul className="flex gap-12">
           {pages.map(({ title, link }) => (
-            <li className={link === route ? "text-light-blue" : ""} key={title}>
+            <li className={link === route ? 'text-light-blue' : ''} key={title}>
               <Link href={link}>{title}</Link>
             </li>
           ))}
@@ -60,7 +71,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
         <ul className="flex gap-6 items-center">
           <li>
-            <CartIcon />
+            <CartIcon items={items} onRemoveCartItem={removeCartItem} />
           </li>
           <Conditional condition={isAuthenticated}>
             <TrueCondition>

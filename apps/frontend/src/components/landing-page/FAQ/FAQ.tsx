@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
+import { UnderlinedTitle } from '@zeenzen/common';
 
-import UnderlinedTitle from "../../../common/UnderlinedTitle";
-import AccordionContainer from "./AccordionContainer";
+import AccordionContainer from './AccordionContainer';
 
 const accordionItems = [1, 2, 3, 4, 5].map((n) => ({
   id: n,
-  question: "دوره ها شامل تخفیف هم میشند؟",
+  question: 'دوره ها شامل تخفیف هم میشند؟',
   answer: `لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده
           از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و
           سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای

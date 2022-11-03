@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useLogoutMutation } from '@zeenzen/data';
+import { graphqlClient } from '@zeenzen/common';
 
-import graphqlClient from '../api/graphql-client';
 import useToast from './useToast';
 
 interface UseLogoutOptions {

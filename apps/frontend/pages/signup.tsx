@@ -1,6 +1,7 @@
+import React, { useState } from 'react';
+import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
@@ -16,12 +17,20 @@ import {
   useRemoveEmailValidationCodeMutation,
   useSignUpMutation,
 } from '@zeenzen/data';
+import {
+  graphqlClient,
+  Loadable,
+  Alert,
+  AlertMessage,
+  AlertMessageSet,
+  AppButton,
+  AppLink,
+  AppInput,
+  PasswordInput,
+} from '@zeenzen/common';
 
 import CenterLayout from '../src/layouts/CenterLayout';
 import { NextPageWithLayout } from './_app';
-import graphqlClient from '../src/api/graphql-client';
-import Alert, { AlertMessage, AlertMessageSet } from '../src/common/Alert';
-import Loadable from '../src/common/Loadable';
 import { useAppDispatch } from '../src/hooks/useAppDispatch';
 import {
   selectUserCredentials,
@@ -36,14 +45,8 @@ import addToTitle from '../src/utils/addToTitle';
 import signUpIllustration from '../src/assets/images/signin-signup/signup.svg';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getPasswordRegex from '../src/utils/getPasswordRegex';
-import { GetServerSideProps } from 'next';
 
 const Countdown = dynamic(() => import('react-countdown'));
-
-const AppButton = dynamic(() => import('../src/common/AppButton'));
-const AppInput = dynamic(() => import('../src/common/AppInput'));
-const AppLink = dynamic(() => import('../src/common/AppLink'));
-const PasswordInput = dynamic(() => import('../src/common/PasswordInput'));
 
 interface PreSignUpFields {
   email: string;

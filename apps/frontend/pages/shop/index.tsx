@@ -3,6 +3,7 @@ import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Course, CourseLevel, usePaginatedCoursesQuery } from '@zeenzen/data';
+import { graphqlClient, Loadable } from '@zeenzen/common';
 
 import FilterList from '../../src/common/FilterList';
 import CourseSidebar from '../../src/components/shop/CourseSidebar';
@@ -23,13 +24,11 @@ import {
 } from '../../src/store/entities/filter';
 import { useAppDispatch } from '../../src/hooks/useAppDispatch';
 import { ID } from '../../src/types';
-import graphqlClient from '../../src/api/graphql-client';
 import { NextPageWithLayout } from '../_app';
 import ShopLayout from '../../src/layouts/ShopLayout';
 import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
 import { FilterEven } from '../../src/components/shop/FilterBar';
 import { parseSelectValue } from '../../src/utils/parseSelectValue';
-import Loadable from '../../src/common/Loadable';
 
 const Courses = dynamic(() => import('../../src/components/shop/Courses'));
 const FilterBar = dynamic(() => import('../../src/components/shop/FilterBar'));

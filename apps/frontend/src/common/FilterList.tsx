@@ -1,7 +1,7 @@
 import React from 'react';
+import { Badge } from '@zeenzen/common';
 
 import { CategoryFilter, LevelFilter } from '../store/entities/filter';
-import Badge from './Badge';
 
 interface FilterListProps {
   filters: (CategoryFilter | LevelFilter)[];

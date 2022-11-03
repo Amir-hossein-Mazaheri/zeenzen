@@ -1,7 +1,7 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { usePaginatedCoursesQuery } from '@zeenzen/data';
+import { graphqlClient } from '@zeenzen/common';
 
-import graphqlClient from '../src/api/graphql-client';
 import Courses from '../src/components/landing-page/Courses';
 import FAQ from '../src/components/landing-page/FAQ';
 import Intro from '../src/components/landing-page/Intro';

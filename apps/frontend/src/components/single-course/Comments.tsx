@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useCommentsQuery } from '@zeenzen/data';
 
-import graphqlClient from '../../api/graphql-client';
+import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
 import Comment from '../../common/Comment';
 import Loadable from '../../common/Loadable';
 import ShadowBox from '../../common/ShadowBox';
