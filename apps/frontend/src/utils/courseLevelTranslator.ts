@@ -1,14 +1,14 @@
-import { CourseLevel } from "../generated/queries";
+import { CourseLevel } from '@zeenzen/data';
 
 export default function courseLevelTranslator(level: CourseLevel) {
   switch (level) {
     case CourseLevel.Elementary:
-      return "مقدماتی";
+      return 'مقدماتی';
     case CourseLevel.Intermediate:
-      return "متوسط";
+      return 'متوسط';
     case CourseLevel.Advanced:
-      return "پیشرفته";
+      return 'پیشرفته';
     case CourseLevel.Mixed:
-      return "مقدماتی تا پیشرفته";
+      return 'مقدماتی تا پیشرفته';
   }
 }

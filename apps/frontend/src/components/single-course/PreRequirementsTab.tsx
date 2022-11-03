@@ -1,16 +1,16 @@
-import { Tab } from "@headlessui/react";
-import React, { Fragment } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { Tab } from '@headlessui/react';
+import React, { Fragment } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { usePreRequirementsQuery } from '@zeenzen/data';
 
-import graphqlClient from "../../api/graphql-client";
-import Conditional from "../../common/Conditional";
-import FalseCondition from "../../common/FalseCondition";
-import Loadable from "../../common/Loadable";
-import ShadowBox from "../../common/ShadowBox";
-import TrueCondition from "../../common/TrueCondition";
-import { usePreRequirementsQuery } from "../../generated/queries";
-import PreRequirement from "./PreRequirement";
+import graphqlClient from '../../api/graphql-client';
+import Conditional from '../../common/Conditional';
+import FalseCondition from '../../common/FalseCondition';
+import Loadable from '../../common/Loadable';
+import ShadowBox from '../../common/ShadowBox';
+import TrueCondition from '../../common/TrueCondition';
+import PreRequirement from './PreRequirement';
 
 interface PreRequirementsTabProps {
   title: string;

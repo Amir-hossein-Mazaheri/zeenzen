@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
+import { Instructor } from '@zeenzen/data';
 
-import { Instructor } from "../../generated/queries";
-import InstructorBox from "./InstructorBox";
+import InstructorBox from './InstructorBox';
 
 interface InstructorProps {
   instructors: Instructor[];

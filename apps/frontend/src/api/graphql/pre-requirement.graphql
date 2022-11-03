@@ -1,9 +1,0 @@
-query PreRequirements($courseId: ID!) {
-  preRequirements(id: $courseId) {
-    id
-    label
-    description
-    level
-    image
-  }
-}

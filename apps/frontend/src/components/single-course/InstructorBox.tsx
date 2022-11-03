@@ -1,11 +1,9 @@
-import React from "react";
+import React from 'react';
+import { Instructor as InstructorBoxProps } from '@zeenzen/data';
 
-import ShadowBox from "../../common/ShadowBox";
-import { Instructor } from "../../generated/queries";
-import Avatar from "../../common/Avatar";
-import AppLink from "../../common/AppLink";
-
-interface InstructorBoxProps extends Instructor {}
+import ShadowBox from '../../common/ShadowBox';
+import Avatar from '../../common/Avatar';
+import AppLink from '../../common/AppLink';
 
 const InstructorBox: React.FC<InstructorBoxProps> = ({
   id,
@@ -25,7 +23,7 @@ const InstructorBox: React.FC<InstructorBoxProps> = ({
 
         {expertises && (
           <p className="font-light text-sm mt-3">
-            <span>متخصص حوزه</span>{" "}
+            <span>متخصص حوزه</span>{' '}
             {
               expertises?.find((expertise) => expertise.isPrimary === true)
                 ?.label

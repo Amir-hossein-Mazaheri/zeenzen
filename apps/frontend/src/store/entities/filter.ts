@@ -1,18 +1,18 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CourseLevel } from '@zeenzen/data';
 
-import { CourseLevel } from "../../generated/queries";
-import { RootState } from "../configStore";
+import { RootState } from '../configStore';
 
 export type CategoryFilter = {
   text: string;
   value: string;
-  type: "category";
+  type: 'category';
 };
 
 export type LevelFilter = {
   text: string;
   value: CourseLevel;
-  type: "level";
+  type: 'level';
 };
 
 interface IFilterState {
@@ -26,7 +26,7 @@ const initialState: IFilterState = {
 };
 
 const filter = createSlice({
-  name: "filter",
+  name: 'filter',
   initialState,
   reducers: {
     PUSH_CATEGORY_TO_FILTERS: (
@@ -55,7 +55,7 @@ const filter = createSlice({
     ) => {
       const element = action.payload.element;
 
-      if (element.type === "category") {
+      if (element.type === 'category') {
         store.categories = store.categories.filter(
           (c) => c.value.toString() !== element.value.toString()
         );

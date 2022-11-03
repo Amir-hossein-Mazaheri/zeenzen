@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import Head from 'next/head';
+import { useSignInMutation } from '@zeenzen/data';
 
 import signInIllustration from '../src/assets/images/signin-signup/signin.svg';
 import AppButton from '../src/common/AppButton';
@@ -13,7 +14,6 @@ import AppInput from '../src/common/AppInput';
 import AppLink from '../src/common/AppLink';
 import CenterLayout from '../src/layouts/CenterLayout';
 import { NextPageWithLayout } from './_app';
-import { useSignInMutation } from '../src/generated/queries';
 import graphqlClient from '../src/api/graphql-client';
 import Alert, { AlertMessage, AlertMessageSet } from '../src/common/Alert';
 import Loadable from '../src/common/Loadable';

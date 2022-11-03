@@ -1,42 +1,38 @@
-import React, { useState } from "react";
-import { GetStaticProps } from "next";
-import dynamic from "next/dynamic";
-import { dehydrate, QueryClient } from "@tanstack/react-query";
+import React, { useState } from 'react';
+import { GetStaticProps } from 'next';
+import dynamic from 'next/dynamic';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { Course, CourseLevel, usePaginatedCoursesQuery } from '@zeenzen/data';
 
-import FilterList from "../../src/common/FilterList";
-import CourseSidebar from "../../src/components/shop/CourseSidebar";
-import { useAppSelector } from "../../src/hooks/useAppSelector";
+import FilterList from '../../src/common/FilterList';
+import CourseSidebar from '../../src/components/shop/CourseSidebar';
+import { useAppSelector } from '../../src/hooks/useAppSelector';
 import {
   RESET_SHOP_SIDEBAR,
   selectShopSidebarDescription,
   selectShopSidebarTitle,
   SET_SHOP_SIDEBAR_DESCRIPTION,
   SET_SHOP_SIDEBAR_TITLE,
-} from "../../src/store/ui/shop";
+} from '../../src/store/ui/shop';
 import {
   CLEAR_ALL_FILTERS,
   POP_FROM_FILTERS,
   PUSH_CATEGORY_TO_FILTERS,
   PUSH_LEVEL_TO_FILTERS,
   selectFilters,
-} from "../../src/store/entities/filter";
-import { useAppDispatch } from "../../src/hooks/useAppDispatch";
-import { ID } from "../../src/types";
-import {
-  Course,
-  CourseLevel,
-  usePaginatedCoursesQuery,
-} from "../../src/generated/queries";
-import graphqlClient from "../../src/api/graphql-client";
-import { NextPageWithLayout } from "../_app";
-import ShopLayout from "../../src/layouts/ShopLayout";
-import SidebarSkeleton from "../../src/common/Skeleton/SidebarSkeleton";
-import { FilterEven } from "../../src/components/shop/FilterBar";
-import { parseSelectValue } from "../../src/utils/parseSelectValue";
-import Loadable from "../../src/common/Loadable";
+} from '../../src/store/entities/filter';
+import { useAppDispatch } from '../../src/hooks/useAppDispatch';
+import { ID } from '../../src/types';
+import graphqlClient from '../../src/api/graphql-client';
+import { NextPageWithLayout } from '../_app';
+import ShopLayout from '../../src/layouts/ShopLayout';
+import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
+import { FilterEven } from '../../src/components/shop/FilterBar';
+import { parseSelectValue } from '../../src/utils/parseSelectValue';
+import Loadable from '../../src/common/Loadable';
 
-const Courses = dynamic(() => import("../../src/components/shop/Courses"));
-const FilterBar = dynamic(() => import("../../src/components/shop/FilterBar"));
+const Courses = dynamic(() => import('../../src/components/shop/Courses'));
+const FilterBar = dynamic(() => import('../../src/components/shop/FilterBar'));
 
 const ShopPage: NextPageWithLayout = () => {
   const [page, setPage] = useState(1);
@@ -54,7 +50,7 @@ const ShopPage: NextPageWithLayout = () => {
     { keepPreviousData: true }
   );
 
-  console.log("shop page data: ", data);
+  console.log('shop page data: ', data);
 
   const dispatch = useAppDispatch();
 
@@ -63,7 +59,7 @@ const ShopPage: NextPageWithLayout = () => {
 
   const handleRemoveFilter = (filter: any) => {
     dispatch(POP_FROM_FILTERS({ element: filter }));
-    console.log("element got removed: ", filter);
+    console.log('element got removed: ', filter);
   };
 
   const handleClearAllFilters = () => {
@@ -93,7 +89,7 @@ const ShopPage: NextPageWithLayout = () => {
         element: {
           value: categoryValue,
           text: categoryText,
-          type: "category",
+          type: 'category',
         },
       })
     );
@@ -111,7 +107,7 @@ const ShopPage: NextPageWithLayout = () => {
         element: {
           value: levelValue as CourseLevel,
           text: levelText,
-          type: "level",
+          type: 'level',
         },
       })
     );

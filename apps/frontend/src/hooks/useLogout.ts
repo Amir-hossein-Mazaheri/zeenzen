@@ -1,9 +1,9 @@
-import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useRouter } from 'next/router';
+import { useCallback } from 'react';
+import { useLogoutMutation } from '@zeenzen/data';
 
-import graphqlClient from "../api/graphql-client";
-import { useLogoutMutation } from "../generated/queries";
-import useToast from "./useToast";
+import graphqlClient from '../api/graphql-client';
+import useToast from './useToast';
 
 interface UseLogoutOptions {
   retry?: number;
@@ -26,16 +26,16 @@ export default function useLogout(options?: UseLogoutOptions) {
       {
         onSuccess() {
           toast({}).fire({
-            title: "با موفقیت خارج شدید",
-            icon: "success",
+            title: 'با موفقیت خارج شدید',
+            icon: 'success',
           });
           router.reload();
-          router.replace("/");
+          router.replace('/');
         },
         onError() {
           toast({}).fire({
-            title: "مشکلی در خروج شما از پیش آمده است مجددا تلاش کنید",
-            icon: "error",
+            title: 'مشکلی در خروج شما از پیش آمده است مجددا تلاش کنید',
+            icon: 'error',
           });
 
           router.back();

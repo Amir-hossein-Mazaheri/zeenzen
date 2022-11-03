@@ -1,0 +1,12 @@
+schema: 'graphql/schema.gql'
+documents: 'libs/data/**/*.graphql'
+generates:
+  libs/data/src/lib/generated/queries.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: graphql-request
+      exposeFetcher: true
+      exposeQueryKeys: true

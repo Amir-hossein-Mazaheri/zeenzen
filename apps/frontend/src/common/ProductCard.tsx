@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import { Course } from '@zeenzen/data';
 // import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 // import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
 // import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -8,7 +9,6 @@ import Property from './Property';
 import partsIcon from '../assets/images/landing-page/courses/Dust.svg';
 import AppButton from './AppButton';
 import makePriceCleaner from '../utils/makePriceCleaner';
-import { Course } from '../generated/queries';
 import Link from 'next/link';
 import courseLevelTranslator from '../utils/courseLevelTranslator';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
+import { Course } from '@zeenzen/data';
 
-import Loadable from "../../common/Loadable";
-import ProductCard from "../../common/ProductCard";
-import CourseSkeleton from "../../common/Skeleton/CourseSkeleton";
-import { Course } from "../../generated/queries";
-import { ID } from "../../types";
+import Loadable from '../../common/Loadable';
+import ProductCard from '../../common/ProductCard';
+import CourseSkeleton from '../../common/Skeleton/CourseSkeleton';
+import { ID } from '../../types';
 
 interface CoursesProps {
   courses?: Course[];
@@ -21,7 +21,7 @@ const Courses: React.FC<CoursesProps> = ({
   onEachCourseMouseEnter,
   onEachCourseMouseLeave,
   isSm = false,
-  gap = "gap-12",
+  gap = 'gap-12',
 }) => {
   return (
     <div className={`grid grid-cols-3 ${gap}`}>
@@ -41,7 +41,7 @@ const Courses: React.FC<CoursesProps> = ({
             onMouseLeave={() =>
               onEachCourseMouseLeave && onEachCourseMouseLeave()
             }
-            size={isSm ? "sm" : "default"}
+            size={isSm ? 'sm' : 'default'}
             {...course}
           />
         ))}

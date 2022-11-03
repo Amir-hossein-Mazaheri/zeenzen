@@ -1,9 +1,9 @@
 import React from 'react';
+import { CourseLevel, useCategoriesQuery } from '@zeenzen/data';
 // import { SelectChangeEvent } from "@mui/material/Select";
 // import Skeleton from "@mui/material/Skeleton";
 
 import SelectDropDown from '../../common/SelectDropDown';
-import { CourseLevel, useCategoriesQuery } from '../../generated/queries';
 import graphqlClient from '../../api/graphql-client';
 
 const animation = 'wave';

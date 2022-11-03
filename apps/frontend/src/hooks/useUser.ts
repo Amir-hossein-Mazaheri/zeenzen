@@ -1,5 +1,6 @@
-import graphqlClient from "../api/graphql-client";
-import { useMeQuery } from "../generated/queries";
+import { useMeQuery } from '@zeenzen/data';
+
+import graphqlClient from '../api/graphql-client';
 
 export default function useUser(enabled = true) {
   const { data, isFetching, error, refetch } = useMeQuery(

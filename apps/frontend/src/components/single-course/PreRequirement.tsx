@@ -1,8 +1,8 @@
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image';
+import React from 'react';
+import { PreRequirement as PreRequirementProps } from '@zeenzen/data';
 
-import { PreRequirement as PreRequirementProps } from "../../generated/queries";
-import preRequirementLevelTranslator from "../../utils/preRequirementLevelTranslator";
+import preRequirementLevelTranslator from '../../utils/preRequirementLevelTranslator';
 
 const PreRequirement: React.FC<PreRequirementProps> = ({
   label,

@@ -1,15 +1,16 @@
-import graphqlClient from "../api/graphql-client";
-import { useDecrementCartItemMutation } from "../generated/queries";
-import { REMOVE_ITEM } from "../store/entities/cart";
-import getErrorMessages from "../utils/getErrorMessages";
-import { useAppDispatch } from "./useAppDispatch";
-import useCart, { CartType } from "./useCart";
-import useToast from "./useToast";
+import { useDecrementCartItemMutation } from '@zeenzen/data';
+
+import graphqlClient from '../api/graphql-client';
+import { REMOVE_ITEM } from '../store/entities/cart';
+import getErrorMessages from '../utils/getErrorMessages';
+import { useAppDispatch } from './useAppDispatch';
+import useCart, { CartType } from './useCart';
+import useToast from './useToast';
 
 interface UseRemoveCartItemOptions {
   type: CartType;
-  refetchCart: ReturnType<typeof useCart>["refetchCart"];
-  cartId: ReturnType<typeof useCart>["id"];
+  refetchCart: ReturnType<typeof useCart>['refetchCart'];
+  cartId: ReturnType<typeof useCart>['id'];
 }
 
 export default function useRemoveCartItem({
@@ -27,7 +28,7 @@ export default function useRemoveCartItem({
     const successMessage = () =>
       toast().fire({
         title: `${title} با موفقیت از سبد خرید حذف شد.`,
-        icon: "success",
+        icon: 'success',
       });
 
     if (type === CartType.LOCAL) {
@@ -41,7 +42,7 @@ export default function useRemoveCartItem({
     try {
       await removeCartItemMutation.mutateAsync({
         decrementCartItem: {
-          cartId: cartId || "",
+          cartId: cartId || '',
           courseId,
           quantity: 1,
         },
@@ -56,7 +57,7 @@ export default function useRemoveCartItem({
       getErrorMessages(err).map((errorMessage) =>
         toast().fire({
           title: errorMessage,
-          icon: "error",
+          icon: 'error',
         })
       );
     }

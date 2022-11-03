@@ -1,13 +1,13 @@
-import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { usePaginatedCoursesQuery } from '@zeenzen/data';
 
-import graphqlClient from "../src/api/graphql-client";
-import Courses from "../src/components/landing-page/Courses";
-import FAQ from "../src/components/landing-page/FAQ";
-import Intro from "../src/components/landing-page/Intro";
-import WhyUs from "../src/components/landing-page/WhyUs";
-import { usePaginatedCoursesQuery } from "../src/generated/queries";
-import ShopLayout from "../src/layouts/ShopLayout";
-import { NextPageWithLayout } from "./_app";
+import graphqlClient from '../src/api/graphql-client';
+import Courses from '../src/components/landing-page/Courses';
+import FAQ from '../src/components/landing-page/FAQ';
+import Intro from '../src/components/landing-page/Intro';
+import WhyUs from '../src/components/landing-page/WhyUs';
+import ShopLayout from '../src/layouts/ShopLayout';
+import { NextPageWithLayout } from './_app';
 
 const HomePage: NextPageWithLayout<
   InferGetStaticPropsType<typeof getStaticProps>

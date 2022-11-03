@@ -10,14 +10,14 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import dayjs from 'dayjs';
 import { SubmitHandler, useForm, FormProvider } from 'react-hook-form';
-
-import CenterLayout from '../src/layouts/CenterLayout';
-import { NextPageWithLayout } from './_app';
 import {
   usePreSignUpMutation,
   useRemoveEmailValidationCodeMutation,
   useSignUpMutation,
-} from '../src/generated/queries';
+} from '@zeenzen/data';
+
+import CenterLayout from '../src/layouts/CenterLayout';
+import { NextPageWithLayout } from './_app';
 import graphqlClient from '../src/api/graphql-client';
 import Alert, { AlertMessage, AlertMessageSet } from '../src/common/Alert';
 import Loadable from '../src/common/Loadable';

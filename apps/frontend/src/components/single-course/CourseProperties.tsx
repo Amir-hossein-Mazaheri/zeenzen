@@ -5,6 +5,7 @@ import {
   regular,
   solid,
 } from '@fortawesome/fontawesome-svg-core/import.macro';
+import { Course, useAddCartItemMutation, useCourseQuery } from '@zeenzen/data';
 // import { ClockIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 // import {
 //   ChartBarIcon,
@@ -16,11 +17,6 @@ import AppButton from '../../common/AppButton';
 import ProgressBar from '../../common/ProgressBar';
 import Property from '../../common/Property';
 import ShadowBox from '../../common/ShadowBox';
-import {
-  Course,
-  useAddCartItemMutation,
-  useCourseQuery,
-} from '../../generated/queries';
 import courseLevelTranslator from '../../utils/courseLevelTranslator';
 import useIsInCart from '../../hooks/useIsInCart';
 import { CartType } from '../../hooks/useCart';

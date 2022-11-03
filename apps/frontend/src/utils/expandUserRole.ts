@@ -1,4 +1,4 @@
-import { UserRole } from "../generated/queries";
+import { UserRole } from '@zeenzen/data';
 
 export default function expandUserRole(userRole: UserRole) {
   if (userRole === UserRole.Instructor) {

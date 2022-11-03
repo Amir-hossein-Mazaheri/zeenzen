@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
+import { Course } from '@zeenzen/data';
 
-import { Course } from "../../generated/queries";
-import Instructors from "./Instructors";
-import CourseProperties from "./CourseProperties";
+import Instructors from './Instructors';
+import CourseProperties from './CourseProperties';
 
 const Sidebar: React.FC<Course> = (props) => {
   return (

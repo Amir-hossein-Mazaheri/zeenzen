@@ -1,22 +1,22 @@
-import React from "react";
+import React from 'react';
+import type { Comment } from '@zeenzen/data';
+import { UserRole } from '@zeenzen/data';
 
-import type { Comment } from "../generated/queries";
-import { UserRole } from "../generated/queries";
-import Avatar from "./Avatar";
-import getJalaliDate from "../utils/getJalaliDate";
-import Badge from "./Badge";
-import userRoleTranslator from "../utils/userRoleTranslator";
-import AppLink from "./AppLink";
-import { useAppDispatch } from "../hooks/useAppDispatch";
-import { OPEN_REPLY_COMMENT_MODAL } from "../store/entities/comment";
-import useUser from "../hooks/useUser";
+import Avatar from './Avatar';
+import getJalaliDate from '../utils/getJalaliDate';
+import Badge from './Badge';
+import userRoleTranslator from '../utils/userRoleTranslator';
+import AppLink from './AppLink';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { OPEN_REPLY_COMMENT_MODAL } from '../store/entities/comment';
+import useUser from '../hooks/useUser';
 
 // as const to extract values for union type
 const colors = [
-  "border-light-blue",
-  "border-teal-500",
-  "border-emerald-500",
-  "border-violet-600",
+  'border-light-blue',
+  'border-teal-500',
+  'border-emerald-500',
+  'border-violet-600',
 ] as const;
 
 interface CommentProps extends Comment {
@@ -41,7 +41,7 @@ const Comment: React.FC<CommentProps> = ({
     <div className="space-y-7">
       <div
         className={`rounded-xl border ${
-          hasReply ? "border-gray-300" : borderColor
+          hasReply ? 'border-gray-300' : borderColor
         } px-8 py-5`}
       >
         <div className="flex justify-between items-center">
@@ -52,7 +52,7 @@ const Comment: React.FC<CommentProps> = ({
               <h3 className="font-bold text-lg">{`${author?.firstname} ${author?.lastname}`}</h3>
               <p className="mt-px">
                 <span>در تاریخ </span>
-                <span>{getJalaliDate(createdAt).format("YYYY/MM/DD")}</span>
+                <span>{getJalaliDate(createdAt).format('YYYY/MM/DD')}</span>
               </p>
             </div>
           </div>

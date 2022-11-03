@@ -1,8 +1,9 @@
-import graphqlClient from "../api/graphql-client";
-import { useCartQuery } from "../generated/queries";
-import { selectCartItems } from "../store/entities/cart";
-import { useAppSelector } from "./useAppSelector";
-import useUser from "./useUser";
+import { useCartQuery } from '@zeenzen/data';
+
+import graphqlClient from '../api/graphql-client';
+import { selectCartItems } from '../store/entities/cart';
+import { useAppSelector } from './useAppSelector';
+import useUser from './useUser';
 
 export enum CartType {
   LOCAL,
@@ -20,7 +21,7 @@ export default function useCart() {
   } = useCartQuery(
     graphqlClient,
     {
-      cartId: user?.cart.id || "",
+      cartId: user?.cart.id || '',
     },
     {
       enabled: false,
@@ -29,7 +30,7 @@ export default function useCart() {
 
   const cartItems = useAppSelector(selectCartItems);
 
-  console.log("cart errors: ", error);
+  console.log('cart errors: ', error);
 
   if (isAuthenticated) {
     refetchCart();

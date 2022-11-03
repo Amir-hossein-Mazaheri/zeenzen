@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
+import { useCommentsQuery } from '@zeenzen/data';
 
 import graphqlClient from '../../api/graphql-client';
 import Comment from '../../common/Comment';
 import Loadable from '../../common/Loadable';
 import ShadowBox from '../../common/ShadowBox';
-import { useCommentsQuery } from '../../generated/queries';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import PostComment from './PostComment';
 import ReplyCommentModal from './ReplyCommentModal';

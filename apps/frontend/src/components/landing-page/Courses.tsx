@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
+import { Course } from '@zeenzen/data';
 
-import ProductCard from "../../common/ProductCard";
-import UnderlinedTitle from "../../common/UnderlinedTitle";
-import { Course } from "../../generated/queries";
+import ProductCard from '../../common/ProductCard';
+import UnderlinedTitle from '../../common/UnderlinedTitle';
 
 interface CoursesProps {
   courses: Course[];

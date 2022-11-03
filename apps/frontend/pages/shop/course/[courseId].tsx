@@ -12,11 +12,7 @@ import Hero from '../../../src/components/single-course/Hero';
 import PreRequirementsTab from '../../../src/components/single-course/PreRequirementsTab';
 import Sidebar from '../../../src/components/single-course/Sidebar';
 import TabsList from '../../../src/components/single-course/TabsList';
-import {
-  CourseLevel,
-  Instructor,
-  useCourseQuery,
-} from '../../../src/generated/queries';
+import { CourseLevel, Instructor, useCourseQuery } from '@zeenzen/data';
 import ShopLayout from '../../../src/layouts/ShopLayout';
 import { NextPageWithLayout } from '../../_app';
 

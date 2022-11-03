@@ -1,20 +1,20 @@
-import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
-import { SubmitHandler } from "react-hook-form";
+import { Dialog, Transition } from '@headlessui/react';
+import React, { Fragment } from 'react';
+import { SubmitHandler } from 'react-hook-form';
+import { useReplyCommentMutation } from '@zeenzen/data';
 
-import graphqlClient from "../../api/graphql-client";
-import { useReplyCommentMutation } from "../../generated/queries";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { useAppSelector } from "../../hooks/useAppSelector";
-import useToast from "../../hooks/useToast";
+import graphqlClient from '../../api/graphql-client';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import useToast from '../../hooks/useToast';
 import {
   CLOSE_REPLY_COMMENT_MODAL,
   REPLY_COMMENT,
   selectComment,
   SET_REPLY_CONTENT,
-} from "../../store/entities/comment";
-import getErrorMessages from "../../utils/getErrorMessages";
-import CommentForm, { CommentFormFields } from "./CommentForm";
+} from '../../store/entities/comment';
+import getErrorMessages from '../../utils/getErrorMessages';
+import CommentForm, { CommentFormFields } from './CommentForm';
 
 const ReplyCommentModal = () => {
   const { isReplyCommentModalOpen, replyContent, parentCommentId } =
@@ -26,7 +26,7 @@ const ReplyCommentModal = () => {
 
   const toast = useToast();
 
-  console.log("reply comment modal: ", isReplyCommentModalOpen);
+  console.log('reply comment modal: ', isReplyCommentModalOpen);
 
   const handlePostReply: SubmitHandler<CommentFormFields> = async ({
     content,
@@ -34,7 +34,7 @@ const ReplyCommentModal = () => {
     try {
       await replyCommentMutation.mutateAsync({
         replyCommentInput: {
-          parentId: "5000" || parentCommentId,
+          parentId: '5000' || parentCommentId,
           content,
         },
       });
@@ -42,8 +42,8 @@ const ReplyCommentModal = () => {
       dispatch(REPLY_COMMENT({ succeeded: true }));
 
       toast({}).fire({
-        title: "دیدگاه شما پس از تایید نمایش داده خواهد شد.",
-        icon: "success",
+        title: 'دیدگاه شما پس از تایید نمایش داده خواهد شد.',
+        icon: 'success',
       });
     } catch (err) {
       dispatch(REPLY_COMMENT({ succeeded: true }));
@@ -51,7 +51,7 @@ const ReplyCommentModal = () => {
       getErrorMessages(err).map((errorMessage) =>
         toast({}).fire({
           title: errorMessage,
-          icon: "error",
+          icon: 'error',
         })
       );
     }
