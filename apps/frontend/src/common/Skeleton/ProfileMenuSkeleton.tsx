@@ -1,27 +1,12 @@
-import React, { useContext } from "react";
-import { Skeleton } from "@mui/material";
-
-import SkeletonContext from "../../context/SkeletonContext";
+import React from 'react';
+import Skeleton from 'react-loading-skeleton';
 
 const ProfileMenuSkeleton = () => {
-  const { animation } = useContext(SkeletonContext);
-
   return (
     <div className="flex items-center gap-2">
-      <Skeleton
-        animation={animation}
-        variant="circular"
-        width={48}
-        height={48}
-      />
+      <Skeleton circle width={48} height={48} />
 
-      <Skeleton
-        className="rounded-md"
-        animation={animation}
-        variant="text"
-        height={30}
-        width={150}
-      />
+      <Skeleton className="rounded-md" height={30} width={150} />
     </div>
   );
 };

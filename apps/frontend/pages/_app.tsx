@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReactElement, ReactNode, useRef, useState } from 'react';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import '../src/styles/globals.css';
 import { Provider } from 'react-redux';
