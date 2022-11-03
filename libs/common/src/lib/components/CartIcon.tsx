@@ -35,8 +35,15 @@ export const CartIcon: React.FC<CartIconProps> = ({
                 </div>
               )}
 
-              <div className={`${open ? 'text-text-black' : 'text-white '}`}>
-                <FontAwesomeIcon icon={faCartShopping} />
+              <div
+                className={`flex items-center justify-center ${
+                  open ? 'text-text-black' : 'text-white '
+                }`}
+              >
+                <FontAwesomeIcon
+                  icon={faCartShopping}
+                  className="w-6 h-6 leading-none"
+                />
               </div>
             </div>
           </Popover.Button>
