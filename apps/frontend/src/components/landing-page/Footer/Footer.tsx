@@ -17,8 +17,14 @@ import muscleEmoji from '../../../assets/images/landing-page/footer/muscle-emoji
 const Footer = () => {
   return (
     <footer className="relative">
-      <div>
-        <Image priority fill src={footerWaves} alt="footer waves" />
+      <div className="w-full">
+        <Image
+          priority
+          width={1980}
+          src={footerWaves}
+          alt="footer waves"
+          className="object-fill"
+        />
       </div>
       <div className="bg-dark-blue relative px-16 pt-12 pb-4">
         <Newsletter />
