@@ -30,7 +30,7 @@ export const Loadable: React.FC<LoadableProps> = ({
   );
 
   if (fragment) {
-    return <>child</>;
+    return <>{child}</>;
   }
 
   return (
