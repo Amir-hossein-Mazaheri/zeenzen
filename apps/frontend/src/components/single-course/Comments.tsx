@@ -20,7 +20,12 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
 
   const entry = useIntersectionObserver(commentsRef, {});
 
-  const { data, isLoading, error, refetch } = useCommentsQuery(
+  const {
+    data,
+    isLoading,
+    error,
+    refetch: refetchComments,
+  } = useCommentsQuery(
     graphqlClient,
     {
       courseId,
@@ -30,12 +35,12 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
 
   const dispatch = useAppDispatch();
 
+  // fetches the comments when scroll reaches comments section
   useEffect(() => {
     if (entry?.isIntersecting) {
-      console.log('reached comment section.');
-      refetch();
+      refetchComments();
     }
-  }, [entry?.isIntersecting, refetch]);
+  }, [entry?.isIntersecting, refetchComments]);
 
   return (
     <div ref={commentsRef} className="space-y-24">
