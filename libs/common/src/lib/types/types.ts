@@ -6,3 +6,5 @@ export type CartItem = {
   price: string;
   discountedPrice: number;
 };
+
+export type AlertColor = 'success' | 'error' | 'warn' | 'info';
