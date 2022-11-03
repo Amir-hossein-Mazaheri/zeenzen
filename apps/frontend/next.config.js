@@ -12,6 +12,11 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  swcMinify: true,
+  reactStrictMode: true,
+  images: {
+    domains: ['localhost'],
+  },
 };
 
 module.exports = withNx(nextConfig);
