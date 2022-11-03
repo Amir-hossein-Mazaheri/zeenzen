@@ -2,9 +2,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import React, { ChangeEventHandler } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
+import { AppButton, AppInput } from '@zeenzen/common';
 
-import AppButton from '../../common/AppButton';
-import AppInput from '../../common/AppInput';
 import getFormErrorMessages from '../../utils/getFormErrorMessages';
 
 export interface CommentFormFields {

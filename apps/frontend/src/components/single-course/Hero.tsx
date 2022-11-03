@@ -1,5 +1,5 @@
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image';
+import React from 'react';
 
 interface HeroProps {
   title: string;
@@ -17,7 +17,7 @@ const Hero: React.FC<HeroProps> = ({
   return (
     <div className="w-full h-52 relative">
       <div className="rounded-xl overflow-hidden">
-        <Image alt={title} src={coverImage} layout="fill" />
+        <Image alt={title} src={coverImage} fill />
       </div>
       <div className="w-full h-full px-12 flex gap-12 items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="h-[230px] w-[230pxs] translate-y-16 rounded-xl overflow-hidden border-4 bg-white shadow-lg shadow-gray-300/80 border-white">

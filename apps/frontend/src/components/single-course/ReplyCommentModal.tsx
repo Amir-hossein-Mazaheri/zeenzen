@@ -2,8 +2,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { useReplyCommentMutation } from '@zeenzen/data';
+import { graphqlClient } from '@zeenzen/common';
 
-import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import useToast from '../../hooks/useToast';

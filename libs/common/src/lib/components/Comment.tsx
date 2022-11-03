@@ -34,10 +34,6 @@ export const Comment: React.FC<CommentProps> = ({
   onReply,
   hasReply = true,
 }) => {
-  // const { isAuthenticated } = useUser();
-
-  // const dispatch = useAppDispatch();
-
   return (
     <div className="space-y-7">
       <div
@@ -69,12 +65,7 @@ export const Comment: React.FC<CommentProps> = ({
           <p className="leading-loose">{content}</p>
           {isAuthenticated && hasReply && (
             <div className="mt-3 flex justify-end">
-              <AppLink
-                text="پاسخ دادن"
-                type="button"
-                // dispatch(OPEN_REPLY_COMMENT_MODAL({ parentCommentId: id }))
-                onClick={onReply}
-              />
+              <AppLink text="پاسخ دادن" type="button" onClick={onReply} />
             </div>
           )}
         </div>

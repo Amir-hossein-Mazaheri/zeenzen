@@ -1,9 +1,6 @@
 import React from 'react';
 import { Instructor as InstructorBoxProps } from '@zeenzen/data';
-
-import ShadowBox from '../../common/ShadowBox';
-import Avatar from '../../common/Avatar';
-import AppLink from '../../common/AppLink';
+import { ShadowBox, Avatar, AppLink } from '@zeenzen/common';
 
 const InstructorBox: React.FC<InstructorBoxProps> = ({
   id,

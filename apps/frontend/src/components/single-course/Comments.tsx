@@ -1,19 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 import { useCommentsQuery } from '@zeenzen/data';
+import { graphqlClient, Comment, Loadable, ShadowBox } from '@zeenzen/common';
 
-import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
-import Comment from '../../common/Comment';
-import Loadable from '../../common/Loadable';
-import ShadowBox from '../../common/ShadowBox';
 import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import PostComment from './PostComment';
 import ReplyCommentModal from './ReplyCommentModal';
+import useUser from '../../hooks/useUser';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { OPEN_REPLY_COMMENT_MODAL } from '../../store/entities/comment';
 
 interface CommentsProps {
   courseId: string;
 }
 
 const Comments: React.FC<CommentsProps> = ({ courseId }) => {
+  const { isAuthenticated } = useUser();
+
   const commentsRef = useRef<HTMLDivElement>(null);
 
   const entry = useIntersectionObserver(commentsRef, {});
@@ -25,6 +27,8 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
     },
     { enabled: false }
   );
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (entry?.isIntersecting) {
@@ -43,7 +47,16 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
             {data?.comments.map((comment) => (
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
-              <Comment key={comment.id} {...comment} />
+              <Comment
+                key={comment.id}
+                onReply={() =>
+                  dispatch(
+                    OPEN_REPLY_COMMENT_MODAL({ parentCommentId: comment.id })
+                  )
+                }
+                isAuthenticated={isAuthenticated}
+                {...comment}
+              />
             ))}
           </div>
         </Loadable>

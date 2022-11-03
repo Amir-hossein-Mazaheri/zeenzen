@@ -1,15 +1,17 @@
 import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { usePostCommentMutation } from '@zeenzen/data';
+import {
+  graphqlClient,
+  AppLink,
+  Conditional,
+  FalseCondition,
+  Loadable,
+  ShadowBox,
+  TrueCondition,
+} from '@zeenzen/common';
 
-import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
-import AppLink from '../../common/AppLink';
-import Conditional from '../../common/Conditional';
-import FalseCondition from '../../common/FalseCondition';
-import Loadable from '../../common/Loadable';
-import ShadowBox from '../../common/ShadowBox';
 import CommentFormSkeleton from '../../common/Skeleton/CommentFormSkeleton';
-import TrueCondition from '../../common/TrueCondition';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import useToast from '../../hooks/useToast';

@@ -5,6 +5,6 @@ export default function useIsInCart(courseId: string) {
 
   return {
     ...rest,
-    isInCart: !!items.find((item) => item.id === courseId),
+    isInCart: !!items?.find((item) => item.id === courseId),
   };
 }

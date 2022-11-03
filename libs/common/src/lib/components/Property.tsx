@@ -15,7 +15,7 @@ export const Property: React.FC<PropertyProps> = ({
   gap = 'gap-1',
   innerGap = 'gap-2',
 }) => (
-  <div className={`flex items-center ${gap}`}>
+  <div className={`flex items-center gap-3 ${gap}`}>
     {renderIcon}
     <div className={`flex gap-2 ${innerGap}`}>
       {property && <p>{property}</p>}

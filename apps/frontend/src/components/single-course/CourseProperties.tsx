@@ -8,20 +8,29 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { Course, useAddCartItemMutation, useCourseQuery } from '@zeenzen/data';
+import {
+  AppButton,
+  ProgressBar,
+  Property,
+  ShadowBox,
+  courseLevelTranslator,
+  graphqlClient,
+  PriceTag,
+} from '@zeenzen/common';
 
-import AppButton from '../../common/AppButton';
-import ProgressBar from '../../common/ProgressBar';
-import Property from '../../common/Property';
-import ShadowBox from '../../common/ShadowBox';
-import courseLevelTranslator from '../../../../../libs/common-component/src/lib/utils/courseLevelTranslator';
+// import AppButton from '../../common/AppButton';
+// import ProgressBar from '../../common/ProgressBar';
+// import Property from '../../common/Property';
+// import ShadowBox from '../../common/ShadowBox';
+// import courseLevelTranslator from '../../../../../libs/common-component/src/lib/utils/courseLevelTranslator';
 import useIsInCart from '../../hooks/useIsInCart';
 import { CartType } from '../../hooks/useCart';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { ADD_ITEM } from '../../store/entities/cart';
-import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
+// import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
 import useToast from '../../hooks/useToast';
 import getErrorMessages from '../../utils/getErrorMessages';
-import PriceTag from '../../common/PriceTag';
+// import PriceTag from '../../common/PriceTag';
 
 const CourseProperties: React.FC<Course> = ({
   id,
@@ -57,7 +66,7 @@ const CourseProperties: React.FC<Course> = ({
             id,
             title: data?.course.title || '',
             thumbnail: data?.course.image.image || '',
-            price: data?.course.price || 0,
+            price: data?.course.price.toString() || '0',
             instructors:
               data?.course.instructors.map(
                 ({ user: { firstname, lastname } }) =>
