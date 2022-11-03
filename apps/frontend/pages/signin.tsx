@@ -11,7 +11,7 @@ import {
   AppInput,
   AppButton,
   AppLink,
-  Alert,
+  Alerts,
   AlertMessage,
   AlertMessageSet,
   PasswordInput,
@@ -93,8 +93,9 @@ const SignInPage: NextPageWithLayout = () => {
       </Head>
 
       <div className="mb-5">
-        <Alert
+        <Alerts
           onClose={handleRemoveError}
+          color="error"
           className="font-semibold text-sm"
           messages={errors}
           ref={alertsParent}

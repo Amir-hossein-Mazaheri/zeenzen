@@ -20,13 +20,13 @@ import {
 import {
   graphqlClient,
   Loadable,
-  Alert,
   AlertMessage,
   AlertMessageSet,
   AppButton,
   AppLink,
   AppInput,
   PasswordInput,
+  Alerts,
 } from '@zeenzen/common';
 
 import CenterLayout from '../src/layouts/CenterLayout';
@@ -194,8 +194,9 @@ const SignUpPage: NextPageWithLayout = () => {
       </Head>
 
       <div className="mb-5">
-        <Alert
+        <Alerts
           onClose={handleRemoveError}
+          color="error"
           className="font-semibold text-sm"
           messages={errors}
           ref={alertsParent}
