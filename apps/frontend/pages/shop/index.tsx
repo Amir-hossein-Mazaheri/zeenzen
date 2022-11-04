@@ -3,7 +3,12 @@ import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Course, CourseLevel, usePaginatedCoursesQuery } from '@zeenzen/data';
-import { graphqlClient, Loadable, Types } from '@zeenzen/common';
+import {
+  graphqlClient,
+  Loadable,
+  Types,
+  parseSelectValue,
+} from '@zeenzen/common';
 
 import FilterList from '../../src/common/FilterList';
 import CourseSidebar from '../../src/components/shop/CourseSidebar';
@@ -27,7 +32,6 @@ import { ID } from '../../src/types';
 import { NextPageWithLayout } from '../_app';
 import ShopLayout from '../../src/layouts/ShopLayout';
 import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
-import { parseSelectValue } from '../../src/utils/parseSelectValue';
 
 const Courses = dynamic(() => import('../../src/components/shop/Courses'));
 const FilterBar = dynamic(() => import('../../src/components/shop/FilterBar'));
@@ -76,10 +80,7 @@ const ShopPage: NextPageWithLayout = () => {
   };
 
   const handleAddCategoryToFilter: Types.SelectOnChange = (value) => {
-    console.log('item: ', value.toString().split('///'));
     const [categoryText, categoryValue] = parseSelectValue(String(value));
-
-    console.log('cat txt and value: ', categoryText, categoryValue);
 
     dispatch(
       PUSH_CATEGORY_TO_FILTERS({
