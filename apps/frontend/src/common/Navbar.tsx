@@ -13,6 +13,7 @@ import useUser from '../hooks/useUser';
 import ProfileMenu from '../components/user/ProfileMenu';
 import useCart from '../hooks/useCart';
 import useRemoveCartItem from '../hooks/useRemoveCartItem';
+import useCartStore from '../hooks/store/useCartStore';
 
 interface NavbarProps {
   className?: string;
@@ -48,10 +49,12 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
     type,
   });
 
+  const loadCartItems = useCartStore((state) => state.loadCartItems);
+
   // loads cart items from localStorage
   useEffect(() => {
-    console.log('loaded');
-  }, []);
+    loadCartItems();
+  }, [loadCartItems]);
 
   return (
     <div className={`sticky top-4 w-full text-text-black z-40 ${className}`}>
