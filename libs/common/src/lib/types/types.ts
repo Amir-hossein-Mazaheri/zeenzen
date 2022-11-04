@@ -16,4 +16,12 @@ export type AccordionItem = {
   isOpen: boolean;
 };
 
+export type SelectItem = {
+  id: string;
+  text: string;
+  value: string | number;
+};
+
+export type SelectOnChange = (value: SelectItem['value']) => void;
+
 export type AlertColor = 'success' | 'error' | 'warn' | 'info';
