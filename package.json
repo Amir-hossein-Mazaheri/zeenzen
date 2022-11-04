@@ -94,7 +94,8 @@
     "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.0",
     "vazirmatn": "^33.0.3",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "zustand": "^4.1.4"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.13.11",
