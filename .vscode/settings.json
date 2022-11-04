@@ -8,14 +8,17 @@
     "headlessui",
     "heroicons",
     "hookform",
+    "immer",
     "jalaliday",
     "monopay",
     "nrwl",
     "QLJSON",
+    "sess",
     "signup",
     "svgr",
     "tanstack",
     "toman",
-    "xmark"
+    "xmark",
+    "zustand"
   ]
 }
