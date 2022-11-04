@@ -1,18 +1,14 @@
 import React from 'react';
 import { CourseLevel, useCategoriesQuery } from '@zeenzen/data';
-import { graphqlClient, SelectDropDown } from '@zeenzen/common';
+import { graphqlClient, Loadable, Select, Types } from '@zeenzen/common';
 // import { SelectChangeEvent } from "@mui/material/Select";
 // import Skeleton from "@mui/material/Skeleton";
 
-const animation = 'wave';
-
-export type FilterEven = (event: any) => void;
-
 interface FilterBarProps {
-  courseLevelValue?: string;
-  courseCategoryValue?: string;
-  onCourseLevelChange?: FilterEven;
-  onCourseCategoryChange?: FilterEven;
+  courseLevelValue: Types.SelectItem['value'];
+  courseCategoryValue: Types.SelectItem['value'];
+  onCourseLevelChange: Types.SelectOnChange;
+  onCourseCategoryChange: Types.SelectOnChange;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -21,75 +17,54 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onCourseLevelChange,
   onCourseCategoryChange,
 }) => {
-  const { data, isFetching, error } = useCategoriesQuery(graphqlClient);
-
-  console.log(data?.categories);
+  const { data, isLoading } = useCategoriesQuery(graphqlClient);
 
   return (
     <div className="relative flex justify-between items-center w-full">
-      {isFetching ? (
-        <>
-          {/* <Skeleton
-            variant="rectangular"
-            animation={animation}
-            width={300}
-            height={50}
-            className="rounded-full"
-          />
+      <Loadable isLoading={isLoading} fragment>
+        <Select
+          title="دسته بندی دوره ها"
+          items={
+            data?.categories.map(({ id, label }) => ({
+              id,
+              text: label,
+              value: id,
+            })) || []
+          }
+          selectedValue={courseCategoryValue}
+          onChange={onCourseCategoryChange}
+          mixTextAndValue
+        />
 
-          <Skeleton
-            variant="rectangular"
-            animation={animation}
-            width={300}
-            height={50}
-            className="rounded-full"
-          /> */}
-        </>
-      ) : (
-        <>
-          <SelectDropDown
-            rounded
-            items={
-              data?.categories.map(({ id, label }) => ({
-                text: label,
-                value: id,
-              })) || []
-            }
-            value={courseCategoryValue}
-            onChange={onCourseCategoryChange}
-            label="دسته بندی دوره ها"
-            elementId="course-categories"
-            minWidth={300}
-          />
-
-          <SelectDropDown
-            rounded
-            items={[
-              {
-                text: 'آسان',
-                value: CourseLevel.Elementary,
-              },
-              {
-                text: 'متوسط',
-                value: CourseLevel.Intermediate,
-              },
-              {
-                text: 'پیشرفته',
-                value: CourseLevel.Advanced,
-              },
-              {
-                text: 'همه سطوح',
-                value: CourseLevel.Mixed,
-              },
-            ]}
-            value={courseLevelValue}
-            onChange={onCourseLevelChange}
-            label="سطح دوره ها"
-            elementId="course-levels"
-            minWidth={300}
-          />
-        </>
-      )}
+        <Select
+          mixTextAndValue
+          title="سطح دوره ها"
+          items={[
+            {
+              id: '1',
+              text: 'آسان',
+              value: CourseLevel.Elementary,
+            },
+            {
+              id: '2',
+              text: 'متوسط',
+              value: CourseLevel.Intermediate,
+            },
+            {
+              id: '3',
+              text: 'پیشرفته',
+              value: CourseLevel.Advanced,
+            },
+            {
+              id: '4',
+              text: 'همه سطوح',
+              value: CourseLevel.Mixed,
+            },
+          ]}
+          selectedValue={courseLevelValue}
+          onChange={onCourseLevelChange}
+        />
+      </Loadable>
     </div>
   );
 };

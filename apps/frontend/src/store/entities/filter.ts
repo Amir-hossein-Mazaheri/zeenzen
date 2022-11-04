@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { v4 as uuidV4 } from 'uuid';
+import { Types } from '@zeenzen/common';
 import { CourseLevel } from '@zeenzen/data';
 
 import { RootState } from '../configStore';
 
-export type CategoryFilter = {
-  text: string;
-  value: string;
+export type CategoryFilter = Types.SelectItem & {
   type: 'category';
 };
 
-export type LevelFilter = {
-  text: string;
+export type LevelFilter = Types.SelectItem & {
   value: CourseLevel;
   type: 'level';
 };
@@ -31,27 +30,29 @@ const filter = createSlice({
   reducers: {
     PUSH_CATEGORY_TO_FILTERS: (
       store,
-      action: PayloadAction<{ element: CategoryFilter }>
+      action: PayloadAction<{ element: Omit<CategoryFilter, 'id'> }>
     ) => {
       const categories = new Set(store.categories);
 
-      categories.add(action.payload.element);
+      categories.add({ id: uuidV4(), ...action.payload.element });
 
       store.categories = [...categories];
     },
     PUSH_LEVEL_TO_FILTERS: (
       store,
-      action: PayloadAction<{ element: LevelFilter }>
+      action: PayloadAction<{ element: Omit<LevelFilter, 'id'> }>
     ) => {
       const levels = new Set(store.levels);
 
-      levels.add(action.payload.element);
+      levels.add({ id: uuidV4(), ...action.payload.element });
 
       store.levels = [...levels];
     },
     POP_FROM_FILTERS: (
       store,
-      action: PayloadAction<{ element: LevelFilter | CategoryFilter }>
+      action: PayloadAction<{
+        element: Omit<LevelFilter | CategoryFilter, 'id'>;
+      }>
     ) => {
       const element = action.payload.element;
 

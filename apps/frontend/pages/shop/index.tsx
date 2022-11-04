@@ -3,7 +3,7 @@ import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Course, CourseLevel, usePaginatedCoursesQuery } from '@zeenzen/data';
-import { graphqlClient, Loadable } from '@zeenzen/common';
+import { graphqlClient, Loadable, Types } from '@zeenzen/common';
 
 import FilterList from '../../src/common/FilterList';
 import CourseSidebar from '../../src/components/shop/CourseSidebar';
@@ -27,7 +27,6 @@ import { ID } from '../../src/types';
 import { NextPageWithLayout } from '../_app';
 import ShopLayout from '../../src/layouts/ShopLayout';
 import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
-import { FilterEven } from '../../src/components/shop/FilterBar';
 import { parseSelectValue } from '../../src/utils/parseSelectValue';
 
 const Courses = dynamic(() => import('../../src/components/shop/Courses'));
@@ -37,19 +36,17 @@ const ShopPage: NextPageWithLayout = () => {
   const [page, setPage] = useState(1);
   const { categories, levels } = useAppSelector(selectFilters);
 
-  const { data, isLoading, isFetching } = usePaginatedCoursesQuery(
+  const { data, isLoading } = usePaginatedCoursesQuery(
     graphqlClient,
     {
       paginatedCoursesFilterInput: {
         page,
         levels: levels.map(({ value }) => value),
-        categories: categories.map(({ value }) => value),
+        categories: categories.map(({ value }) => String(value)),
       },
     },
     { keepPreviousData: true }
   );
-
-  console.log('shop page data: ', data);
 
   const dispatch = useAppDispatch();
 
@@ -78,10 +75,11 @@ const ShopPage: NextPageWithLayout = () => {
     }
   };
 
-  const handleAddCategoryToFilter: FilterEven = (event) => {
-    const [categoryText, categoryValue] = parseSelectValue(
-      String(event.target.value)
-    );
+  const handleAddCategoryToFilter: Types.SelectOnChange = (value) => {
+    console.log('item: ', value.toString().split('///'));
+    const [categoryText, categoryValue] = parseSelectValue(String(value));
+
+    console.log('cat txt and value: ', categoryText, categoryValue);
 
     dispatch(
       PUSH_CATEGORY_TO_FILTERS({
@@ -94,12 +92,8 @@ const ShopPage: NextPageWithLayout = () => {
     );
   };
 
-  const handleAddLevelToFilter: FilterEven = (event) => {
-    console.log(event.target);
-
-    const [levelText, levelValue] = parseSelectValue(
-      String(event.target.value)
-    );
+  const handleAddLevelToFilter: Types.SelectOnChange = (value) => {
+    const [levelText, levelValue] = parseSelectValue(String(value));
 
     dispatch(
       PUSH_LEVEL_TO_FILTERS({
@@ -120,9 +114,9 @@ const ShopPage: NextPageWithLayout = () => {
         {/* part for search and top bar */}
         <div className="mb-20">
           <FilterBar
-            courseLevelValue={levels.at(-1)?.value}
+            courseLevelValue={levels.at(-1)?.value || ''}
             onCourseLevelChange={handleAddLevelToFilter}
-            courseCategoryValue={categories?.at(-1)?.value}
+            courseCategoryValue={categories?.at(-1)?.value || ''}
             onCourseCategoryChange={handleAddCategoryToFilter}
           />
 
