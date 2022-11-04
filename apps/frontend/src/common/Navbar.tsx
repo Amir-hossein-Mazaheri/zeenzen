@@ -11,9 +11,6 @@ import {
 
 import useUser from '../hooks/useUser';
 import ProfileMenu from '../components/user/ProfileMenu';
-import { useAppDispatch } from '../hooks/useAppDispatch';
-import { LOAD_ITEMS } from '../store/entities/cart';
-import persistCart from '../utils/persistCart';
 import useCart from '../hooks/useCart';
 import useRemoveCartItem from '../hooks/useRemoveCartItem';
 
@@ -45,8 +42,6 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const { items, type, id: cartId, refetchCart } = useCart();
   const { route } = useRouter();
 
-  const dispatch = useAppDispatch();
-
   const removeCartItem = useRemoveCartItem({
     cartId,
     refetchCart,
@@ -55,8 +50,8 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
   // loads cart items from localStorage
   useEffect(() => {
-    dispatch(LOAD_ITEMS({ items: persistCart() }));
-  }, [dispatch]);
+    console.log('loaded');
+  }, []);
 
   return (
     <div className={`sticky top-4 w-full text-text-black z-40 ${className}`}>
@@ -71,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
         <ul className="flex gap-6 items-center">
           <li>
-            <CartIcon items={items} onRemoveCartItem={removeCartItem} />
+            <CartIcon items={items || []} onRemoveCartItem={removeCartItem} />
           </li>
           <Conditional condition={isAuthenticated}>
             <TrueCondition>

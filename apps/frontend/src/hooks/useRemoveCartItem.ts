@@ -1,11 +1,10 @@
 import { useDecrementCartItemMutation } from '@zeenzen/data';
 import { graphqlClient } from '@zeenzen/common';
 
-import { REMOVE_ITEM } from '../store/entities/cart';
 import getErrorMessages from '../utils/getErrorMessages';
-import { useAppDispatch } from './useAppDispatch';
 import useCart, { CartType } from './useCart';
 import useToast from './useToast';
+import useCartStore from './store/useCartStore';
 
 interface UseRemoveCartItemOptions {
   type: CartType;
@@ -20,7 +19,7 @@ export default function useRemoveCartItem({
 }: UseRemoveCartItemOptions) {
   const removeCartItemMutation = useDecrementCartItemMutation(graphqlClient);
 
-  const dispatch = useAppDispatch();
+  const removeCartItem = useCartStore((state) => state.removeCartItem);
 
   const toast = useToast();
 
@@ -32,7 +31,7 @@ export default function useRemoveCartItem({
       });
 
     if (type === CartType.LOCAL) {
-      dispatch(REMOVE_ITEM({ courseId }));
+      removeCartItem(courseId);
 
       successMessage();
 

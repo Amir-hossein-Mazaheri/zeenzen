@@ -18,19 +18,11 @@ import {
   PriceTag,
 } from '@zeenzen/common';
 
-// import AppButton from '../../common/AppButton';
-// import ProgressBar from '../../common/ProgressBar';
-// import Property from '../../common/Property';
-// import ShadowBox from '../../common/ShadowBox';
-// import courseLevelTranslator from '../../../../../libs/common-component/src/lib/utils/courseLevelTranslator';
 import useIsInCart from '../../hooks/useIsInCart';
 import { CartType } from '../../hooks/useCart';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { ADD_ITEM } from '../../store/entities/cart';
-// import graphqlClient from '../../../../../libs/common-component/src/lib/api/graphql-client';
 import useToast from '../../hooks/useToast';
 import getErrorMessages from '../../utils/getErrorMessages';
-// import PriceTag from '../../common/PriceTag';
+import useCartStore from '../../hooks/store/useCartStore';
 
 const CourseProperties: React.FC<Course> = ({
   id,
@@ -47,7 +39,7 @@ const CourseProperties: React.FC<Course> = ({
 
   const addCartItemMutation = useAddCartItemMutation(graphqlClient);
 
-  const dispatch = useAppDispatch();
+  const addCartItem = useCartStore((state) => state.addCartItem);
 
   const toast = useToast();
 
@@ -60,22 +52,17 @@ const CourseProperties: React.FC<Course> = ({
       });
 
     if (type === CartType.LOCAL) {
-      dispatch(
-        ADD_ITEM({
-          item: {
-            id,
-            title: data?.course.title || '',
-            thumbnail: data?.course.image.image || '',
-            price: data?.course.price.toString() || '0',
-            instructors:
-              data?.course.instructors.map(
-                ({ user: { firstname, lastname } }) =>
-                  `${firstname} ${lastname}`
-              ) || [],
-            discountedPrice: data?.course.price || 0,
-          },
-        })
-      );
+      addCartItem({
+        id,
+        title: data?.course.title || '',
+        thumbnail: data?.course.image.image || '',
+        price: data?.course.price.toString() || '0',
+        instructors:
+          data?.course.instructors.map(
+            ({ user: { firstname, lastname } }) => `${firstname} ${lastname}`
+          ) || [],
+        discountedPrice: data?.course.price || 0,
+      });
 
       successMessage();
 

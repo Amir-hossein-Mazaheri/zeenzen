@@ -1,9 +1,8 @@
 import { useCartQuery } from '@zeenzen/data';
 import { graphqlClient, Types } from '@zeenzen/common';
 
-import { selectCartItems } from '../store/entities/cart';
-import { useAppSelector } from './useAppSelector';
 import useUser from './useUser';
+import useCartStore from './store/useCartStore';
 
 export enum CartType {
   LOCAL,
@@ -22,7 +21,7 @@ export default function useCart() {
     cartId: user?.cart.id || '',
   });
 
-  const cartItems = useAppSelector(selectCartItems);
+  const cartItems = useCartStore((state) => state.items);
 
   console.log('cart errors: ', error);
 
