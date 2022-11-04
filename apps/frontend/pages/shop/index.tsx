@@ -6,6 +6,7 @@ import { Course, CourseLevel, usePaginatedCoursesQuery } from '@zeenzen/data';
 import {
   graphqlClient,
   Loadable,
+  Pagination,
   Types,
   parseSelectValue,
 } from '@zeenzen/common';
@@ -155,6 +156,21 @@ const ShopPage: NextPageWithLayout = () => {
               gap="gap-8"
               isSm
             />
+
+            {data?.paginatedCourses.totalPages &&
+              data.paginatedCourses.totalPages > 1 && (
+                <div className="mt-8 flex justify-center">
+                  <Pagination
+                    activePage={page}
+                    pagesCount={data?.paginatedCourses.totalPages}
+                    onClick={setPage}
+                    onPrev={() => setPage((currPage) => currPage - 1)}
+                    onNext={() => setPage((currPage) => currPage + 1)}
+                    hasNext={data.paginatedCourses.hasNext}
+                    hasPrev={data.paginatedCourses.hasPrev}
+                  />
+                </div>
+              )}
           </div>
         </div>
       </div>
