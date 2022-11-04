@@ -4,13 +4,17 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { range } from '../utils';
 
 interface PaginationProps {
-  pages: number[];
+  pagesCount: number;
   activePage: number;
-  onClick?: (pageIndex: number, index: number) => void;
+  onClick?: (pageIndex: number) => void;
   onPrev?: MouseEventHandler<HTMLDivElement>;
   onNext?: MouseEventHandler<HTMLDivElement>;
+  hasNext?: boolean;
+  hasPrev?: boolean;
+  className?: string;
 }
 
 const sharedClasses =
@@ -19,43 +23,48 @@ const activePageClasses = 'text-white bg-light-red';
 const hoverPageClasses = 'hover:text-white hover:bg-light-red';
 
 export const Pagination: React.FC<PaginationProps> = ({
-  pages,
+  pagesCount,
   activePage,
   onClick,
   onPrev,
   onNext,
+  className,
+  hasPrev = false,
+  hasNext = false,
 }) => {
   return (
-    <div className="flex gap-8 items-center">
-      <div
-        onClick={onPrev}
-        className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
-      >
-        <FontAwesomeIcon icon={faChevronRight} />
-      </div>
-      <div
-        className={`${sharedClasses} overflow-hidden h-12 flex justify-between`}
-      >
-        {pages.map((page, index) => (
+    <div className={`flex gap-8 items-center ${className}`}>
+      {hasPrev && (
+        <div
+          onClick={onPrev}
+          className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
+        >
+          <FontAwesomeIcon icon={faChevronRight} />
+        </div>
+      )}
+
+      <div className={`gap-4 h-12 flex justify-between`}>
+        {range(pagesCount, 1).map((page) => (
           <p
-            onClick={() => onClick && onClick(page, index)}
+            onClick={() => onClick && onClick(page)}
             className={`${hoverPageClasses} ${
-              index === activePage && activePageClasses
-            } transition-colors duration-200 h-12 px-6 cursor-pointer flex justify-center text-center items-center ${
-              index !== 0 && 'border-r border-gray-300'
-            }`}
+              page === activePage && activePageClasses
+            } ${sharedClasses} transition-colors duration-200 aspect-square h-12 px-6 cursor-pointer flex justify-center text-center items-center`}
             key={page.toString()}
           >
             {page}
           </p>
         ))}
       </div>
-      <div
-        onClick={onNext}
-        className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
-      >
-        <FontAwesomeIcon icon={faChevronLeft} />
-      </div>
+
+      {hasNext && (
+        <div
+          onClick={onNext}
+          className={`${hoverPageClasses} ${sharedClasses} cursor-pointer w-12 h-12 flex items-center justify-center`}
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </div>
+      )}
     </div>
   );
 };
