@@ -44,3 +44,4 @@ Thumbs.db
 graphql/schema.gql
 
 public/uploads
+apps/backend/public/uploads
