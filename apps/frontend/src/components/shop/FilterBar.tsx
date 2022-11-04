@@ -1,8 +1,7 @@
 import React from 'react';
 import { CourseLevel, useCategoriesQuery } from '@zeenzen/data';
 import { graphqlClient, Loadable, Select, Types } from '@zeenzen/common';
-// import { SelectChangeEvent } from "@mui/material/Select";
-// import Skeleton from "@mui/material/Skeleton";
+import FilterBarSkeleton from '../../common/Skeleton/FilterBarSkeleton';
 
 interface FilterBarProps {
   courseLevelValue: Types.SelectItem['value'];
@@ -21,7 +20,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
   return (
     <div className="relative flex justify-between items-center w-full">
-      <Loadable isLoading={isLoading} fragment>
+      <Loadable fragment isLoading={isLoading} skeleton={<FilterBarSkeleton />}>
         <Select
           title="دسته بندی دوره ها"
           items={
