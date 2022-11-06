@@ -1,3 +1,6 @@
+import { CourseLevel } from '@zeenzen/data';
+import { Types } from '@zeenzen/common';
+
 export type ID = string | number;
 
 export type UserActionMenuItem = {
@@ -7,4 +10,13 @@ export type UserActionMenuItem = {
   icon: JSX.Element;
 };
 
-export type SkeletonAnimation = "wave" | "pulse" | false;
+export type CategoryFilter = Types.SelectItem & {
+  type: 'category';
+};
+
+export type LevelFilter = Types.SelectItem & {
+  value: CourseLevel;
+  type: 'level';
+};
+
+export type SkeletonAnimation = 'wave' | 'pulse' | false;

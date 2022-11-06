@@ -13,27 +13,27 @@ import {
 
 import FilterList from '../../src/common/FilterList';
 import CourseSidebar from '../../src/components/shop/CourseSidebar';
-import { useAppSelector } from '../../src/hooks/useAppSelector';
-import {
-  CLEAR_ALL_FILTERS,
-  POP_FROM_FILTERS,
-  PUSH_CATEGORY_TO_FILTERS,
-  PUSH_LEVEL_TO_FILTERS,
-  selectFilters,
-} from '../../src/store/entities/filter';
-import { useAppDispatch } from '../../src/hooks/useAppDispatch';
-import { ID } from '../../src/types';
+import { CategoryFilter, ID, LevelFilter } from '../../src/types';
 import { NextPageWithLayout } from '../_app';
 import ShopLayout from '../../src/layouts/ShopLayout';
 import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
 import useUiStore from '../../src/hooks/store/useUiStore';
+import useFilterStore from '../../src/hooks/store/useFilterStore';
 
 const Courses = dynamic(() => import('../../src/components/shop/Courses'));
 const FilterBar = dynamic(() => import('../../src/components/shop/FilterBar'));
 
 const ShopPage: NextPageWithLayout = () => {
   const [page, setPage] = useState(1);
-  const { categories, levels } = useAppSelector(selectFilters);
+
+  const {
+    pushCategoryToFilters,
+    pushLevelToFilters,
+    popFromFilters,
+    clearAllFilters,
+    categories,
+    levels,
+  } = useFilterStore();
 
   const { data, isLoading } = usePaginatedCoursesQuery(
     graphqlClient,
@@ -47,8 +47,6 @@ const ShopPage: NextPageWithLayout = () => {
     { keepPreviousData: true }
   );
 
-  const dispatch = useAppDispatch();
-
   const {
     sidebar,
     setShopSidebarTitle,
@@ -56,18 +54,17 @@ const ShopPage: NextPageWithLayout = () => {
     resetShopSidebar,
   } = useUiStore();
 
-  const handleRemoveFilter = (filter: any) => {
-    dispatch(POP_FROM_FILTERS({ element: filter }));
-    console.log('element got removed: ', filter);
+  const handleRemoveFilter = (filter: CategoryFilter | LevelFilter) => {
+    popFromFilters(filter);
   };
 
   const handleClearAllFilters = () => {
-    dispatch(CLEAR_ALL_FILTERS());
+    clearAllFilters();
   };
 
   const handleSidebarSetTitle = (courseId: ID) => {
     const course = data?.paginatedCourses.courses.find(
-      (course: any) => course.id === courseId
+      (course: Course) => course.id === courseId
     );
 
     if (course && course.title && course.shortDescription) {
@@ -79,29 +76,21 @@ const ShopPage: NextPageWithLayout = () => {
   const handleAddCategoryToFilter: Types.SelectOnChange = (value) => {
     const [categoryText, categoryValue] = parseSelectValue(String(value));
 
-    dispatch(
-      PUSH_CATEGORY_TO_FILTERS({
-        element: {
-          value: categoryValue,
-          text: categoryText,
-          type: 'category',
-        },
-      })
-    );
+    pushCategoryToFilters({
+      value: categoryValue,
+      text: categoryText,
+      type: 'category',
+    });
   };
 
   const handleAddLevelToFilter: Types.SelectOnChange = (value) => {
     const [levelText, levelValue] = parseSelectValue(String(value));
 
-    dispatch(
-      PUSH_LEVEL_TO_FILTERS({
-        element: {
-          value: levelValue as CourseLevel,
-          text: levelText,
-          type: 'level',
-        },
-      })
-    );
+    pushLevelToFilters({
+      value: levelValue as CourseLevel,
+      text: levelText,
+      type: 'level',
+    });
   };
 
   return (
