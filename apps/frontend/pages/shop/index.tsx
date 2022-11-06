@@ -15,13 +15,6 @@ import FilterList from '../../src/common/FilterList';
 import CourseSidebar from '../../src/components/shop/CourseSidebar';
 import { useAppSelector } from '../../src/hooks/useAppSelector';
 import {
-  RESET_SHOP_SIDEBAR,
-  selectShopSidebarDescription,
-  selectShopSidebarTitle,
-  SET_SHOP_SIDEBAR_DESCRIPTION,
-  SET_SHOP_SIDEBAR_TITLE,
-} from '../../src/store/ui/shop';
-import {
   CLEAR_ALL_FILTERS,
   POP_FROM_FILTERS,
   PUSH_CATEGORY_TO_FILTERS,
@@ -33,6 +26,7 @@ import { ID } from '../../src/types';
 import { NextPageWithLayout } from '../_app';
 import ShopLayout from '../../src/layouts/ShopLayout';
 import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
+import useUiStore from '../../src/hooks/store/useUiStore';
 
 const Courses = dynamic(() => import('../../src/components/shop/Courses'));
 const FilterBar = dynamic(() => import('../../src/components/shop/FilterBar'));
@@ -55,8 +49,12 @@ const ShopPage: NextPageWithLayout = () => {
 
   const dispatch = useAppDispatch();
 
-  const sidebarTitle = useAppSelector(selectShopSidebarTitle);
-  const sidebarDescription = useAppSelector(selectShopSidebarDescription);
+  const {
+    sidebar,
+    setShopSidebarTitle,
+    setShopSidebarDescription,
+    resetShopSidebar,
+  } = useUiStore();
 
   const handleRemoveFilter = (filter: any) => {
     dispatch(POP_FROM_FILTERS({ element: filter }));
@@ -73,10 +71,8 @@ const ShopPage: NextPageWithLayout = () => {
     );
 
     if (course && course.title && course.shortDescription) {
-      dispatch(SET_SHOP_SIDEBAR_TITLE({ title: course.title }));
-      dispatch(
-        SET_SHOP_SIDEBAR_DESCRIPTION({ description: course.shortDescription })
-      );
+      setShopSidebarTitle(course.title);
+      setShopSidebarDescription(course.shortDescription);
     }
   };
 
@@ -141,8 +137,8 @@ const ShopPage: NextPageWithLayout = () => {
               skeleton={<SidebarSkeleton />}
             >
               <CourseSidebar
-                title={sidebarTitle}
-                description={sidebarDescription}
+                title={sidebar.title}
+                description={sidebar.description}
               />
             </Loadable>
           </div>
@@ -152,7 +148,7 @@ const ShopPage: NextPageWithLayout = () => {
               courses={data?.paginatedCourses?.courses as Course[]}
               isFetching={isLoading}
               onEachCourseMouseEnter={handleSidebarSetTitle}
-              onEachCourseMouseLeave={() => dispatch(RESET_SHOP_SIDEBAR())}
+              onEachCourseMouseLeave={resetShopSidebar}
               gap="gap-8"
               isSm
             />
