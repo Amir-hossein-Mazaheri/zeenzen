@@ -1,10 +1,8 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux';
 
-import uiReducer from "./ui/shop";
-import entitiesReducer from "./entities/reducer";
+import entitiesReducer from './entities/reducer';
 
 const reducer = combineReducers({
-  ui: uiReducer,
   entities: entitiesReducer,
 });
 
