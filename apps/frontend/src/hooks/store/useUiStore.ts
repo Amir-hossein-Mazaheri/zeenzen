@@ -39,7 +39,7 @@ const useUiStore = create(
       });
     },
 
-    resetShopSidebar() {
+    resetShopSidebar: () => {
       set((ui) => {
         ui.sidebar = initialState.sidebar;
       });
