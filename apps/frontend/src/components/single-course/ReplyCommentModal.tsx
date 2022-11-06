@@ -4,25 +4,22 @@ import { SubmitHandler } from 'react-hook-form';
 import { useReplyCommentMutation } from '@zeenzen/data';
 import { graphqlClient } from '@zeenzen/common';
 
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { useAppSelector } from '../../hooks/useAppSelector';
 import useToast from '../../hooks/useToast';
-import {
-  CLOSE_REPLY_COMMENT_MODAL,
-  REPLY_COMMENT,
-  selectComment,
-  SET_REPLY_CONTENT,
-} from '../../store/entities/comment';
 import getErrorMessages from '../../utils/getErrorMessages';
 import CommentForm, { CommentFormFields } from './CommentForm';
+import useCommentStore from '../../hooks/store/useCommentStore';
 
 const ReplyCommentModal = () => {
-  const { isReplyCommentModalOpen, replyContent, parentCommentId } =
-    useAppSelector(selectComment);
-
   const replyCommentMutation = useReplyCommentMutation(graphqlClient);
 
-  const dispatch = useAppDispatch();
+  const {
+    closeReplyCommentModal,
+    setReplyContent,
+    isReplyCommentModalOpen,
+    parentCommentId,
+    replyContent,
+    replyComment,
+  } = useCommentStore();
 
   const toast = useToast();
 
@@ -39,14 +36,14 @@ const ReplyCommentModal = () => {
         },
       });
 
-      dispatch(REPLY_COMMENT({ succeeded: true }));
+      replyComment(true);
 
       toast({}).fire({
         title: 'دیدگاه شما پس از تایید نمایش داده خواهد شد.',
         icon: 'success',
       });
     } catch (err) {
-      dispatch(REPLY_COMMENT({ succeeded: true }));
+      replyComment(false);
 
       getErrorMessages(err).map((errorMessage) =>
         toast({}).fire({
@@ -63,7 +60,7 @@ const ReplyCommentModal = () => {
         <Dialog
           as="div"
           className="relative z-40"
-          onClose={() => dispatch(CLOSE_REPLY_COMMENT_MODAL())}
+          onClose={closeReplyCommentModal}
         >
           <Transition.Child
             as={Fragment}
@@ -99,11 +96,7 @@ const ReplyCommentModal = () => {
                     <CommentForm
                       handleSubmit={handlePostReply}
                       defaultValue={replyContent}
-                      onChange={(event) =>
-                        dispatch(
-                          SET_REPLY_CONTENT({ content: event.target.value })
-                        )
-                      }
+                      onChange={(event) => setReplyContent(event.target.value)}
                     />
                   </div>
                 </Dialog.Panel>

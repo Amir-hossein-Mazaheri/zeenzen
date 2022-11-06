@@ -12,15 +12,10 @@ import {
 } from '@zeenzen/common';
 
 import CommentFormSkeleton from '../../common/Skeleton/CommentFormSkeleton';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { useAppSelector } from '../../hooks/useAppSelector';
 import useToast from '../../hooks/useToast';
 import useUser from '../../hooks/useUser';
-import {
-  selectCommentContent,
-  SET_COMMENT_CONTENT,
-} from '../../store/entities/comment';
 import CommentForm, { CommentFormFields } from './CommentForm';
+import useCommentStore from '../../hooks/store/useCommentStore';
 
 interface PostCommentProps {
   courseId: string;
@@ -29,11 +24,14 @@ interface PostCommentProps {
 const PostComment: React.FC<PostCommentProps> = ({ courseId }) => {
   const { loading, isAuthenticated } = useUser();
 
-  const commentContent = useAppSelector(selectCommentContent);
-
   const postCommentMutation = usePostCommentMutation(graphqlClient);
 
-  const dispatch = useAppDispatch();
+  const { commentContent, setCommentContent } = useCommentStore(
+    ({ commentContent, setCommentContent }) => ({
+      commentContent,
+      setCommentContent,
+    })
+  );
 
   const toast = useToast();
 
@@ -75,9 +73,7 @@ const PostComment: React.FC<PostCommentProps> = ({ courseId }) => {
             <CommentForm
               handleSubmit={handlePostComment}
               defaultValue={commentContent}
-              onChange={(event) =>
-                dispatch(SET_COMMENT_CONTENT({ content: event.target.value }))
-              }
+              onChange={(event) => setCommentContent(event.target.value)}
             />
           </TrueCondition>
           <FalseCondition>

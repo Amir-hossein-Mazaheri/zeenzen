@@ -6,8 +6,7 @@ import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import PostComment from './PostComment';
 import ReplyCommentModal from './ReplyCommentModal';
 import useUser from '../../hooks/useUser';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { OPEN_REPLY_COMMENT_MODAL } from '../../store/entities/comment';
+import useCommentStore from '../../hooks/store/useCommentStore';
 
 interface CommentsProps {
   courseId: string;
@@ -33,7 +32,9 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
     { enabled: false }
   );
 
-  const dispatch = useAppDispatch();
+  const openReplyCommentModal = useCommentStore(
+    (state) => state.openReplyCommentModal
+  );
 
   // fetches the comments when scroll reaches comments section
   useEffect(() => {
@@ -54,11 +55,7 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
               // @ts-ignore
               <Comment
                 key={comment.id}
-                onReply={() =>
-                  dispatch(
-                    OPEN_REPLY_COMMENT_MODAL({ parentCommentId: comment.id })
-                  )
-                }
+                onReply={() => openReplyCommentModal(comment.id)}
                 isAuthenticated={isAuthenticated}
                 {...comment}
               />
