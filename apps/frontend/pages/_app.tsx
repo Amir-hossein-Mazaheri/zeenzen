@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { ReactElement, ReactNode, useRef, useState } from 'react';
+import { ReactElement, ReactNode, useState } from 'react';
 import {
   Hydrate,
   QueryClient,
@@ -13,8 +13,6 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import '../src/styles/globals.css';
-import SkeletonContext from '../src/context/SkeletonContext';
-import { SkeletonAnimation } from '../src/types';
 
 config.autoAddCss = false;
 
@@ -28,8 +26,6 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const skeletonAnimationRef = useRef<SkeletonAnimation>('wave');
-
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -51,11 +47,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
-          <SkeletonContext.Provider
-            value={{ animation: skeletonAnimationRef.current }}
-          >
-            {getLayout(<Component {...pageProps} />)}
-          </SkeletonContext.Provider>
+          {getLayout(<Component {...pageProps} />)}
 
           <ReactQueryDevtools initialIsOpen={false} />
         </Hydrate>
