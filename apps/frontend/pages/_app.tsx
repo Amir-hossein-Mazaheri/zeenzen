@@ -13,6 +13,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import '../src/styles/globals.css';
+import '../src/styles/nprogress.css';
+import useAddPageLoading from '../src/hooks/useAddPageLoading';
 
 config.autoAddCss = false;
 
@@ -26,6 +28,8 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  useAddPageLoading();
+
   const [queryClient] = useState(
     () =>
       new QueryClient({
