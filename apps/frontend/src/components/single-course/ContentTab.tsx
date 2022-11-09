@@ -19,7 +19,11 @@ const ContentTab: React.FC<ContentTabProps> = ({
 }) => {
   return (
     <Tab.Panel className="space-y-24">
-      <ShadowBox title={title} titleSize="lg" className="py-10">
+      <ShadowBox
+        title={title}
+        titleSize="lg"
+        className="py-[3rem] px-14 min-w-full prose prose-slate w-full"
+      >
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
       </ShadowBox>
 
