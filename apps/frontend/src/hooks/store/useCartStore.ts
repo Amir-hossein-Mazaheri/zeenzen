@@ -1,7 +1,8 @@
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
-import { Types } from '@zeenzen/common';
+import { isProd, Types } from '@zeenzen/common';
+
 import persistCart from '../../utils/persistCart';
 
 interface CartStore {
@@ -53,7 +54,11 @@ const useCartStore = create(
           persistCart(cart.items);
         });
       },
-    }))
+    })),
+    {
+      name: 'cart',
+      enabled: !isProd(),
+    }
   )
 );
 

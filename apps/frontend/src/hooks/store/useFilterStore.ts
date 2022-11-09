@@ -1,6 +1,8 @@
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import { devtools } from 'zustand/middleware';
 import { v4 as uuidV4 } from 'uuid';
+import { isProd } from '@zeenzen/common';
 
 import { CategoryFilter, LevelFilter } from '../../types';
 
@@ -20,50 +22,56 @@ const initialState = {
 };
 
 const useFilterStore = create(
-  immer<FilterStore>((set) => ({
-    ...initialState,
+  devtools(
+    immer<FilterStore>((set) => ({
+      ...initialState,
 
-    pushCategoryToFilters: (element) => {
-      set((filters) => {
-        const categories = new Set(filters.categories);
+      pushCategoryToFilters: (element) => {
+        set((filters) => {
+          const categories = new Set(filters.categories);
 
-        categories.add({ id: uuidV4(), ...element });
+          categories.add({ id: uuidV4(), ...element });
 
-        filters.categories = [...categories];
-      });
-    },
+          filters.categories = [...categories];
+        });
+      },
 
-    pushLevelToFilters: (element) => {
-      set((filters) => {
-        const levels = new Set(filters.levels);
+      pushLevelToFilters: (element) => {
+        set((filters) => {
+          const levels = new Set(filters.levels);
 
-        levels.add({ id: uuidV4(), ...element });
+          levels.add({ id: uuidV4(), ...element });
 
-        filters.levels = [...levels];
-      });
-    },
+          filters.levels = [...levels];
+        });
+      },
 
-    popFromFilters: (element) => {
-      set((filters) => {
-        if (element.type === 'category') {
-          filters.categories = filters.categories.filter(
-            (category) => category.id !== element.id
-          );
-        } else {
-          filters.levels = filters.levels.filter(
-            (level) => level.id !== element.id
-          );
-        }
-      });
-    },
+      popFromFilters: (element) => {
+        set((filters) => {
+          if (element.type === 'category') {
+            filters.categories = filters.categories.filter(
+              (category) => category.id !== element.id
+            );
+          } else {
+            filters.levels = filters.levels.filter(
+              (level) => level.id !== element.id
+            );
+          }
+        });
+      },
 
-    clearAllFilters: () => {
-      set((filters) => {
-        filters.categories = [];
-        filters.levels = [];
-      });
-    },
-  }))
+      clearAllFilters: () => {
+        set((filters) => {
+          filters.categories = [];
+          filters.levels = [];
+        });
+      },
+    })),
+    {
+      name: 'filters',
+      enabled: !isProd(),
+    }
+  )
 );
 
 export default useFilterStore;
