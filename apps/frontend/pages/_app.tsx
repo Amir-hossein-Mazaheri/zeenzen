@@ -1,20 +1,18 @@
 import Head from 'next/head';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
+import { ReactElement, ReactNode, useRef, useState } from 'react';
 import {
   Hydrate,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ReactElement, ReactNode, useRef, useState } from 'react';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import '../src/styles/globals.css';
-import { Provider } from 'react-redux';
-import store from '../src/store/configStore';
 import SkeletonContext from '../src/context/SkeletonContext';
 import { SkeletonAnimation } from '../src/types';
 
@@ -53,13 +51,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
-          <Provider store={store}>
-            <SkeletonContext.Provider
-              value={{ animation: skeletonAnimationRef.current }}
-            >
-              {getLayout(<Component {...pageProps} />)}
-            </SkeletonContext.Provider>
-          </Provider>
+          <SkeletonContext.Provider
+            value={{ animation: skeletonAnimationRef.current }}
+          >
+            {getLayout(<Component {...pageProps} />)}
+          </SkeletonContext.Provider>
 
           <ReactQueryDevtools initialIsOpen={false} />
         </Hydrate>
