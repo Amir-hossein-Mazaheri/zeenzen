@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import AppInput, { AppInputProps } from './AppInput';
 
+const iconClassName = 'w-5 h-5';
+
 export const PasswordInput: React.FC<AppInputProps> = (props) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -14,12 +16,12 @@ export const PasswordInput: React.FC<AppInputProps> = (props) => {
       renderIcon={() => (
         <div
           onClick={() => setShowPassword((showPassword) => !showPassword)}
-          className="absolute left-5 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+          className="absolute mt-[0.2rem] left-5 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
         >
           {showPassword ? (
-            <FontAwesomeIcon icon={faEye} />
+            <FontAwesomeIcon icon={faEye} className={iconClassName} />
           ) : (
-            <FontAwesomeIcon icon={faEyeSlash} />
+            <FontAwesomeIcon icon={faEyeSlash} className={iconClassName} />
           )}
         </div>
       )}
