@@ -2,7 +2,7 @@ import { useCartQuery } from '@zeenzen/data';
 import { graphqlClient, Types } from '@zeenzen/common';
 
 import useUser from './useUser';
-import useCartStore from './store/useCartStore';
+import useCartStore from '../store/useCartStore';
 
 export enum CartType {
   LOCAL,

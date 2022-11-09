@@ -3,7 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
 import { isProd, Types } from '@zeenzen/common';
 
-import persistCart from '../../utils/persistCart';
+import persistCart from '../utils/persistCart';
 
 interface CartStore {
   items: Types.CartItem[];

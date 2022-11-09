@@ -37,7 +37,7 @@ import addToTitle from '../src/utils/addToTitle';
 import signUpIllustration from '../src/assets/images/signin-signup/signup.svg';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getPasswordRegex from '../src/utils/getPasswordRegex';
-import useUserStore from '../src/hooks/store/useUserStore';
+import useUserStore from '../src/store/useUserStore';
 
 const Countdown = dynamic(() => import('react-countdown'));
 

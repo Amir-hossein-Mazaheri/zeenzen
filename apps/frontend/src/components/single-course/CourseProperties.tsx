@@ -22,7 +22,7 @@ import useIsInCart from '../../hooks/useIsInCart';
 import { CartType } from '../../hooks/useCart';
 import useToast from '../../hooks/useToast';
 import getErrorMessages from '../../utils/getErrorMessages';
-import useCartStore from '../../hooks/store/useCartStore';
+import useCartStore from '../../store/useCartStore';
 
 const CourseProperties: React.FC<Course> = ({
   id,

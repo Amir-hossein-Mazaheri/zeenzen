@@ -13,7 +13,7 @@ import useUser from '../hooks/useUser';
 import ProfileMenu from '../components/user/ProfileMenu';
 import useCart from '../hooks/useCart';
 import useRemoveCartItem from '../hooks/useRemoveCartItem';
-import useCartStore from '../hooks/store/useCartStore';
+import useCartStore from '../store/useCartStore';
 
 interface NavbarProps {
   className?: string;
@@ -41,6 +41,7 @@ const pages = [
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const { isAuthenticated, user } = useUser();
   const { items, type, id: cartId, refetchCart } = useCart();
+
   const { route } = useRouter();
 
   const removeCartItem = useRemoveCartItem({

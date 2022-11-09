@@ -17,8 +17,8 @@ import { CategoryFilter, ID, LevelFilter } from '../../src/types';
 import { NextPageWithLayout } from '../_app';
 import ShopLayout from '../../src/layouts/ShopLayout';
 import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
-import useUiStore from '../../src/hooks/store/useUiStore';
-import useFilterStore from '../../src/hooks/store/useFilterStore';
+import useUiStore from '../../src/store/useUiStore';
+import useFilterStore from '../../src/store/useFilterStore';
 
 const Courses = dynamic(() => import('../../src/components/shop/Courses'));
 const FilterBar = dynamic(() => import('../../src/components/shop/FilterBar'));

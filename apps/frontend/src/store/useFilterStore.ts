@@ -4,7 +4,7 @@ import { devtools } from 'zustand/middleware';
 import { v4 as uuidV4 } from 'uuid';
 import { isProd } from '@zeenzen/common';
 
-import { CategoryFilter, LevelFilter } from '../../types';
+import { CategoryFilter, LevelFilter } from '../types';
 
 interface FilterStore {
   categories: CategoryFilter[];

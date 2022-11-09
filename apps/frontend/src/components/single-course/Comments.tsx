@@ -6,7 +6,7 @@ import useIntersectionObserver from '../../hooks/useIntersectionObserver';
 import PostComment from './PostComment';
 import ReplyCommentModal from './ReplyCommentModal';
 import useUser from '../../hooks/useUser';
-import useCommentStore from '../../hooks/store/useCommentStore';
+import useCommentStore from '../../store/useCommentStore';
 
 interface CommentsProps {
   courseId: string;

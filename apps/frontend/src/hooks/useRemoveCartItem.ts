@@ -4,7 +4,7 @@ import { graphqlClient } from '@zeenzen/common';
 import getErrorMessages from '../utils/getErrorMessages';
 import useCart, { CartType } from './useCart';
 import useToast from './useToast';
-import useCartStore from './store/useCartStore';
+import useCartStore from '../store/useCartStore';
 
 interface UseRemoveCartItemOptions {
   type: CartType;

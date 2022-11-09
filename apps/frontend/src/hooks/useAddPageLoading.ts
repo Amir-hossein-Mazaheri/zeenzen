@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 
-import useUiStore from './store/useUiStore';
+import useUiStore from '../store/useUiStore';
 
 NProgress.configure({
   speed: 500,

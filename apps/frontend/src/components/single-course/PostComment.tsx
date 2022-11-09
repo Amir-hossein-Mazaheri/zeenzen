@@ -15,7 +15,7 @@ import CommentFormSkeleton from '../../common/Skeleton/CommentFormSkeleton';
 import useToast from '../../hooks/useToast';
 import useUser from '../../hooks/useUser';
 import CommentForm, { CommentFormFields } from './CommentForm';
-import useCommentStore from '../../hooks/store/useCommentStore';
+import useCommentStore from '../../store/useCommentStore';
 
 interface PostCommentProps {
   courseId: string;

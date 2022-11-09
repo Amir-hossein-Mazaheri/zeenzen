@@ -7,7 +7,7 @@ import { graphqlClient } from '@zeenzen/common';
 import useToast from '../../hooks/useToast';
 import getErrorMessages from '../../utils/getErrorMessages';
 import CommentForm, { CommentFormFields } from './CommentForm';
-import useCommentStore from '../../hooks/store/useCommentStore';
+import useCommentStore from '../../store/useCommentStore';
 
 const ReplyCommentModal = () => {
   const replyCommentMutation = useReplyCommentMutation(graphqlClient);
