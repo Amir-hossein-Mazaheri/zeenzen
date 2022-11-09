@@ -50,7 +50,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             className={`${hoverPageClasses} ${
               page === activePage && activePageClasses
             } ${sharedClasses} transition-colors duration-200 aspect-square h-12 px-6 cursor-pointer flex justify-center text-center items-center`}
-            key={page.toString()}
+            key={page}
           >
             {page}
           </p>
