@@ -31,20 +31,13 @@ import {
 
 import CenterLayout from '../src/layouts/CenterLayout';
 import { NextPageWithLayout } from './_app';
-import { useAppDispatch } from '../src/hooks/useAppDispatch';
-import {
-  selectUserCredentials,
-  SIGN_IN,
-  SIGN_UP,
-  SIGN_Up_FAILED,
-} from '../src/store/entities/user';
 import useAlert from '../src/hooks/useAlert';
-import { useAppSelector } from '../src/hooks/useAppSelector';
 import useToast from '../src/hooks/useToast';
 import addToTitle from '../src/utils/addToTitle';
 import signUpIllustration from '../src/assets/images/signin-signup/signup.svg';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getPasswordRegex from '../src/utils/getPasswordRegex';
+import useUserStore from '../src/hooks/store/useUserStore';
 
 const Countdown = dynamic(() => import('react-countdown'));
 
@@ -62,8 +55,6 @@ const signUpSchema = Yup.object({
 
 const SignUpPage: NextPageWithLayout = () => {
   useSkipForUsers();
-
-  const useCredentials = useAppSelector(selectUserCredentials);
 
   const [errors, setErrors] = useState<AlertMessageSet>(new Set());
   const [showCodeForm, setShowCodeForm] = useState(false);
@@ -85,7 +76,7 @@ const SignUpPage: NextPageWithLayout = () => {
 
   const router = useRouter();
 
-  const dispatch = useAppDispatch();
+  const { preSignUp, signUp, signUpFailed, email, password } = useUserStore();
 
   const alert = useAlert();
 
@@ -107,15 +98,15 @@ const SignUpPage: NextPageWithLayout = () => {
 
   const handlePreSignUp: SubmitHandler<PreSignUpFields> = async (data) => {
     try {
-      const { preSignUp } = await preSignUpMutation.mutateAsync({
+      const {
+        preSignUp: { expiresAt },
+      } = await preSignUpMutation.mutateAsync({
         preSignUpInput: {
           email: data.email,
         },
       });
 
-      console.log('pre signed up: ', preSignUp);
-
-      dispatch(SIGN_UP(data));
+      preSignUp(data);
 
       alert({
         title: 'کد تایید برای شما ایمیل شد.',
@@ -128,7 +119,7 @@ const SignUpPage: NextPageWithLayout = () => {
 
       setShowCodeForm(true);
 
-      setExpiresAt(() => dayjs(preSignUp.expiresAt).toDate());
+      setExpiresAt(() => dayjs(expiresAt).toDate());
     } catch (err: any) {
       console.log(err.response);
 
@@ -144,12 +135,12 @@ const SignUpPage: NextPageWithLayout = () => {
   const handleSignUp = async () => {
     try {
       const {
-        signUp: { email },
+        signUp: { email: signUpEmail },
       } = await signUpMutation.mutateAsync({
-        signUpInput: { ...useCredentials, code },
+        signUpInput: { email, password, code },
       });
 
-      dispatch(SIGN_IN({ email }));
+      signUp(signUpEmail);
 
       alert({
         title: 'هورااا',
@@ -173,7 +164,7 @@ const SignUpPage: NextPageWithLayout = () => {
   const handleCountDownComplete = async () => {
     setShowCodeForm(false);
 
-    dispatch(SIGN_Up_FAILED());
+    signUpFailed();
 
     toast({}).fire({
       text: 'مهلت کد تایید ایمیل تمام شد مجددا تلاش کنید.',
@@ -182,7 +173,7 @@ const SignUpPage: NextPageWithLayout = () => {
 
     await removeEmailValidationMutation.mutateAsync({
       removePreSignUpInput: {
-        email: useCredentials.email,
+        email,
       },
     });
   };
