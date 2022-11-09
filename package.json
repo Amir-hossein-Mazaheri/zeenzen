@@ -126,6 +126,7 @@
     "@types/jest": "28.1.1",
     "@types/multer": "^1.4.7",
     "@types/node": "18.7.18",
+    "@types/nprogress": "^0.2.0",
     "@types/passport": "^1.0.11",
     "@types/passport-jwt": "^3.0.7",
     "@types/passport-local": "^1.0.34",
