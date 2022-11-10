@@ -58,7 +58,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
   );
 
   return link ? (
-    <Link href={href}>
+    <Link href={href} onClick={onClick}>
       {loading ? (
         <PuffLoader size={loadingSpinnerSize} color="inherit" />
       ) : (
