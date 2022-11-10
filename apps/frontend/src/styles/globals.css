@@ -10,6 +10,12 @@ body {
   direction: rtl;
 }
 
+code,
+pre {
+  direction: ltr;
+  text-align: left;
+}
+
 .svg-inline--fa {
   aspect-ratio: 1/1;
 }
