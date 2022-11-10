@@ -38,10 +38,10 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
 
   // fetches the comments when scroll reaches comments section
   useEffect(() => {
-    if (entry?.isIntersecting) {
+    if (entry?.isIntersecting && !data) {
       refetchComments();
     }
-  }, [entry?.isIntersecting, refetchComments]);
+  }, [entry?.isIntersecting, refetchComments, data]);
 
   return (
     <div ref={commentsRef} className="space-y-24">
