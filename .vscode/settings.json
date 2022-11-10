@@ -8,6 +8,7 @@
     "headlessui",
     "heroicons",
     "hookform",
+    "idpay",
     "immer",
     "jalaliday",
     "monopay",
@@ -20,6 +21,7 @@
     "tanstack",
     "toman",
     "xmark",
+    "zarinpal",
     "zustand"
   ]
 }
