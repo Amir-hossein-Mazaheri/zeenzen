@@ -21,7 +21,7 @@ export const CartIcon: React.FC<CartIconProps> = ({
 }) => {
   return (
     <Popover className="relative">
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <Popover.Button className="outline-none">
             <div
@@ -76,6 +76,7 @@ export const CartIcon: React.FC<CartIconProps> = ({
                   <AppButton
                     link
                     href="/shop/cart"
+                    onClick={() => close()}
                     className="mt-5 w-full text-center"
                   >
                     <p>نهایی سازی</p>
