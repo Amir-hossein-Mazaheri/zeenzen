@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { FormEventHandler, useMemo } from 'react';
+import React, { FormEventHandler, useMemo, useState } from 'react';
 import {
   AppButton,
   CartItem,
@@ -18,8 +18,41 @@ import useRemoveCartItem from '../../src/hooks/useRemoveCartItem';
 import ShopLayout from '../../src/layouts/ShopLayout';
 import addToTitle from '../../src/utils/addToTitle';
 import { NextPageWithLayout } from '../_app';
+import PaymentMethods, {
+  PaymentMethod,
+} from '../../src/components/shop/PaymentMethods';
+
+const paymentMethods = [
+  {
+    text: 'درگاه پرداخت زرین پال',
+    value: 'zarinpal',
+  },
+  {
+    text: 'درگاه پرداخت ای دی پی',
+    value: 'idpay',
+  },
+];
+
+const PAYMENT_METHOD_KEY = 'paymentMethod';
+
+const getLocalPaymentMethod = () => {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+
+  return localStorage.getItem(PAYMENT_METHOD_KEY);
+};
 
 const CartPage: NextPageWithLayout = () => {
+  const [paymentMethod, setPaymentMethod] = useState(
+    getLocalPaymentMethod() || paymentMethods[0].value
+  );
+
+  const handleSetPaymentMethod = (value: PaymentMethod['value']) => {
+    setPaymentMethod(value);
+    localStorage.setItem(PAYMENT_METHOD_KEY, value);
+  };
+
   const {
     type,
     items,
@@ -90,6 +123,13 @@ const CartPage: NextPageWithLayout = () => {
                 className="basis-1/4 sticky top-12"
               >
                 <form onSubmit={handlePayment}>
+                  <PaymentMethods
+                    className="mb-5 mt-2"
+                    defaultValue={paymentMethod}
+                    onChange={handleSetPaymentMethod}
+                    paymentMethods={paymentMethods}
+                  />
+
                   {hasDiscount && (
                     <PriceTag
                       crossed
