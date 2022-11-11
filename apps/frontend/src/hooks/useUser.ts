@@ -14,7 +14,7 @@ export default function useUser(enabled = true) {
 
   return {
     loading: isFetching,
-    isAuthenticated: !isFetching && data?.me && !error,
+    isAuthenticated: !!(!isFetching && data?.me && !error),
     role: data?.me.role,
     user: data?.me,
     refetch,
