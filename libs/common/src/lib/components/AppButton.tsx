@@ -50,7 +50,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
   const style = useMemo(
     () =>
       `${outline ? outlineStyle : defaultStyle} ${
-        disabled || loading ? '' : 'cursor-pointer'
+        disabled || loading ? 'pointer-events-none' : 'cursor-pointer'
       } outline-none px-8 py-2 text-base ${
         rounded ? 'rounded-full' : 'rounded-[8.73529px]'
       } ${loading ? 'flex justify-center items-center' : ''} ${className}`,
@@ -60,7 +60,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
   return link ? (
     <Link href={href} onClick={onClick}>
       {loading ? (
-        <PuffLoader size={loadingSpinnerSize} color="inherit" />
+        <PuffLoader size={loadingSpinnerSize} color="#000" />
       ) : (
         <div className={style}>{children}</div>
       )}
@@ -68,7 +68,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
   ) : (
     <button disabled={disabled} className={style} type={type} onClick={onClick}>
       {loading ? (
-        <PuffLoader size={loadingSpinnerSize} color="inherit" />
+        <PuffLoader size={loadingSpinnerSize} color="#000" />
       ) : (
         children
       )}
