@@ -3,12 +3,12 @@ import React from 'react';
 import Navbar from '../common/Navbar';
 import Footer from '../components/landing-page/Footer';
 
-interface LandingPageLayoutProps {
+interface ShopLayoutProps {
   children: React.ReactNode;
   compact?: boolean;
 }
 
-const ShopLayout: React.FC<LandingPageLayoutProps> = ({
+const ShopLayout: React.FC<ShopLayoutProps> = ({
   children,
   compact = false,
 }) => {
