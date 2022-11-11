@@ -9,15 +9,18 @@ import Conditional from './Conditional';
 import TrueCondition from './TrueCondition';
 import FalseCondition from './FalseCondition';
 import { CartItem as TCartItem } from '../types';
+import Loadable from './Loadable';
 
 interface CartIconProps {
   onRemoveCartItem: CartItemProps['onDelete'];
   items: TCartItem[];
+  isFetching: boolean;
 }
 
 export const CartIcon: React.FC<CartIconProps> = ({
   onRemoveCartItem,
   items,
+  isFetching,
 }) => {
   return (
     <Popover className="relative">
@@ -58,35 +61,39 @@ export const CartIcon: React.FC<CartIconProps> = ({
             leaveTo="opacity-0 translate-y-1"
           >
             <Popover.Panel className="absolute top-full left-0 mt-5 bg-white rounded-lg shadow-lg shadow-gray-300/50 px-7 py-4 w-max">
-              <Conditional condition={(items && items?.length > 0) || false}>
-                <TrueCondition>
-                  <h2 className="mb-5 font-black text-xl">سبد خرید</h2>
+              <Loadable isLoading={isFetching}>
+                <Conditional condition={(items && items?.length > 0) || false}>
+                  <TrueCondition>
+                    <h2 className="mb-5 font-black text-xl">سبد خرید</h2>
 
-                  <div className="space-y-5">
-                    {items?.map((item) => (
-                      <CartItem
-                        key={item.id}
-                        {...item}
-                        sm
-                        onDelete={onRemoveCartItem}
-                      />
-                    ))}
-                  </div>
+                    <div className="space-y-5">
+                      {items?.map((item) => (
+                        <CartItem
+                          key={item.id}
+                          {...item}
+                          sm
+                          onDelete={onRemoveCartItem}
+                        />
+                      ))}
+                    </div>
 
-                  <AppButton
-                    link
-                    href="/shop/cart"
-                    onClick={() => close()}
-                    className="mt-5 w-full text-center"
-                  >
-                    <p>نهایی سازی</p>
-                  </AppButton>
-                </TrueCondition>
+                    <AppButton
+                      link
+                      href="/shop/cart"
+                      onClick={() => close()}
+                      className="mt-5 w-full text-center"
+                    >
+                      <p>نهایی سازی</p>
+                    </AppButton>
+                  </TrueCondition>
 
-                <FalseCondition>
-                  <p className="text-center font-bold">سبد خرید شما خالی است</p>
-                </FalseCondition>
-              </Conditional>
+                  <FalseCondition>
+                    <p className="text-center font-bold">
+                      سبد خرید شما خالی است
+                    </p>
+                  </FalseCondition>
+                </Conditional>
+              </Loadable>
             </Popover.Panel>
           </Transition>
         </>
