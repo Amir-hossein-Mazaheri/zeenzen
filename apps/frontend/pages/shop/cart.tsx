@@ -60,6 +60,7 @@ const CartPage: NextPageWithLayout = () => {
     totalPrice,
     totalPriceWithDiscount,
     isLoading,
+    isFetching,
     refetchCart,
     id: cartId,
   } = useCart();
@@ -107,7 +108,7 @@ const CartPage: NextPageWithLayout = () => {
                 titleSize="lg"
                 className="px-7 py-12 basis-2/3"
               >
-                <Loadable isLoading={isLoading || false}>
+                <Loadable isLoading={!!(isLoading || isFetching)}>
                   <div className="space-y-10">
                     {items?.map((item) => (
                       <CartItem
@@ -126,50 +127,54 @@ const CartPage: NextPageWithLayout = () => {
                 titleSize="lg"
                 className="basis-1/4 sticky top-12"
               >
-                <form onSubmit={handlePayment}>
-                  <PaymentMethods
-                    className="mb-5 mt-2"
-                    defaultValue={paymentMethod}
-                    onChange={handleSetPaymentMethod}
-                    paymentMethods={paymentMethods}
-                  />
-
-                  <CartPriceStatus
-                    totalPrice={totalPrice.toString()}
-                    totalPriceWithDiscount={
-                      totalPriceWithDiscount?.toString() ||
-                      totalPrice.toString()
-                    }
-                    className="mb-8"
-                  />
-
-                  {hasDiscount && (
-                    <PriceTag
-                      crossed
-                      price={totalPrice}
-                      prefix="مجموع پرداختی"
-                      fontSize="text-xl"
-                      color="text-light-red"
-                      crossedColor="before:bg-light-red"
+                <Loadable isLoading={!!(isLoading || isFetching)}>
+                  <form onSubmit={handlePayment}>
+                    <PaymentMethods
+                      className="mb-5 mt-2"
+                      defaultValue={paymentMethod}
+                      onChange={handleSetPaymentMethod}
+                      paymentMethods={paymentMethods}
                     />
-                  )}
 
-                  <PriceTag
-                    price={
-                      !(totalPriceWithDiscount && hasDiscount)
-                        ? totalPrice
-                        : totalPriceWithDiscount
-                    }
-                    prefix={
-                      !hasDiscount ? 'مجموع پرداختی' : 'مجموع پرداختی با تخفیف'
-                    }
-                    fontSize="text-xl"
-                  />
+                    <CartPriceStatus
+                      totalPrice={totalPrice.toString()}
+                      totalPriceWithDiscount={
+                        totalPriceWithDiscount?.toString() ||
+                        totalPrice.toString()
+                      }
+                      className="mb-8"
+                    />
 
-                  <AppButton className="w-full" type="submit">
-                    <p>پرداخت</p>
-                  </AppButton>
-                </form>
+                    {hasDiscount && (
+                      <PriceTag
+                        crossed
+                        price={totalPrice}
+                        prefix="مجموع پرداختی"
+                        fontSize="text-xl"
+                        color="text-light-red"
+                        crossedColor="before:bg-light-red"
+                      />
+                    )}
+
+                    <PriceTag
+                      price={
+                        !(totalPriceWithDiscount && hasDiscount)
+                          ? totalPrice
+                          : totalPriceWithDiscount
+                      }
+                      prefix={
+                        !hasDiscount
+                          ? 'مجموع پرداختی'
+                          : 'مجموع پرداختی با تخفیف'
+                      }
+                      fontSize="text-xl"
+                    />
+
+                    <AppButton className="w-full" type="submit">
+                      <p>پرداخت</p>
+                    </AppButton>
+                  </form>
+                </Loadable>
               </ShadowBox>
             </div>
           </div>
