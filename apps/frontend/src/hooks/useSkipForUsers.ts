@@ -18,7 +18,6 @@ export default function useSkipForUsers() {
       icon: 'info',
     });
 
-    // router.replace("/");
     router.back();
   }
 }

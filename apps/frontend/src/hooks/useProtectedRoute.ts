@@ -22,7 +22,7 @@ export default function useProtectedRoute(userRole = UserRole.Customer) {
       icon: 'error',
     });
 
-    router.replace('/signin');
+    router.back();
   }
 
   return user;
