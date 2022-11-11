@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GetStaticProps } from 'next';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Course, CourseLevel, usePaginatedCoursesQuery } from '@zeenzen/data';
 import {
@@ -19,6 +20,7 @@ import ShopLayout from '../../src/layouts/ShopLayout';
 import SidebarSkeleton from '../../src/common/Skeleton/SidebarSkeleton';
 import useUiStore from '../../src/store/useUiStore';
 import useFilterStore from '../../src/store/useFilterStore';
+import addToTitle from '../../src/utils/addToTitle';
 
 const Courses = dynamic(() => import('../../src/components/shop/Courses'));
 const FilterBar = dynamic(() => import('../../src/components/shop/FilterBar'));
@@ -94,72 +96,78 @@ const ShopPage: NextPageWithLayout = () => {
   };
 
   return (
-    <div>
-      <h1 className="font-extrabold text-4xl mb-12">دوره های فروشگاه</h1>
+    <>
+      <Head>
+        <title>{addToTitle('دوره ها')}</title>
+      </Head>
 
       <div>
-        {/* part for search and top bar */}
-        <div className="mb-20">
-          <FilterBar
-            courseLevelValue={levels.at(-1)?.value || ''}
-            onCourseLevelChange={handleAddLevelToFilter}
-            courseCategoryValue={categories?.at(-1)?.value || ''}
-            onCourseCategoryChange={handleAddCategoryToFilter}
-          />
+        <h1 className="font-extrabold text-4xl mb-12">دوره های فروشگاه</h1>
 
-          <div className="mt-10">
-            <FilterList
-              filters={[...levels, ...categories]}
-              onEachFilterClose={handleRemoveFilter}
-              onClearAllFilters={handleClearAllFilters}
+        <div>
+          {/* part for search and top bar */}
+          <div className="mb-20">
+            <FilterBar
+              courseLevelValue={levels.at(-1)?.value || ''}
+              onCourseLevelChange={handleAddLevelToFilter}
+              courseCategoryValue={categories?.at(-1)?.value || ''}
+              onCourseCategoryChange={handleAddCategoryToFilter}
             />
-          </div>
-        </div>
 
-        {/*part for courses and filter section */}
-        <div className="flex flex-wrap gap-10 w-full">
-          <div className="md:basis-1/5 md:block hidden basis-full grow">
-            <Loadable
-              fragment
-              center={false}
-              isLoading={isLoading}
-              skeleton={<SidebarSkeleton />}
-            >
-              <CourseSidebar
-                title={sidebar.title}
-                description={sidebar.description}
+            <div className="mt-10">
+              <FilterList
+                filters={[...levels, ...categories]}
+                onEachFilterClose={handleRemoveFilter}
+                onClearAllFilters={handleClearAllFilters}
               />
-            </Loadable>
+            </div>
           </div>
 
-          <div className="md:basis-3/4 basis-full">
-            <Courses
-              courses={data?.paginatedCourses?.courses as Course[]}
-              isFetching={isLoading}
-              onEachCourseMouseEnter={handleSidebarSetTitle}
-              onEachCourseMouseLeave={resetShopSidebar}
-              gap="gap-8"
-              isSm
-            />
+          {/*part for courses and filter section */}
+          <div className="flex flex-wrap gap-10 w-full">
+            <div className="md:basis-1/5 md:block hidden basis-full grow">
+              <Loadable
+                fragment
+                center={false}
+                isLoading={isLoading}
+                skeleton={<SidebarSkeleton />}
+              >
+                <CourseSidebar
+                  title={sidebar.title}
+                  description={sidebar.description}
+                />
+              </Loadable>
+            </div>
 
-            {data?.paginatedCourses.totalPages &&
-              data.paginatedCourses.totalPages > 1 && (
-                <div className="mt-8 flex justify-center">
-                  <Pagination
-                    activePage={page}
-                    pagesCount={data?.paginatedCourses.totalPages}
-                    onClick={setPage}
-                    onPrev={() => setPage((currPage) => currPage - 1)}
-                    onNext={() => setPage((currPage) => currPage + 1)}
-                    hasNext={data.paginatedCourses.hasNext}
-                    hasPrev={data.paginatedCourses.hasPrev}
-                  />
-                </div>
-              )}
+            <div className="md:basis-3/4 basis-full">
+              <Courses
+                courses={data?.paginatedCourses?.courses as Course[]}
+                isFetching={isLoading}
+                onEachCourseMouseEnter={handleSidebarSetTitle}
+                onEachCourseMouseLeave={resetShopSidebar}
+                gap="gap-8"
+                isSm
+              />
+
+              {data?.paginatedCourses.totalPages &&
+                data.paginatedCourses.totalPages > 1 && (
+                  <div className="mt-8 flex justify-center">
+                    <Pagination
+                      activePage={page}
+                      pagesCount={data?.paginatedCourses.totalPages}
+                      onClick={setPage}
+                      onPrev={() => setPage((currPage) => currPage - 1)}
+                      onNext={() => setPage((currPage) => currPage + 1)}
+                      hasNext={data.paginatedCourses.hasNext}
+                      hasPrev={data.paginatedCourses.hasPrev}
+                    />
+                  </div>
+                )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { ChangeEventHandler } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
+import Head from 'next/head';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useLimitedUpdateUserMutation } from '@zeenzen/data';
@@ -19,6 +20,7 @@ import useAlert from '../../../src/hooks/useAlert';
 import useProtectedRoute from '../../../src/hooks/useProtectedRoute';
 import getPasswordRegex from '../../../src/utils/getPasswordRegex';
 import useToast from '../../../src/hooks/useToast';
+import addToTitle from '../../../src/utils/addToTitle';
 
 interface UserProfileFields {
   firstname: string;
@@ -134,72 +136,82 @@ const UserProfilePage: NextPageWithLayout = () => {
   };
 
   return (
-    <Loadable isLoading={loading}>
-      <div className="grow">
-        <div className="flex justify-center">
-          <Avatar image={user?.avatar?.fullPath} width={200} height={200} />
-        </div>
+    <>
+      <Head>
+        <title>
+          {user
+            ? addToTitle(`پروفایل کاربری ${user?.firstname} ${user?.lastname}`)
+            : addToTitle('پروفایل کاربری')}
+        </title>
+      </Head>
 
-        <form>
-          <div className="flex justify-center mt-5">
-            <AppButton outline className="relative cursor-pointer">
-              <span>انتخاب عکس</span>
-              <input
-                type="file"
-                onChange={handleChangeAvatar}
-                className="absolute inset-0 opacity-0 cursor-pointer"
-              />
-            </AppButton>
+      <Loadable isLoading={loading}>
+        <div className="grow">
+          <div className="flex justify-center">
+            <Avatar image={user?.avatar?.fullPath} width={200} height={200} />
           </div>
-        </form>
 
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(handleUserProfileUpdate)}>
-            <div className="space-y-8 my-12">
-              <AppInput
-                name="firstname"
-                label="نام:"
-                placeholder="نام خود را وارد کنید"
-                defaultValue={user?.firstname || ''}
-              />
-              <AppInput
-                name="lastname"
-                label="نام خانوادگی:"
-                placeholder="نام خانوادگی خود را وارد کنید"
-                defaultValue={user?.lastname || ''}
-              />
-              <AppInput
-                name="email"
-                label="ایمیل:"
-                placeholder="ایمیل خود را وارد کنید"
-                defaultValue={user?.email}
-              />
-              <PasswordInput
-                name="password"
-                label="رمز عبور فعلی: "
-                placeholder=""
-              />
-              <PasswordInput
-                name="newPassword"
-                label="رمز عبور جدید:"
-                placeholder=""
-              />
-              <PasswordInput
-                name="repeatNewPassword"
-                label="تکرار رمز عبور جدید:"
-                placeholder=""
-              />
+          <form>
+            <div className="flex justify-center mt-5">
+              <AppButton outline className="relative cursor-pointer">
+                <span>انتخاب عکس</span>
+                <input
+                  type="file"
+                  onChange={handleChangeAvatar}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+              </AppButton>
             </div>
           </form>
-        </FormProvider>
 
-        <div className="flex justify-end">
-          <AppButton type="submit">
-            <span className="font-semibold">اعمال تغییرات</span>
-          </AppButton>
+          <FormProvider {...methods}>
+            <form onSubmit={methods.handleSubmit(handleUserProfileUpdate)}>
+              <div className="space-y-8 my-12">
+                <AppInput
+                  name="firstname"
+                  label="نام:"
+                  placeholder="نام خود را وارد کنید"
+                  defaultValue={user?.firstname || ''}
+                />
+                <AppInput
+                  name="lastname"
+                  label="نام خانوادگی:"
+                  placeholder="نام خانوادگی خود را وارد کنید"
+                  defaultValue={user?.lastname || ''}
+                />
+                <AppInput
+                  name="email"
+                  label="ایمیل:"
+                  placeholder="ایمیل خود را وارد کنید"
+                  defaultValue={user?.email}
+                />
+                <PasswordInput
+                  name="password"
+                  label="رمز عبور فعلی: "
+                  placeholder=""
+                />
+                <PasswordInput
+                  name="newPassword"
+                  label="رمز عبور جدید:"
+                  placeholder=""
+                />
+                <PasswordInput
+                  name="repeatNewPassword"
+                  label="تکرار رمز عبور جدید:"
+                  placeholder=""
+                />
+              </div>
+            </form>
+          </FormProvider>
+
+          <div className="flex justify-end">
+            <AppButton type="submit">
+              <span className="font-semibold">اعمال تغییرات</span>
+            </AppButton>
+          </div>
         </div>
-      </div>
-    </Loadable>
+      </Loadable>
+    </>
   );
 };
 
