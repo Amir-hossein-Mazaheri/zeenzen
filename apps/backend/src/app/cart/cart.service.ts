@@ -183,7 +183,14 @@ export class CartService {
       )
       .getRawOne<{ totalPrice: number; totalPriceWithDiscount: number }>();
 
-    return { ...cart, totalPrice, totalPriceWithDiscount };
+    console.log('cart total price: ', totalPrice);
+    console.log('cart total price with discount: ', totalPriceWithDiscount);
+
+    return {
+      ...cart,
+      totalPrice: totalPrice || '0.00',
+      totalPriceWithDiscount: totalPriceWithDiscount || '0.00',
+    };
   }
 
   async addItem(
