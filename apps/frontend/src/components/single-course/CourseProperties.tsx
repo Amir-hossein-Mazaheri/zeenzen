@@ -35,7 +35,13 @@ const CourseProperties: React.FC<Course> = ({
 }) => {
   const { data } = useCourseQuery(graphqlClient, { courseId: +id });
 
-  const { isInCart, type, id: cartId, refetchCart } = useIsInCart(id);
+  const {
+    isInCart,
+    type,
+    id: cartId,
+    refetchCart,
+    isFetching,
+  } = useIsInCart(id);
 
   const addCartItemMutation = useAddCartItemMutation(graphqlClient);
 
@@ -86,7 +92,7 @@ const CourseProperties: React.FC<Course> = ({
       successMessage();
     } catch (error) {
       getErrorMessages(error).map((errorMessage) =>
-        toast({}).fire({
+        toast().fire({
           title: errorMessage,
           icon: 'error',
         })
@@ -139,11 +145,10 @@ const CourseProperties: React.FC<Course> = ({
         className="w-full font-bold py-3 flex justify-center items-center gap-2"
         disabled={isInCart}
         onClick={handleAddToCart}
-        loading={addCartItemMutation.isLoading}
+        loading={addCartItemMutation.isLoading || isFetching}
       >
         {isInCart ? (
           <>
-            {/* <CheckCircleIcon width={30} height={30} /> */}
             <FontAwesomeIcon icon={faCircleCheck} />
             <p className="text-sm">به سبد خرید اضافه شده است.</p>
           </>
