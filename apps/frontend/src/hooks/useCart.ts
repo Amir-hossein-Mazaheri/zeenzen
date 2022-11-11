@@ -15,6 +15,7 @@ export default function useCart() {
   const {
     data,
     isLoading,
+    isFetching,
     error,
     refetch: refetchCart,
   } = useCartQuery(graphqlClient, {
@@ -30,6 +31,7 @@ export default function useCart() {
       type: CartType.DB,
       id: user?.cart?.id,
       isLoading,
+      isFetching,
       refetchCart,
       totalPrice: data?.cart.totalPrice || 0,
       totalPriceWithDiscount: data?.cart.totalPriceWithDiscount || 0,
