@@ -3,6 +3,7 @@ import { useLogoutMutation } from '@zeenzen/data';
 import { graphqlClient } from '@zeenzen/common';
 
 import useToast from './useToast';
+import useUser from './useUser';
 
 interface UseLogoutOptions {
   retry?: number;
@@ -10,6 +11,8 @@ interface UseLogoutOptions {
 }
 
 export default function useLogout(options?: UseLogoutOptions) {
+  const { refetch: refetchUser } = useUser(false);
+
   const logoutMutation = useLogoutMutation(graphqlClient, {
     retry: options?.retry || 3,
     retryDelay: options?.retryDelay || 500,
@@ -33,7 +36,10 @@ export default function useLogout(options?: UseLogoutOptions) {
             icon: 'error',
           });
         },
+        onSettled() {
+          refetchUser();
+        },
       }
     );
-  }, [logoutMutation, toast]);
+  }, [logoutMutation, refetchUser, toast]);
 }
