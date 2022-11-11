@@ -21,6 +21,7 @@ import { NextPageWithLayout } from '../_app';
 import PaymentMethods, {
   PaymentMethod,
 } from '../../src/components/shop/PaymentMethods';
+import CartPriceStatus from '../../src/components/shop/CartPriceStatus';
 
 const paymentMethods = [
   {
@@ -78,11 +79,14 @@ const CartPage: NextPageWithLayout = () => {
     event.preventDefault();
 
     console.log(event);
+    console.log(paymentMethod);
   };
 
   return (
     <>
-      <Head>{addToTitle('سبد خرید')}</Head>
+      <Head>
+        <title>{addToTitle('سبد خرید')}</title>
+      </Head>
 
       <Conditional condition={(items?.length || 0) > 0}>
         <FalseCondition>
@@ -128,6 +132,15 @@ const CartPage: NextPageWithLayout = () => {
                     defaultValue={paymentMethod}
                     onChange={handleSetPaymentMethod}
                     paymentMethods={paymentMethods}
+                  />
+
+                  <CartPriceStatus
+                    totalPrice={totalPrice.toString()}
+                    totalPriceWithDiscount={
+                      totalPriceWithDiscount?.toString() ||
+                      totalPrice.toString()
+                    }
+                    className="mb-8"
                   />
 
                   {hasDiscount && (
