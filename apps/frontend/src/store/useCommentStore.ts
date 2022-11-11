@@ -3,12 +3,14 @@ import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
 import { isProd } from '@zeenzen/common';
 
-interface CommentStore {
+interface InitialState {
   isReplyCommentModalOpen: boolean;
   parentCommentId: string;
   commentContent: string;
   replyContent: string;
+}
 
+interface CommentStore extends InitialState {
   closeReplyCommentModal: () => void;
   openReplyCommentModal: (parentCommentId: string) => void;
   setCommentContent: (content: string) => void;
@@ -16,13 +18,17 @@ interface CommentStore {
   replyComment: (succeeded: boolean) => void;
 }
 
+const initialState: InitialState = {
+  isReplyCommentModalOpen: false,
+  parentCommentId: '',
+  commentContent: '',
+  replyContent: '',
+};
+
 const useCommentStore = create(
   devtools(
     immer<CommentStore>((set) => ({
-      isReplyCommentModalOpen: false,
-      parentCommentId: '',
-      commentContent: '',
-      replyContent: '',
+      ...initialState,
 
       closeReplyCommentModal: () => {
         set((comment) => {

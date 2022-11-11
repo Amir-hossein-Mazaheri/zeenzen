@@ -3,20 +3,26 @@ import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
 import { isProd } from '@zeenzen/common';
 
-interface UserStore {
+interface InitialState {
   email: string;
   password: string;
+}
 
+interface UserStore extends InitialState {
   preSignUp: (credentials: { email: string; password: string }) => void;
   signUp: (email: string) => void;
   signUpFailed: () => void;
 }
 
+const initialState: InitialState = {
+  email: '',
+  password: '',
+};
+
 const useUserStore = create(
   devtools(
     immer<UserStore>((set) => ({
-      email: '',
-      password: '',
+      ...initialState,
 
       preSignUp: ({ email, password }) => {
         set((user) => {
