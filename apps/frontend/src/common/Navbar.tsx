@@ -36,6 +36,10 @@ const pages = [
     title: 'راه های ارتباطی',
     link: '/contact-us',
   },
+  {
+    title: 'از امیرحسین بپرس',
+    link: '/ask-amirhossein',
+  },
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
