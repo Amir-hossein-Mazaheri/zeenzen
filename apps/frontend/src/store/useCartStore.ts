@@ -5,19 +5,25 @@ import { isProd, Types } from '@zeenzen/common';
 
 import persistCart from '../utils/persistCart';
 
-interface CartStore {
+interface InitialState {
   items: Types.CartItem[];
+}
 
+interface CartStore extends InitialState {
   loadCartItems: () => void;
   addCartItem: (item: Types.CartItem) => void;
   removeCartItem: (courseId: Types.CartItem['id']) => void;
   emptyCart: () => void;
 }
 
+const initialState: InitialState = {
+  items: [],
+};
+
 const useCartStore = create(
   devtools(
     immer<CartStore>((set) => ({
-      items: [],
+      ...initialState,
 
       loadCartItems: () => {
         set((cart) => {
