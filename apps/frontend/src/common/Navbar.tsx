@@ -44,7 +44,7 @@ const pages = [
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const { isAuthenticated, user } = useUser();
-  const { items, type, id: cartId, refetchCart } = useCart();
+  const { items, type, id: cartId, refetchCart, isFetching } = useCart();
 
   const { route } = useRouter();
 
@@ -74,7 +74,11 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
         <ul className="flex gap-6 items-center">
           <li>
-            <CartIcon items={items || []} onRemoveCartItem={removeCartItem} />
+            <CartIcon
+              items={items || []}
+              isFetching={isFetching || false}
+              onRemoveCartItem={removeCartItem}
+            />
           </li>
           <Conditional condition={isAuthenticated}>
             <TrueCondition>
