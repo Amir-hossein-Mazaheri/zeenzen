@@ -2,7 +2,7 @@ import { useMeQuery } from '@zeenzen/data';
 import { graphqlClient } from '@zeenzen/common';
 
 export default function useUser(enabled = true) {
-  const { data, isFetching, error, refetch } = useMeQuery(
+  const { data, isLoading, error, refetch } = useMeQuery(
     graphqlClient,
     {},
     {
@@ -13,8 +13,8 @@ export default function useUser(enabled = true) {
   );
 
   return {
-    loading: isFetching,
-    isAuthenticated: !!(!isFetching && data?.me && !error),
+    loading: isLoading,
+    isAuthenticated: !!(!isLoading && data?.me && !error),
     role: data?.me.role,
     user: data?.me,
     refetch,
