@@ -26,7 +26,7 @@ async function bootstrap() {
   const { redis, sessionSecret } = configuration();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(process.cwd(), 'public'));
 
   app.enableCors({
     credentials: true,
@@ -38,6 +38,8 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   app.use(cookieParser());
+
+  app.disable('x-powered-by');
 
   app.use(
     session({
@@ -53,7 +55,7 @@ async function bootstrap() {
       }),
       secret: sessionSecret,
       saveUninitialized: false,
-      resave: false,
+      resave: true,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
       },
