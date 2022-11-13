@@ -1,0 +1,498 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ask_amirhossein {
+  id          Int       @id(map: "PK_24de23185c763126b6bd0b29d12") @default(autoincrement())
+  question    String    @db.VarChar(1000)
+  email       String    @db.VarChar(100)
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  user_id     Int?
+  answer      String?   @db.VarChar(1000)
+  answered_at DateTime? @db.Date
+  user        user?     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_67644a1a9fe05bd5dd361d0eb73")
+}
+
+model avatar {
+  id            String   @id(map: "PK_50e36da9d45349941038eaf149d") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  original_name String   @db.VarChar
+  full_path     String   @db.VarChar(1000)
+  created_at    DateTime @default(now()) @db.Timestamp(6)
+  name          String   @db.VarChar
+  user          user?
+}
+
+model cart {
+  id         String      @id(map: "PK_c524ec48751b9b5bcfbf6e59be7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime    @default(now()) @db.Timestamp(6)
+  cart_item  cart_item[]
+  user       user?
+}
+
+model cart_item {
+  id                       Int     @id(map: "PK_bd94725aa84f8cf37632bcde997") @default(autoincrement())
+  quantity                 Int
+  cart_id                  String? @db.Uuid
+  course_id                Int?
+  unit_price               Decimal @db.Decimal(20, 2)
+  unit_price_with_discount Decimal @db.Decimal(20, 2)
+  cart                     cart?   @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6b2a4f1f533d89d218e70db941")
+  course                   course? @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_d0599514eccb2bf2561849f4ccc")
+}
+
+model category {
+  id                         Int                          @id(map: "PK_9c4e4a89e3674fc9f382d733f03") @default(autoincrement())
+  label                      String                       @db.VarChar
+  created_at                 DateTime                     @default(now()) @db.Timestamp(6)
+  updated_at                 DateTime                     @default(now()) @db.Timestamp(6)
+  created_by_id              Int?
+  user                       user?                        @relation(fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_d179629f2eb1981cb3055f4774b")
+  course_categories_category course_categories_category[]
+}
+
+model comment {
+  id            Int       @id(map: "PK_0b0e4bbc8415ec426f87f3a88e2") @default(autoincrement())
+  content       String
+  is_published  Boolean   @default(false)
+  created_at    DateTime  @default(now()) @db.Timestamp(6)
+  updated_at    DateTime  @default(now()) @db.Timestamp(6)
+  parent_id     Int?
+  course_id     Int?
+  deleted_at    DateTime? @db.Timestamp(6)
+  author_id     Int?
+  course        course?   @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_2d70a4dcee01cc63e073a85802b")
+  user          user?     @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3ce66469b26697baa097f8da923")
+  comment       comment?  @relation("commentTocomment", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_8bd8d0985c0d077c8129fb4a209")
+  other_comment comment[] @relation("commentTocomment")
+}
+
+model coupon {
+  id                    Int                     @id(map: "PK_fcbe9d72b60eed35f46dc35a682") @default(autoincrement())
+  description           String                  @db.VarChar
+  code                  String                  @unique(map: "UQ_62d3c5b0ce63a82c48e86d904bc") @db.VarChar
+  expires_at            DateTime                @db.Date
+  apply_to_every_thing  Boolean                 @default(false)
+  created_at            DateTime                @default(now()) @db.Timestamp(6)
+  updated_at            DateTime                @default(now()) @db.Timestamp(6)
+  percent               Decimal                 @db.Decimal(5, 2)
+  max_effect            Decimal?                @db.Decimal(20, 2)
+  course_coupons_coupon course_coupons_coupon[]
+}
+
+model course {
+  id                            Int                             @id(map: "PK_bf95180dd756fd204fb01ce4916") @default(autoincrement())
+  title                         String                          @db.VarChar
+  description                   String                          @db.VarChar
+  level                         course_level_enum               @default(MIXED)
+  participants_count            Int                             @default(0)
+  lectures_count                Int                             @default(0)
+  hours_count                   Int                             @default(0)
+  price                         Decimal                         @default(0) @db.Decimal(20, 2)
+  progress                      Decimal                         @default(0) @db.Decimal(5, 2)
+  created_at                    DateTime                        @default(now()) @db.Timestamp(6)
+  updated_at                    DateTime                        @default(now()) @db.Timestamp(6)
+  deleted_at                    DateTime?                       @db.Timestamp(6)
+  is_draft                      Boolean                         @default(true)
+  spot_player_course_id         String                          @db.VarChar
+  short_description             String                          @db.VarChar
+  pre_requirements_description  String?                         @db.VarChar
+  image_id                      String?                         @unique(map: "UQ_c2553cd2a197d697fc1c8a37c60") @db.Uuid
+  discount_percent              Decimal                         @default(0) @db.Decimal(5, 2)
+  course_image                  course_image?                   @relation(fields: [image_id], references: [id], onUpdate: NoAction, map: "FK_c2553cd2a197d697fc1c8a37c60")
+  cart_item                     cart_item[]
+  comment                       comment[]
+  course_categories_category    course_categories_category[]
+  course_coupons_coupon         course_coupons_coupon[]
+  course_instructors_instructor course_instructors_instructor[]
+  course_licenses_license       course_licenses_license[]
+  order_item                    order_item[]
+  pre_requirement               pre_requirement[]
+  question                      question[]
+  section                       section[]
+  user_courses_course           user_courses_course[]
+}
+
+model course_categories_category {
+  course_id   Int
+  category_id Int
+  course      course   @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_5c816c082df054a20c4df50f76c")
+  category    category @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a46d73cdebade5858b8696d6e47")
+
+  @@id([course_id, category_id], map: "PK_8afe3a0b3cd0e708787fc78c2b2")
+  @@index([course_id], map: "IDX_5c816c082df054a20c4df50f76")
+  @@index([category_id], map: "IDX_a46d73cdebade5858b8696d6e4")
+}
+
+model course_coupons_coupon {
+  course_id Int
+  coupon_id Int
+  course    course @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_4d9c9bf2098a2143843d47d43da")
+  coupon    coupon @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5e506dba5adf0e200a039146cac")
+
+  @@id([course_id, coupon_id], map: "PK_9c927d7ced7a691b90b6c64b533")
+  @@index([course_id], map: "IDX_4d9c9bf2098a2143843d47d43d")
+  @@index([coupon_id], map: "IDX_5e506dba5adf0e200a039146ca")
+}
+
+model course_image {
+  id          String   @id(map: "PK_c2553cd2a197d697fc1c8a37c60") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  image       String   @db.VarChar(1000)
+  cover_image String   @db.VarChar(1000)
+  course      course?
+}
+
+model course_instructors_instructor {
+  course_id     Int
+  instructor_id Int
+  course        course     @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_13379c99de35ffcafd648a30012")
+  instructor    instructor @relation(fields: [instructor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_678b8ef549c5e457789379cd7bc")
+
+  @@id([course_id, instructor_id], map: "PK_9bb390160c194890ff19dba97ee")
+  @@index([course_id], map: "IDX_13379c99de35ffcafd648a3001")
+  @@index([instructor_id], map: "IDX_678b8ef549c5e457789379cd7b")
+}
+
+model course_licenses_license {
+  course_id  Int
+  license_id Int
+  license    license @relation(fields: [license_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_74e3fb1d40ed891c607403df12e")
+  course     course  @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_7d1695ef14c23151b37ebaefc9d")
+
+  @@id([course_id, license_id], map: "PK_56b018a869dfaa930eef5d918d7")
+  @@index([license_id], map: "IDX_74e3fb1d40ed891c607403df12")
+  @@index([course_id], map: "IDX_7d1695ef14c23151b37ebaefc9")
+}
+
+model email_subscription {
+  id             Int      @id(map: "PK_3fab89deebd0355252568c36d0f") @default(autoincrement())
+  email          String   @unique(map: "UQ_fbfd28125a35bcee99ea58f1edb") @db.VarChar(100)
+  subscripted_at DateTime @default(now()) @db.Timestamp(6)
+}
+
+model error_log {
+  id                        String    @id(map: "PK_0284e7aa7afe77ea1ce1621c252") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  action                    String    @db.VarChar
+  error                     Json
+  time                      DateTime  @default(now()) @db.Timestamp(6)
+  server_performance_status Json
+  comment                   String    @default("")
+  deleted_at                DateTime? @db.Timestamp(6)
+}
+
+model expertise {
+  id            Int                  @id(map: "PK_0c1f773f9419573f6bc37eebb7f") @default(autoincrement())
+  label         String               @db.VarChar
+  created_at    DateTime             @default(now()) @db.Timestamp(6)
+  updated_at    DateTime             @default(now()) @db.Timestamp(6)
+  validated     Boolean              @default(false)
+  level         expertise_level_enum
+  instructor_id Int?
+  is_primary    Boolean              @default(false)
+  instructor    instructor?          @relation(fields: [instructor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_cdaa49e96bab264944840731ada")
+}
+
+model instructor {
+  id                            Int                             @id(map: "PK_ccc0348eefb581ca002c05ef2f3") @default(autoincrement())
+  about                         String                          @db.VarChar
+  created_at                    DateTime                        @default(now()) @db.Timestamp(6)
+  updated_at                    DateTime                        @default(now()) @db.Timestamp(6)
+  course_instructors_instructor course_instructors_instructor[]
+  expertise                     expertise[]
+  social                        social[]
+  user                          user?
+}
+
+model lecture {
+  id         Int       @id(map: "PK_2abef7c1e52b7b58a9f905c9643") @default(autoincrement())
+  label      String    @db.VarChar
+  duration   Int       @default(0)
+  created_at DateTime  @default(now()) @db.Timestamp(6)
+  updated_at DateTime  @default(now()) @db.Timestamp(6)
+  section_id Int?
+  deleted_at DateTime? @db.Timestamp(6)
+  section    section?  @relation(fields: [section_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_05b264a75ceaafc30411e2e986e")
+}
+
+model license {
+  id                      Int                       @id(map: "PK_f168ac1ca5ba87286d03b2ef905") @default(autoincrement())
+  license_code            String                    @db.VarChar
+  created_at              DateTime                  @default(now()) @db.Timestamp(6)
+  user_id                 Int?
+  license_id              String                    @db.VarChar
+  license_url             String                    @db.VarChar
+  user                    user?                     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_260c9bd19158aa10bf92ded088e")
+  course_licenses_license course_licenses_license[]
+}
+
+model order {
+  id             Int               @id(map: "PK_1031171c13130102495201e3e20") @default(autoincrement())
+  has_discount   Boolean           @default(false)
+  payment_method String            @db.VarChar
+  created_at     DateTime          @default(now()) @db.Timestamp(6)
+  user_id        Int?
+  status         order_status_enum @default(PENDING)
+  payment_id     String?           @unique(map: "UQ_28c756d4fd41223fedfbd2750e1") @db.Uuid
+  user           user?             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_199e32a02ddc0f47cd93181d8fd")
+  payment        payment?          @relation(fields: [payment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_28c756d4fd41223fedfbd2750e1")
+  order_item     order_item[]
+}
+
+model order_item {
+  id                       Int     @id(map: "PK_d01158fe15b1ead5c26fd7f4e90") @default(autoincrement())
+  quantity                 Int
+  course_id                Int?
+  order_id                 Int?
+  unit_price               Decimal @db.Decimal(20, 2)
+  unit_price_with_discount Decimal @db.Decimal(20, 2)
+  course                   course? @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3b4602d28a4ee57ecf0a1bfb138")
+  order                    order?  @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_e9674a6053adbaa1057848cddfa")
+}
+
+model payment {
+  id               String              @id(map: "PK_fcaec7df5adf9cac408c686b2ab") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  status           payment_status_enum
+  time             DateTime            @default(now()) @db.Timestamp(6)
+  user_id          Int?
+  amount           Decimal             @db.Decimal(20, 2)
+  payment_track_id Int?                @unique(map: "UQ_7d55836a9260520c6814569191d")
+  payment_id       String              @unique(map: "UQ_9fff60ac6ac1844ea4e0cfba67a")
+  payment_track    payment_track?      @relation(fields: [payment_track_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7d55836a9260520c6814569191d")
+  user             user?               @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c66c60a17b56ec882fcd8ec770b")
+  order            order?
+}
+
+model payment_track {
+  id                 Int      @id(map: "PK_d67805928ae885c3ada500cfa9d") @default(autoincrement())
+  id_pay_track_id    BigInt
+  track_id           String
+  card_number        String   @db.VarChar
+  hashed_card_number String   @db.VarChar
+  paid_date          DateTime @db.Date
+  verification_date  DateTime @db.Date
+  payment            payment?
+}
+
+model pre_requirement {
+  id          Int                        @id(map: "PK_b946bcac439293837773dfc800d") @default(autoincrement())
+  label       String                     @db.VarChar
+  description String
+  created_at  DateTime                   @default(now()) @db.Timestamp(6)
+  updated_at  DateTime                   @default(now()) @db.Timestamp(6)
+  deleted_at  DateTime?                  @db.Timestamp(6)
+  course_id   Int?
+  image       String                     @db.VarChar
+  level       pre_requirement_level_enum
+  course      course?                    @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_1a0b53568bd53d0835a94b0e9d4")
+}
+
+model question {
+  id                                  Int       @id(map: "PK_21e5786aa0ea704ae185a79b2d5") @default(autoincrement())
+  question                            String
+  answer                              String
+  created_at                          DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                          DateTime  @default(now()) @db.Timestamp(6)
+  who_asked_id                        Int?
+  who_answered_id                     Int?
+  deleted_at                          DateTime? @db.Timestamp(6)
+  is_closed                           Boolean   @default(false)
+  course_id                           Int?
+  course                              course?   @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_0842463861fea20d1c74eea4723")
+  user_question_who_answered_idTouser user?     @relation("question_who_answered_idTouser", fields: [who_answered_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3ca46176dae0d4a3ffc5d77e955")
+  user_question_who_asked_idTouser    user?     @relation("question_who_asked_idTouser", fields: [who_asked_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_511d4554441655da331df3c3d1a")
+}
+
+model report {
+  id          Int      @id(map: "PK_99e4d0bea58cba73c57f935a546") @default(autoincrement())
+  title       String   @db.VarChar
+  content     String   @db.VarChar(1000)
+  reported_at DateTime @default(now()) @db.Timestamp(6)
+  user_id     Int?
+  user        user?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c6686efa4cd49fa9a429f01bac8")
+}
+
+model section {
+  id          Int       @id(map: "PK_3c41d2d699384cc5e8eac54777d") @default(autoincrement())
+  label       String    @db.VarChar
+  duration    Int       @default(0)
+  description String
+  created_at  DateTime  @default(now()) @db.Timestamp(6)
+  updated_at  DateTime  @default(now()) @db.Timestamp(6)
+  deleted_at  DateTime? @db.Timestamp(6)
+  course_id   Int?
+  course      course?   @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7e12912705e3430a0bd74dad81f")
+  lecture     lecture[]
+}
+
+model social {
+  id            Int              @id(map: "PK_645aa1cff2b9f7b0e3e73d66b4d") @default(autoincrement())
+  type          social_type_enum
+  link          String           @db.VarChar
+  created_at    DateTime         @default(now()) @db.Timestamp(6)
+  updated_at    DateTime         @default(now()) @db.Timestamp(6)
+  instructor_id Int?
+  instructor    instructor?      @relation(fields: [instructor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_645b0384bc243d90ce4fdfbb757")
+}
+
+model ticket {
+  id             Int                  @id(map: "PK_d9a0835407701eb86f874474b7c") @default(autoincrement())
+  title          String               @db.VarChar
+  description    String
+  is_closed      Boolean              @default(false)
+  created_at     DateTime             @default(now()) @db.Timestamp(6)
+  closed_at      DateTime?            @db.Date
+  who_asked_id   Int?
+  priority       ticket_priority_enum
+  topic          ticket_topic_enum
+  user           user?                @relation(fields: [who_asked_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_452a6cd397d29a6056363bff8a0")
+  ticket_message ticket_message[]
+}
+
+model ticket_message {
+  id        Int      @id(map: "PK_7d7c7fbe3303c18b7dbd6f1ce19") @default(autoincrement())
+  sent_at   DateTime @default(now()) @db.Timestamp(6)
+  user_id   Int?
+  message   String   @db.VarChar(1000)
+  ticket_id Int?
+  ticket    ticket?  @relation(fields: [ticket_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4ad0ee7daf9203dfd269bde1274")
+  user      user?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f838848778b4d433c72cb87a6be")
+}
+
+model user {
+  id                                      Int                   @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
+  firstname                               String?               @db.VarChar(100)
+  lastname                                String?               @db.VarChar(100)
+  email                                   String                @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar(100)
+  phone_number                            String?               @unique(map: "UQ_01eea41349b6c9275aec646eee0") @db.VarChar(20)
+  role                                    user_role_enum        @default(CUSTOMER)
+  password                                String                @db.VarChar
+  scores                                  Decimal               @default(0) @db.Decimal(8, 2)
+  score_gain_rate                         Decimal               @default(1) @db.Decimal(4, 2)
+  created_at                              DateTime              @default(now()) @db.Timestamp(6)
+  updated_at                              DateTime              @default(now()) @db.Timestamp(6)
+  deleted_at                              DateTime?             @db.Timestamp(6)
+  cart_id                                 String?               @unique(map: "REL_c506b756aa0682057bf66bdb3d") @db.Uuid
+  instructor_id                           Int?                  @unique(map: "REL_11c03fb8b962b9a304677f462f")
+  avatar_id                               String?               @unique(map: "UQ_b777e56620c3f1ac0308514fc4c") @db.Uuid
+  instructor                              instructor?           @relation(fields: [instructor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_11c03fb8b962b9a304677f462f4")
+  avatar                                  avatar?               @relation(fields: [avatar_id], references: [id], onUpdate: NoAction, map: "FK_b777e56620c3f1ac0308514fc4c")
+  cart                                    cart?                 @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c506b756aa0682057bf66bdb3d3")
+  ask_amirhossein                         ask_amirhossein[]
+  category                                category[]
+  comment                                 comment[]
+  license                                 license[]
+  order                                   order[]
+  payment                                 payment[]
+  question_question_who_answered_idTouser question[]            @relation("question_who_answered_idTouser")
+  question_question_who_asked_idTouser    question[]            @relation("question_who_asked_idTouser")
+  report                                  report[]
+  ticket                                  ticket[]
+  ticket_message                          ticket_message[]
+  user_courses_course                     user_courses_course[]
+  user_log                                user_log[]
+}
+
+model user_courses_course {
+  user_id   Int
+  course_id Int
+  course    course @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_1b47fea24bd6fede2d4b241c765")
+  user      user   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_2ec90888221fddeaadfc23a8b69")
+
+  @@id([user_id, course_id], map: "PK_6dd699686985c05c3508b936c62")
+  @@index([course_id], map: "IDX_1b47fea24bd6fede2d4b241c76")
+  @@index([user_id], map: "IDX_2ec90888221fddeaadfc23a8b6")
+}
+
+model user_log {
+  id         String               @id(map: "PK_eca046d4b8c20d9309b35f07b69") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  status     user_log_status_enum
+  time       DateTime             @default(now()) @db.Timestamp(6)
+  user_id    Int?
+  deleted_at DateTime?            @db.Timestamp(6)
+  user       user?                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_86d86e827a8e203ef7d390e081e")
+}
+
+model validated_email {
+  id         Int      @id(map: "PK_b4f01b1cd40a9ef115ee4a1b1e8") @default(autoincrement())
+  email      String   @db.VarChar(100)
+  code       String   @db.VarChar
+  expires_at DateTime @db.Timestamp(6)
+}
+
+enum course_level_enum {
+  ELEMENTARY
+  INTERMEDIATE
+  ADVANCED
+  MIXED
+}
+
+enum expertise_level_enum {
+  LOW
+  JUNIOR
+  MEDIUM
+  MID_SENIOR
+  SENIOR
+  EXPERT
+}
+
+enum order_status_enum {
+  FULFILLED
+  PENDING
+  FAILED
+}
+
+enum payment_status_enum {
+  PENDING
+  REJECTED
+  FULFILLED
+  FAILED
+}
+
+enum pre_requirement_level_enum {
+  BASIC
+  MEDIUM
+  ADVANCED
+  EXPERT
+}
+
+enum social_type_enum {
+  INSTAGRAM
+  GITHUB
+  GITLAB
+  EMAIL
+  LINKEDIN
+  TELEGRAM
+  TWEETER
+  FACEBOOK
+  WHATSAPP
+  OTHER
+}
+
+enum ticket_priority_enum {
+  HIGHT
+  MODERATE
+  LOW
+}
+
+enum ticket_topic_enum {
+  COURSE
+  PAYMENT
+  IMPROVEMENT
+  OTHER
+}
+
+enum user_log_status_enum {
+  LOGGED_IN
+  LOGGED_OUT
+}
+
+enum user_role_enum {
+  CUSTOMER
+  INSTRUCTOR
+  ADMIN
+}

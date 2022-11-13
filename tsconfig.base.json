@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@zeenzen/common": ["libs/common/src/index.ts"],
-      "@zeenzen/data": ["libs/data/src/index.ts"]
+      "@zeenzen/data": ["libs/data/src/index.ts"],
+      "@zeenzen/database": ["libs/database/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
