@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { CartService } from './cart.service';
 import { CartResolver } from './cart.resolver';
@@ -15,6 +16,7 @@ import { UserModule } from '../user/user.module';
     TypeOrmModule.forFeature([Cart, CartItem]),
     UserModule,
     CourseModule,
+    DatabaseModule,
   ],
   providers: [CartService, CartResolver, CartItemResolver, CartItemService],
   exports: [TypeOrmModule, CartService],
