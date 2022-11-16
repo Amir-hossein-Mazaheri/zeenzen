@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '@zeenzen/database';
 import {
   DataSource,
   FindOptionsRelations,
@@ -22,26 +24,25 @@ import { Comment } from './entities/comment.entity';
 
 @Injectable()
 export class CommentService {
-  private readonly relations: FindOptionsRelations<Comment> = {};
-
   constructor(
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     @InjectRepository(Course) private courseRepository: Repository<Course>,
     @InjectRepository(User) private userRepository: Repository<User>,
     private dataSource: DataSource,
-    private courseService: CourseService
+    private courseService: CourseService,
+    private readonly prismaService: PrismaService
   ) {}
 
   getWhereOptions(id?: number, forUpdate = false) {
     return (user?: RequestUser) => {
-      const whereOptions: FindOptionsWhere<Comment> = {};
+      const whereOptions: Prisma.CommentWhereInput = {};
 
       if (id) {
         whereOptions.id = id;
       }
 
       if (forUpdate) {
-        whereOptions.author = { id: user.sub };
+        whereOptions.user = { id: user.sub };
       }
 
       if (user && user.role !== UserRole.ADMIN) {
@@ -56,14 +57,21 @@ export class CommentService {
     return (user?: RequestUser) =>
       (withDeleted = false) =>
       (relations: FindOptionsRelations<Comment> = {}) =>
-      async (whereOptions?: FindOptionsWhere<Comment>) => {
-        const comment = await this.commentRepository.findOne({
+      async (whereOptions?: Prisma.CommentWhereInput) => {
+        // const comment = await this.commentRepository.findOne({
+        //   where: {
+        //     ...this.getWhereOptions(id, forUpdate)(user),
+        //     ...whereOptions,
+        //   },
+        //   relations: { ...this.relations, ...relations },
+        //   withDeleted,
+        // });
+
+        const comment = await this.prismaService.comment.findFirst({
           where: {
             ...this.getWhereOptions(id, forUpdate)(user),
             ...whereOptions,
           },
-          relations: { ...this.relations, ...relations },
-          withDeleted,
         });
 
         if (!comment) {
@@ -75,47 +83,89 @@ export class CommentService {
   }
 
   async getAuthor(commentId: number) {
-    const a = await this.userRepository.findOneBy({
-      comments: { id: commentId },
+    // const a = await this.userRepository.findOneBy({
+    //   comments: { id: commentId },
+    // });
+
+    // console.log('a is: ', a);
+
+    // return a;
+    return await this.prismaService.user.findFirst({
+      where: {
+        comment: {
+          // TODO: I don't know what some do fix it
+          some: {
+            id: commentId,
+          },
+        },
+      },
     });
-
-    console.log('a is: ', a);
-
-    return a;
   }
 
   async getReplies(commentId: number) {
-    return await this.commentRepository.findBy({
-      parent: { id: commentId },
-      isPublished: true,
+    // return await this.commentRepository.findBy({
+    //   parent: { id: commentId },
+    //   isPublished: true,
+    // });
+    return await this.prismaService.comment.findMany({
+      where: {
+        parentId: commentId,
+        isPublished: true,
+      },
     });
   }
 
   async create({ content, courseId }: CreateCommentInput, user: RequestUser) {
     // const course = await this.courseService.validateCourse(+courseId);
-    const course = await this.courseRepository.findOneBy({ id: courseId });
-    const currUser = await this.userRepository.findOneBy({ id: user.sub });
 
-    const newComment = new Comment();
-    newComment.content = content;
-    newComment.course = course;
-    newComment.author = currUser;
+    // const course = await this.courseRepository.findOneBy({ id: courseId });
+    // const currUser = await this.userRepository.findOneBy({ id: user.sub });
 
-    await this.commentRepository.manager.save(newComment);
+    // const newComment = new Comment();
+    // newComment.content = content;
+    // newComment.course = course;
+    // newComment.author = currUser;
 
-    return newComment;
+    // await this.commentRepository.manager.save(newComment);
+
+    // return newComment;
+
+    return await this.prismaService.comment.create({
+      data: {
+        content,
+        course: {
+          connect: { id: courseId },
+        },
+        user: {
+          connect: {
+            id: user.sub,
+          },
+        },
+      },
+    });
   }
 
   //! Note: return all a single course related published comments or all comments if user is admin
   async findAll(courseId: number) {
-    return await this.commentRepository.find({
+    // return await this.commentRepository.find({
+    //   where: {
+    //     ...this.getWhereOptions()(),
+    //     course: { id: courseId },
+    //     parent: IsNull(),
+    //     isPublished: true,
+    //   },
+    //   relations: this.relations,
+    // });
+
+    return await this.prismaService.comment.findMany({
       where: {
         ...this.getWhereOptions()(),
         course: { id: courseId },
-        parent: IsNull(),
+        parentId: {
+          not: null,
+        },
         isPublished: true,
       },
-      relations: this.relations,
     });
   }
 
@@ -130,47 +180,83 @@ export class CommentService {
   ) {
     await this.validateComment(id, true)(user)()()();
 
-    const comment = await this.dataSource
-      .createQueryBuilder()
-      .update(Comment)
-      .set(updateCommentInput)
-      .where({ id })
-      .returning('*')
-      .execute();
+    // const comment = await this.dataSource
+    //   .createQueryBuilder()
+    //   .update(Comment)
+    //   .set(updateCommentInput)
+    //   .where({ id })
+    //   .returning('*')
+    //   .execute();
 
-    return toCamelCase(comment);
+    // return toCamelCase(comment);
+
+    return await this.prismaService.comment.update({
+      where: {
+        id,
+      },
+      data: updateCommentInput,
+    });
   }
 
   async reply({ content, parentId }: ReplyCommentInput, user: RequestUser) {
     const parentComment = await this.validateComment(parentId)()()({
       course: true,
-    })({ replies: IsNull() });
+    })({ comment: { NOT: null } });
 
     validateEntity(parentComment, 'comment');
 
-    const currUser = await this.userRepository.findOneBy({ id: user.sub });
+    // const currUser = await this.userRepository.findOneBy({ id: user.sub });
 
-    const newReply = new Comment();
-    newReply.content = content;
-    newReply.parent = parentComment;
-    newReply.course = parentComment.course;
-    newReply.author = currUser;
+    // const newReply = new Comment();
+    // newReply.content = content;
+    // newReply.parent = parentComment;
+    // newReply.course = parentComment.course;
+    // newReply.author = currUser;
 
-    await this.commentRepository.manager.save(newReply);
+    // await this.commentRepository.manager.save(newReply);
 
-    return newReply;
+    // return newReply;
+
+    return await this.prismaService.comment.create({
+      data: {
+        content,
+        // parentId: parentComment.id,
+        comment: {
+          connect: {
+            id: parentComment.id,
+          },
+        },
+        course: {
+          connect: {
+            id: parentComment.courseId,
+          },
+        },
+        user: {
+          connect: {
+            id: user.sub,
+          },
+        },
+      },
+    });
   }
 
   async remove(id: number) {
-    const comment = await this.validateComment(id)()()()();
+    await this.validateComment(id)()()()();
 
-    await this.commentRepository
-      .createQueryBuilder()
-      .softDelete()
-      .where({ id })
-      .execute();
+    // await this.commentRepository
+    //   .createQueryBuilder()
+    //   .softDelete()
+    //   .where({ id })
+    //   .execute();
 
-    return comment;
+    // return comment;
+
+    // TODO: make it soft delete
+    return await this.prismaService.comment.delete({
+      where: {
+        id,
+      },
+    });
   }
 
   async restore(id: number) {

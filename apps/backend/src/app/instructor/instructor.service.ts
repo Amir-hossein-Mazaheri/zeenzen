@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOptionsRelations, IsNull, Repository } from 'typeorm';
+import { PrismaService } from '@zeenzen/database';
 
 import { CreateInstructorInput } from './dto/create-instructor.input';
 import { UpdateInstructorInput } from './dto/update-instructor.input';
@@ -13,11 +14,11 @@ import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class InstructorService {
-  private instructorRelations: FindOptionsRelations<Instructor> = {
-    expertises: true,
-    socials: true,
-    courses: true,
-  };
+  // private instructorRelations: FindOptionsRelations<Instructor> = {
+  //   expertises: true,
+  //   socials: true,
+  //   courses: true,
+  // };
 
   constructor(
     @InjectRepository(Instructor)
@@ -25,13 +26,23 @@ export class InstructorService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private dataSource: DataSource,
-    private logsService: LogsService
+    private logsService: LogsService,
+    private readonly prismaService: PrismaService
   ) {}
 
   async validateInstructor(id: number) {
-    const instructor = await this.instructorRepository.findOne({
+    // const instructor = await this.instructorRepository.findOne({
+    //   where: { id },
+    //   relations: this.instructorRelations,
+    // });
+
+    const instructor = await this.prismaService.instructor.findUnique({
       where: { id },
-      relations: this.instructorRelations,
+      include: {
+        expertise: true,
+        social: true,
+        // TODO: add courses after fixation of prisma schema
+      },
     });
 
     if (!instructor) {
@@ -42,66 +53,126 @@ export class InstructorService {
   }
 
   async getUser(instructorId: number) {
-    return this.userRepository.findOneBy({ instructor: { id: instructorId } });
+    // return this.userRepository.findOneBy({ instructor: { id: instructorId } });
+    return await this.prismaService.user.findFirst({
+      where: {
+        instructor: {
+          id: instructorId,
+        },
+      },
+    });
   }
 
   async getExpertises(instructorId: number) {
-    return await this.dataSource
-      .getRepository(Expertise)
-      .findBy({ instructor: { id: instructorId } });
+    // return await this.dataSource
+    //   .getRepository(Expertise)
+    //   .findBy({ instructor: { id: instructorId } });
+
+    return await this.prismaService.expertise.findFirst({
+      where: {
+        instructor: {
+          id: instructorId,
+        },
+      },
+    });
   }
 
   async create({ about, userId }: CreateInstructorInput) {
-    const queryRunner = this.dataSource.createQueryRunner();
+    return await this.prismaService.$transaction(async (tx) => {
+      const user = await tx.user.findFirst({
+        where: {
+          id: userId,
+          instructor: {
+            NOT: null,
+          },
+        },
+      });
 
-    const user = await this.userRepository.findOneBy({
-      id: userId,
-      instructor: IsNull(),
+      if (!user) {
+        throw new BadRequestException(
+          'User id is wrong or user is already is an instructor.'
+        );
+      }
+
+      const instructor = await tx.instructor.create({
+        data: {
+          about,
+          user: {
+            connect: { id: user.id },
+          },
+        },
+      });
+
+      await tx.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          ...user,
+          role: UserRole.INSTRUCTOR,
+        },
+      });
+
+      return instructor;
     });
 
-    if (!user) {
-      throw new BadRequestException(
-        'User id is wrong or user is already is an instructor.'
-      );
-    }
+    // const queryRunner = this.dataSource.createQueryRunner();
 
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    // const user = await this.userRepository.findOneBy({
+    //   id: userId,
+    //   instructor: IsNull(),
+    // });
 
-    try {
-      const newInstructor = new Instructor();
-      newInstructor.about = about;
-      newInstructor.user = user;
+    // if (!user) {
+    //   throw new BadRequestException(
+    //     'User id is wrong or user is already is an instructor.'
+    //   );
+    // }
 
-      await queryRunner.manager.save(newInstructor);
+    // await queryRunner.connect();
+    // await queryRunner.startTransaction();
 
-      // modifies user object
-      user.role = UserRole.INSTRUCTOR;
+    // try {
+    //   const newInstructor = new Instructor();
+    //   newInstructor.about = about;
+    //   newInstructor.user = user;
 
-      // after instructor is created updates user role into instructor
-      // saves modified user object
-      await queryRunner.manager.save(user);
+    //   await queryRunner.manager.save(newInstructor);
 
-      // submit all changes into database
-      await queryRunner.commitTransaction();
+    //   // modifies user object
+    //   user.role = UserRole.INSTRUCTOR;
 
-      return newInstructor;
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
+    //   // after instructor is created updates user role into instructor
+    //   // saves modified user object
+    //   await queryRunner.manager.save(user);
 
-      await this.logsService.logError('create instructor', err);
+    //   // submit all changes into database
+    //   await queryRunner.commitTransaction();
 
-      throw new InternalServerErrorException(
-        'Something went wrong while trying to create instructor.'
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    //   return newInstructor;
+    // } catch (err) {
+    //   await queryRunner.rollbackTransaction();
+
+    //   await this.logsService.logError('create instructor', err);
+
+    //   throw new InternalServerErrorException(
+    //     'Something went wrong while trying to create instructor.'
+    //   );
+    // } finally {
+    //   await queryRunner.release();
+    // }
   }
 
   async findAll() {
-    return await this.instructorRepository.find({
-      relations: this.instructorRelations,
+    // return await this.instructorRepository.find({
+    //   relations: this.instructorRelations,
+    // });
+
+    return await this.prismaService.instructor.findMany({
+      include: {
+        expertise: true,
+        social: true,
+      },
     });
   }
 
@@ -110,15 +181,22 @@ export class InstructorService {
   }
 
   async update(id: number, updateInstructorInput: UpdateInstructorInput) {
-    const instructor = await this.validateInstructor(id);
+    await this.validateInstructor(id);
 
-    await this.dataSource
-      .createQueryBuilder()
-      .update(Instructor)
-      .set(updateInstructorInput)
-      .where({ id })
-      .execute();
+    // await this.dataSource
+    //   .createQueryBuilder()
+    //   .update(Instructor)
+    //   .set(updateInstructorInput)
+    //   .where({ id })
+    //   .execute();
 
-    return instructor;
+    // return instructor;
+
+    return await this.prismaService.instructor.update({
+      where: {
+        id,
+      },
+      data: updateInstructorInput,
+    });
   }
 }

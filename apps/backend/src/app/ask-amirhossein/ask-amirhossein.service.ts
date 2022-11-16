@@ -8,6 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import * as moment from 'moment';
+import { PrismaService } from '@zeenzen/database';
 
 import { CreateAskAmirhosseinInput } from './dto/create-ask-amirhossein.input';
 import { UpdateAskAmirhosseinInput } from './dto/update-ask-amirhossein.input';
@@ -21,6 +22,7 @@ import { UserService } from '../user/user.service';
 import { getMailOptions } from '../utils/getMailOptions';
 import { sendEmail } from '../utils/sendEmail';
 import { toCamelCase } from '../utils/toCamelCase';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AskAmirhosseinService {
@@ -30,7 +32,8 @@ export class AskAmirhosseinService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly userService: UserService,
-    private readonly dataSource: DataSource
+    private readonly dataSource: DataSource,
+    private readonly prismaService: PrismaService
   ) {}
 
   async getWhereOptions(email: string, user: RequestUser) {
@@ -41,7 +44,12 @@ export class AskAmirhosseinService {
     }
 
     if (email) {
-      const registeredUser = await this.userRepository.findOneBy({ email });
+      // const registeredUser = await this.userRepository.findOneBy({ email });
+      const registeredUser = await this.prismaService.user.findUnique({
+        where: {
+          email,
+        },
+      });
 
       if (registeredUser && registeredUser.id !== user.sub) {
         throw new UnauthorizedException(
@@ -50,7 +58,7 @@ export class AskAmirhosseinService {
       }
     }
 
-    const whereOptions: FindOptionsWhere<AskAmirhossein> = {};
+    const whereOptions: Prisma.AskAmirhosseinWhereInput = {};
 
     if (!user) {
       whereOptions.email = email;
@@ -62,9 +70,16 @@ export class AskAmirhosseinService {
   }
 
   validateAskAmirhossein(id: number) {
-    return async (whereOptions?: FindOptionsWhere<AskAmirhossein>) => {
-      const askAmirhossein = await this.askAmirhosseinRepository.findOne({
-        where: { id, ...whereOptions },
+    return async (whereOptions?: Prisma.AskAmirhosseinWhereInput) => {
+      // const askAmirhossein = await this.askAmirhosseinRepository.findOne({
+      //   where: { id, ...whereOptions },
+      // });
+
+      const askAmirhossein = await this.prismaService.askAmirhossein.findFirst({
+        where: {
+          id,
+          ...whereOptions,
+        },
       });
 
       if (!askAmirhossein) {
@@ -79,35 +94,41 @@ export class AskAmirhosseinService {
     { question, email }: CreateAskAmirhosseinInput,
     user: RequestUser
   ) {
-    let currUser: User;
-
-    if (user) {
-      currUser = await this.userService.validateUser(user.sub);
-    }
-
-    if (!currUser && !email) {
+    if (!user && !email) {
       throw new BadRequestException(
         'Either you should enter email address or be logged in.'
       );
     }
 
-    const currEmail = currUser?.email || email;
+    const currEmail = user?.email || email;
 
-    const newAskAmirhossein = new AskAmirhossein();
-    newAskAmirhossein.question = question;
-    newAskAmirhossein.email = currEmail;
+    // const newAskAmirhossein = new AskAmirhossein();
+    // newAskAmirhossein.question = question;
+    // newAskAmirhossein.email = currEmail;
 
-    if (currUser) {
-      newAskAmirhossein.user = currUser;
-    }
+    // if (currUser) {
+    //   newAskAmirhossein.user = currUser;
+    // }
 
-    if (email) {
-      newAskAmirhossein.email = email;
-    }
+    // if (email) {
+    //   newAskAmirhossein.email = email;
+    // }
 
-    await this.askAmirhosseinRepository.manager.save(newAskAmirhossein);
+    // await this.askAmirhosseinRepository.manager.save(newAskAmirhossein);
 
-    return newAskAmirhossein;
+    // return newAskAmirhossein;
+
+    return await this.prismaService.askAmirhossein.create({
+      data: {
+        question,
+        email: currEmail,
+        user: {
+          connect: {
+            email: currEmail,
+          },
+        },
+      },
+    });
   }
 
   // answer ask amirhossein flow:
@@ -126,25 +147,41 @@ export class AskAmirhosseinService {
       );
     }
 
-    askAmirhossein.answer = answer;
-    askAmirhossein.answeredAt = moment.utc().toDate();
+    // askAmirhossein.answer = answer;
+    // askAmirhossein.answeredAt = moment.utc().toDate();
 
     const subject = `Ask Amirhossein - The answer to your "${askAmirhossein.question}" question`;
 
     await sendEmail(getMailOptions(askAmirhossein.email, subject, answer));
 
-    await this.askAmirhosseinRepository.manager.save(askAmirhossein);
+    // await this.askAmirhosseinRepository.manager.save(askAmirhossein);
 
-    return askAmirhossein;
+    return await this.prismaService.askAmirhossein.update({
+      where: { id: askAmirhossein.id },
+      data: {
+        ...askAmirhossein,
+        answer,
+        answeredAt: moment.utc().toDate(),
+      },
+    });
+
+    // return askAmirhossein;
   }
 
   async findAll(
     findAllAskAmirhosseinInput: FindAllAskAmirhosseinInput,
     user: RequestUser
   ) {
-    return await this.askAmirhosseinRepository.findBy(
-      await this.getWhereOptions(findAllAskAmirhosseinInput?.email, user)
-    );
+    // return await this.askAmirhosseinRepository.findBy(
+    //   await this.getWhereOptions(findAllAskAmirhosseinInput?.email, user)
+    // );
+
+    return await this.prismaService.askAmirhossein.findMany({
+      where: await this.getWhereOptions(
+        findAllAskAmirhosseinInput?.email,
+        user
+      ),
+    });
   }
 
   async findOne(
@@ -169,14 +206,21 @@ export class AskAmirhosseinService {
       getMailOptions(email, subject, updateAskAmirhosseinInput.answer)
     );
 
-    const updatedAskAmirhossein = await this.dataSource
-      .createQueryBuilder()
-      .update(AskAmirhossein)
-      .set(updateAskAmirhosseinInput)
-      .where({ id })
-      .returning('*')
-      .execute();
+    // const updatedAskAmirhossein = await this.dataSource
+    //   .createQueryBuilder()
+    //   .update(AskAmirhossein)
+    //   .set(updateAskAmirhosseinInput)
+    //   .where({ id })
+    //   .returning('*')
+    //   .execute();
 
-    return toCamelCase(updatedAskAmirhossein);
+    // return toCamelCase(updatedAskAmirhossein);
+
+    return await this.prismaService.askAmirhossein.update({
+      where: {
+        id,
+      },
+      data: updateAskAmirhosseinInput,
+    });
   }
 }

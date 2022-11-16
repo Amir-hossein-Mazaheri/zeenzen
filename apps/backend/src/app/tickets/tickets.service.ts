@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '@zeenzen/database';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import * as moment from 'moment';
 import {
@@ -29,10 +31,12 @@ const TICKET_MESSAGE_ADDED = 'ticketMessageAdded';
 
 @Injectable()
 export class TicketsService {
-  private readonly subscriptionsFindOptions: FindManyOptions<any> = {
+  private readonly subscriptionsFindOptions:
+    | Prisma.TicketFindManyArgs
+    | Prisma.TicketMessageFindManyArgs = {
     take: 20,
-    order: {
-      id: 'DESC',
+    orderBy: {
+      id: 'desc',
     },
   };
 
@@ -42,35 +46,57 @@ export class TicketsService {
     @InjectRepository(TicketMessage)
     private readonly ticketMessageRepository: Repository<TicketMessage>,
     private readonly dataSource: DataSource,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly prismaService: PrismaService
   ) {}
 
   getWhereOptions(user: RequestUser, id?: number) {
-    const whereOptions: FindOptionsWhere<Ticket> = {};
+    // const whereOptions: Prisma.TicketWhereInput = {};
+
+    // if (id) {
+    //   whereOptions.id = id;
+    // }
+
+    // if (user.role !== UserRole.ADMIN) {
+    //   whereOptions.whoAsked = { id: user.sub };
+    // }
+
+    // return whereOptions;
+
+    const whereOptions: Prisma.TicketWhereInput = {};
 
     if (id) {
       whereOptions.id = id;
     }
 
     if (user.role !== UserRole.ADMIN) {
-      whereOptions.whoAsked = { id: user.sub };
+      whereOptions.user = { id: user.sub };
     }
 
     return whereOptions;
   }
 
   async validateTicket(id: number, user: RequestUser) {
-    const ticket = await this.ticketRepository.findOne({
+    // const ticket = await this.ticketRepository.findOne({
+    //   where: this.getWhereOptions(user, id),
+    //   relations: {
+    //     whoAsked: true,
+    //     messages: {
+    //       user: true,
+    //     },
+    //   },
+    //   order: {
+    //     messages: { sentAt: 'ASC' },
+    //   },
+    // });
+
+    const ticket = await this.prismaService.ticket.findFirst({
       where: this.getWhereOptions(user, id),
-      relations: {
-        whoAsked: true,
-        messages: {
-          user: true,
-        },
+      include: {
+        user: true,
+        ticketMessages: true,
       },
-      order: {
-        messages: { sentAt: 'ASC' },
-      },
+      orderBy: {},
     });
 
     if (!ticket) {
@@ -81,22 +107,33 @@ export class TicketsService {
   }
 
   async publishTicketOnSubscription() {
-    const tickets = await this.ticketRepository.find(
-      this.subscriptionsFindOptions
+    // const tickets = await this.ticketRepository.find(
+    //   this.subscriptionsFindOptions
+    // );
+
+    const tickets = await this.prismaService.ticket.findMany(
+      this.subscriptionsFindOptions as Prisma.TicketFindManyArgs
     );
 
     pubSub.publish(TICKET_ADDED, { tickets });
   }
 
   async publishTicketMessagesOnSubscription() {
-    const ticketMessageFindOptions: FindManyOptions = {
-      ...this.subscriptionsFindOptions,
-      relations: { user: true },
-    };
+    // const ticketMessageFindOptions: FindManyOptions = {
+    //   ...this.subscriptionsFindOptions,
+    //   relations: { user: true },
+    // };
 
-    const ticketMessages = await this.ticketMessageRepository.find(
-      ticketMessageFindOptions
-    );
+    // const ticketMessages = await this.ticketMessageRepository.find(
+    //   ticketMessageFindOptions
+    // );
+
+    const ticketMessages = await this.prismaService.ticketMessage.findMany({
+      ...(this.subscriptionsFindOptions as Prisma.TicketMessageFindManyArgs),
+      include: {
+        user: true,
+      },
+    });
 
     pubSub.publish(TICKET_MESSAGE_ADDED, { ticketMessages });
   }
@@ -105,16 +142,29 @@ export class TicketsService {
     { title, description, priority, topic }: CreateTicketInput,
     user: RequestUser
   ) {
-    const currUser = await this.userService.validateUser(user.sub);
+    // const currUser = await this.userService.validateUser(user.sub);
 
-    const newTicket = new Ticket();
-    newTicket.title = title;
-    newTicket.description = description;
-    newTicket.priority = priority;
-    newTicket.topic = topic;
-    newTicket.whoAsked = currUser;
+    // const newTicket = new Ticket();
+    // newTicket.title = title;
+    // newTicket.description = description;
+    // newTicket.priority = priority;
+    // newTicket.topic = topic;
+    // newTicket.whoAsked = currUser;
 
-    await this.ticketRepository.manager.save(newTicket);
+    // await this.ticketRepository.manager.save(newTicket);
+
+    // await this.publishTicketOnSubscription();
+
+    // return newTicket;
+
+    const newTicket = await this.prismaService.ticket.create({
+      data: {
+        title,
+        description,
+        priority,
+        topic,
+      },
+    });
 
     await this.publishTicketOnSubscription();
 
@@ -126,18 +176,25 @@ export class TicketsService {
   }
 
   async findAllTickets(user: RequestUser) {
-    const whereOptions: FindOptionsWhere<Ticket> = {};
+    const whereOptions: Prisma.TicketWhereInput = {};
 
     if (user.role !== UserRole.ADMIN) {
-      whereOptions.whoAsked = { id: user.sub };
+      whereOptions.user = { id: user.sub };
     }
 
-    return await this.ticketRepository
-      .createQueryBuilder('ticket')
-      .where(whereOptions)
-      .leftJoinAndSelect('ticket.messages', 'messages')
-      .orderBy('messages', 'DESC', 'NULLS LAST')
-      .getMany();
+    // return await this.ticketRepository
+    //   .createQueryBuilder('ticket')
+    //   .where(whereOptions)
+    //   .leftJoinAndSelect('ticket.messages', 'messages')
+    //   .orderBy('messages', 'DESC', 'NULLS LAST')
+    //   .getMany();
+
+    return await this.prismaService.ticket.findMany({
+      where: whereOptions,
+      include: {
+        ticketMessages: true,
+      },
+    });
   }
 
   async findOne(id: number, user: RequestUser) {
@@ -152,8 +209,10 @@ export class TicketsService {
     { ticketId, message }: SendTicketMessageInput,
     user: RequestUser
   ) {
+    // const ticket = await this.validateTicket(ticketId, user);
+    // const currUser = await this.userService.validateUser(user.sub);
+
     const ticket = await this.validateTicket(ticketId, user);
-    const currUser = await this.userService.validateUser(user.sub);
 
     if (ticket.isClosed) {
       throw new NotAcceptableException(
@@ -161,16 +220,30 @@ export class TicketsService {
       );
     }
 
-    const newTicketMessage = new TicketMessage();
-    newTicketMessage.message = message;
-    newTicketMessage.ticket = ticket;
-    newTicketMessage.user = currUser;
-
-    await this.ticketMessageRepository.manager.save(newTicketMessage);
+    const newTicketMessage = await this.prismaService.ticketMessage.create({
+      data: {
+        message,
+        ticket: { connect: { id: ticket.id } },
+        user: {
+          connect: { id: user.sub },
+        },
+      },
+    });
 
     await this.publishTicketMessagesOnSubscription();
 
     return newTicketMessage;
+
+    // const newTicketMessage = new TicketMessage();
+    // newTicketMessage.message = message;
+    // newTicketMessage.ticket = ticket;
+    // newTicketMessage.user = currUser;
+
+    // await this.ticketMessageRepository.manager.save(newTicketMessage);
+
+    // await this.publishTicketMessagesOnSubscription();
+
+    // return newTicketMessage;
   }
 
   async closeTicket(id: number, user: RequestUser) {
@@ -178,14 +251,22 @@ export class TicketsService {
 
     const now = moment.utc().toLocaleString();
 
-    const ticket = await this.dataSource
-      .createQueryBuilder()
-      .update(Ticket)
-      .set({ isClosed: true, closedAt: now })
-      .where({ id })
-      .returning('*')
-      .execute();
+    // const ticket = await this.dataSource
+    //   .createQueryBuilder()
+    //   .update(Ticket)
+    //   .set({ isClosed: true, closedAt: now })
+    //   .where({ id })
+    //   .returning('*')
+    //   .execute();
 
-    return toCamelCase(ticket.raw[0]);
+    // return toCamelCase(ticket.raw[0]);
+
+    return await this.prismaService.ticket.update({
+      where: { id },
+      data: {
+        isClosed: true,
+        closedAt: now,
+      },
+    });
   }
 }

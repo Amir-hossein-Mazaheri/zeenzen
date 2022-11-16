@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '@zeenzen/database';
 import { DataSource, Repository } from 'typeorm';
 
 import { MixedKeyValue } from '../types';
@@ -14,7 +16,8 @@ import { Section } from './entities/section.entity';
 export class SectionService {
   constructor(
     @InjectRepository(Section) private sectionRepository: Repository<Section>,
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    private readonly prismaService: PrismaService
   ) {}
 
   private async validateInstructor(section: Section, instructorId: number) {
@@ -33,19 +36,31 @@ export class SectionService {
     instructorId?: number,
     withDeleted = false
   ) {
-    const section = await this.sectionRepository.findOne({
+    // const section = await this.sectionRepository.findOne({
+    //   where: { id },
+    //   relations: {
+    //     course: {
+    //       instructors: checkInstructor,
+    //     },
+    //   },
+    //   withDeleted,
+    // });
+
+    // if (checkInstructor) {
+    //   this.validateInstructor(section, instructorId);
+    // }
+
+    // TODO: add withDeleted
+    const section = await this.prismaService.section.findUnique({
       where: { id },
-      relations: {
+      include: {
         course: {
-          instructors: checkInstructor,
+          include: {
+            // TODO: add instructors relations
+          },
         },
       },
-      withDeleted,
     });
-
-    if (checkInstructor) {
-      this.validateInstructor(section, instructorId);
-    }
 
     if (!section) {
       throw new BadRequestException('Invalid section id.');
@@ -55,28 +70,46 @@ export class SectionService {
   }
 
   async create({ label, description, duration }: CreateSectionInput) {
-    const newSection = new Section();
-    newSection.label = label;
-    newSection.description = purifiedTurndown(description);
-    if (duration) {
-      newSection.duration = duration;
-    }
+    // const newSection = new Section();
+    // newSection.label = label;
+    // newSection.description = purifiedTurndown(description);
+    // if (duration) {
+    //   newSection.duration = duration;
+    // }
 
-    await this.sectionRepository.manager.save(newSection);
+    // await this.sectionRepository.manager.save(newSection);
 
-    return newSection;
+    // return newSection;
+
+    return await this.prismaService.section.create({
+      data: {
+        label,
+        description: purifiedTurndown(description),
+        duration,
+      },
+    });
   }
 
   async findAll({ courseId }: FindAllSectionInput) {
-    const options: MixedKeyValue = {
-      relations: ['course'],
-    };
+    // const options: MixedKeyValue = {
+    //   relations: ['course'],
+    // };
+
+    // if (courseId) {
+    //   options.where = { course: { id: courseId } };
+    // }
+
+    // return await this.sectionRepository.find(options);
+
+    const whereOptions: Prisma.SectionWhereInput = {};
 
     if (courseId) {
-      options.where = { course: { id: courseId } };
+      whereOptions.course.id = courseId;
     }
 
-    return await this.sectionRepository.find(options);
+    return await this.prismaService.section.findMany({
+      where: whereOptions,
+    });
   }
 
   async findOne(id: number) {
@@ -96,29 +129,44 @@ export class SectionService {
       );
     }
 
-    const section = await this.dataSource
-      .createQueryBuilder()
-      .update(Section)
-      .set(updateSectionInput)
-      .where({ id })
-      .returning('*')
-      .execute();
+    // const section = await this.dataSource
+    //   .createQueryBuilder()
+    //   .update(Section)
+    //   .set(updateSectionInput)
+    //   .where({ id })
+    //   .returning('*')
+    //   .execute();
 
-    return toCamelCase(section.raw[0]);
+    // return toCamelCase(section.raw[0]);
+
+    return await this.prismaService.section.update({
+      where: {
+        id,
+      },
+      data: updateSectionInput,
+    });
   }
 
   async remove(id: number, instructorId: number) {
-    const section = await this.validateSection(id, true, instructorId);
+    await this.validateSection(id, true, instructorId);
 
-    await this.sectionRepository
-      .createQueryBuilder()
-      .softDelete()
-      .where({ id })
-      .execute();
+    // await this.sectionRepository
+    //   .createQueryBuilder()
+    //   .softDelete()
+    //   .where({ id })
+    //   .execute();
 
-    return section;
+    // return section;
+
+    // TODO: fix soft delete
+    return await this.prismaService.section.delete({
+      where: {
+        id,
+      },
+    });
   }
 
+  // TODO: replace with prisma restore
   async restore(id: number, instructorId: number) {
     const section = await this.validateSection(id, true, instructorId, true);
 

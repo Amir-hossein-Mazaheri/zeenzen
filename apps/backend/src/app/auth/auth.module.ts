@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
@@ -34,6 +35,7 @@ import { CartModule } from '../cart/cart.module';
     }),
     UserModule,
     CartModule,
+    DatabaseModule,
   ],
   providers: [
     AuthService,

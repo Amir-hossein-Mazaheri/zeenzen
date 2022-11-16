@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DataSource,
@@ -7,19 +11,21 @@ import {
   In,
   Repository,
 } from 'typeorm';
+import { PrismaService } from '@zeenzen/database';
+import { Prisma } from '@prisma/client';
 
 import { CreateExpertiseInput } from './dto/create-expertise.input';
 import { UpdateExpertiseInput } from './dto/update-expertise.input';
-import { Expertise } from './entities/expertise.entity';
 import { InternalServerErrorException } from '@nestjs/common/exceptions/internal-server-error.exception';
 import { Instructor } from '../instructor/entities/instructor.entity';
 import { LogsService } from '../logs/logs.service';
 import { RequestInstructor } from '../types';
 import { toCamelCase } from '../utils/toCamelCase';
+import { Expertise } from './entities/expertise.entity';
 
 @Injectable()
 export class ExpertiseService {
-  private relations: FindOptionsRelations<Expertise> = {
+  private relations: Prisma.ExpertiseInclude = {
     instructor: true,
   };
 
@@ -29,11 +35,12 @@ export class ExpertiseService {
     @InjectRepository(Instructor)
     private readonly instructorRepository: Repository<Instructor>,
     private readonly dataSource: DataSource,
-    private readonly logsService: LogsService
+    private readonly logsService: LogsService,
+    private readonly prismaService: PrismaService
   ) {}
 
   getWhereOptions(id: number, instructorId?: number) {
-    const whereOptions: FindOptionsWhere<Expertise> = { id };
+    const whereOptions: Prisma.ExpertiseWhereInput = { id };
 
     if (instructorId) {
       whereOptions.instructor = { id: instructorId };
@@ -43,35 +50,58 @@ export class ExpertiseService {
   }
 
   async validateExpertise(id: number, instructorId?: number) {
-    const expertise = await this.expertiseRepository.findOne({
+    // const expertise = await this.expertiseRepository.findOne({
+    //   where: this.getWhereOptions(id, instructorId),
+    //   relations: this.relations,
+    // })
+
+    const expertise = await this.prismaService.expertise.findFirst({
       where: this.getWhereOptions(id, instructorId),
-      relations: this.relations,
+      select: {
+        instructor: {},
+      },
     });
 
     if (!expertise) {
-      throw new BadRequestException('Invalid expertise id.');
+      throw new NotFoundException('Invalid expertise id.');
     }
 
     return expertise;
   }
 
   async resolveInstructor(id: number) {
-    return this.instructorRepository.findOneBy({ id });
+    // return this.instructorRepository.findOneBy({ id });
+    return await this.prismaService.instructor.findUnique({ where: { id } });
   }
 
   async create({ label, level }: CreateExpertiseInput, instructorId: number) {
-    const newExpertise = new Expertise();
-    newExpertise.label = label;
-    newExpertise.level = level;
-    newExpertise.instructor = await this.resolveInstructor(instructorId);
+    // const newExpertise = new Expertise();
+    // newExpertise.label = label;
+    // newExpertise.level = level;
+    // newExpertise.instructor = await this.resolveInstructor(instructorId);
 
-    await this.expertiseRepository.manager.save(newExpertise);
+    // await this.expertiseRepository.manager.save(newExpertise);
 
-    return newExpertise;
+    // return newExpertise;
+
+    return await this.prismaService.expertise.create({
+      data: {
+        label,
+        level,
+        instructor: {
+          connect: { id: instructorId },
+        },
+      },
+    });
   }
 
   async findAll() {
-    return await this.expertiseRepository.find({ relations: this.relations });
+    // return await this.expertiseRepository.find({ relations: this.relations });
+    return await this.prismaService.expertise.findMany({
+      include: {
+        instructor: true,
+      },
+    });
   }
 
   async findOne(id: number) {
@@ -138,15 +168,22 @@ export class ExpertiseService {
   async adminValidateExpertise(id: number) {
     await this.validateExpertise(id);
 
-    const expertise = await this.dataSource
-      .createQueryBuilder()
-      .update<Expertise>(Expertise)
-      .where({ id })
-      .set({ validated: true })
-      .returning('*')
-      .execute();
+    // const expertise = await this.dataSource
+    //   .createQueryBuilder()
+    //   .update<Expertise>(Expertise)
+    //   .where({ id })
+    //   .set({ validated: true })
+    //   .returning('*')
+    //   .execute();
 
-    return toCamelCase(expertise.raw[0]);
+    // return toCamelCase(expertise.raw[0]);
+
+    return await this.prismaService.expertise.update({
+      where: { id },
+      data: {
+        validated: true,
+      },
+    });
   }
 
   async update(
@@ -154,28 +191,40 @@ export class ExpertiseService {
     instructorId: number,
     updateExpertiseInput: UpdateExpertiseInput
   ) {
-    const expertise = await this.validateExpertise(id, instructorId);
+    await this.validateExpertise(id, instructorId);
 
-    await this.dataSource
-      .createQueryBuilder()
-      .update(Expertise)
-      .set({ ...updateExpertiseInput, validated: false })
-      .where({ id })
-      .execute();
+    // await this.dataSource
+    //   .createQueryBuilder()
+    //   .update(Expertise)
+    //   .set({ ...updateExpertiseInput, validated: false })
+    //   .where({ id })
+    //   .execute();
 
-    return expertise;
+    // return expertise;
+
+    return await this.prismaService.expertise.update({
+      where: { id },
+      data: {
+        ...updateExpertiseInput,
+        validated: false,
+      },
+    });
   }
 
   async remove(id: number, instructorId: number) {
-    const expertise = await this.validateExpertise(id, instructorId);
+    await this.validateExpertise(id, instructorId);
 
-    await this.dataSource
-      .createQueryBuilder()
-      .delete()
-      .from(Expertise)
-      .where({ id })
-      .execute();
+    // await this.dataSource
+    //   .createQueryBuilder()
+    //   .delete()
+    //   .from(Expertise)
+    //   .where({ id })
+    //   .execute();
 
-    return expertise;
+    // return expertise;
+
+    return await this.prismaService.expertise.delete({
+      where: { id },
+    });
   }
 }

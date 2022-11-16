@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { CourseModule } from '../course/course.module';
 import { UserModule } from '../user/user.module';
@@ -24,6 +25,7 @@ import { LicenseService } from './license.service';
     }),
     UserModule,
     CourseModule,
+    DatabaseModule,
   ],
   providers: [LicenseService, LicenseResolver],
   exports: [TypeOrmModule, LicenseModule],

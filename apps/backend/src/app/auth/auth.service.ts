@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon2 from 'argon2';
 import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { PrismaService } from '@zeenzen/database';
 
 import { SignInInput } from './dto/sign-in.input';
 import { LogoutMessage } from './dto/logout-message.dto';
@@ -27,6 +28,7 @@ import { User } from '../user/entities/user.entity';
 import { getCode } from '../utils/getCode';
 import { getMailOptions } from '../utils/getMailOptions';
 import { sendEmail } from '../utils/sendEmail';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +38,8 @@ export class AuthService {
     private readonly validatedEmailRepository: Repository<ValidatedEmail>,
     private readonly jwtService: JwtService,
     private readonly logsService: LogsService,
-    private readonly dataSource: DataSource
+    private readonly dataSource: DataSource,
+    private readonly prismaService: PrismaService
   ) {}
 
   destroySession = (session: Session) => {
@@ -62,13 +65,17 @@ export class AuthService {
     });
   }
 
-  async validateUser(
-    email: string,
-    password: string
-  ): Promise<User | undefined> {
-    const user = await this.userRepository.findOne({
+  async validateUser(email: string, password: string) {
+    // const user = await this.userRepository.findOne({
+    //   where: { email },
+    //   relations: ['instructor'],
+    // });
+
+    const user = await this.prismaService.user.findUnique({
       where: { email },
-      relations: ['instructor'],
+      include: {
+        instructor: true,
+      },
     });
 
     const isPasswordValid = user
@@ -83,15 +90,20 @@ export class AuthService {
   }
 
   async validateEmailCode(email: string, code?: string) {
-    const whereOptions: FindOptionsWhere<ValidatedEmail> = { email };
+    // const whereOptions: FindOptionsWhere<ValidatedEmail> = { email };
+    const whereOptions: Prisma.ValidatedEmailWhereInput = { email };
 
     if (code) {
       whereOptions.code = code;
     }
 
-    const validatedEmail = await this.validatedEmailRepository.findOneBy(
-      whereOptions
-    );
+    // const validatedEmail = await this.validatedEmailRepository.findOneBy(
+    //   whereOptions
+    // );
+
+    const validatedEmail = await this.prismaService.validatedEmail.findFirst({
+      where: whereOptions,
+    });
 
     if (!validatedEmail) {
       throw new UnauthorizedException("Your email isn't validated yet.");
@@ -101,34 +113,60 @@ export class AuthService {
   }
 
   async signIn({ email }: SignInInput) {
-    try {
-      const user = await this.userRepository.findOne({
+    return await this.prismaService.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({
         where: { email },
-        relations: {
+        include: {
           cart: true,
         },
       });
 
       if (!user.cart) {
-        user.cart = new Cart();
-
-        await this.userRepository.manager.save(user);
+        await tx.cart.create({
+          data: {
+            user: {
+              connect: { id: user.id },
+            },
+          },
+        });
       }
 
       await this.logsService.logUser(user, UserLogStatus.LOGGED_IN);
 
       return user;
-    } catch (err) {
-      await this.logsService.logError('signIn', err);
+    });
 
-      throw new InternalServerErrorException(
-        'Something went wrong while trying to sign in.'
-      );
-    }
+    // try {
+    //   const user = await this.userRepository.findOne({
+    //     where: { email },
+    //     relations: {
+    //       cart: true,
+    //     },
+    //   });
+
+    //   if (!user.cart) {
+    //     user.cart = new Cart();
+
+    //     await this.userRepository.manager.save(user);
+    //   }
+
+    //   await this.logsService.logUser(user, UserLogStatus.LOGGED_IN);
+
+    //   return user;
+    // } catch (err) {
+    //   await this.logsService.logError('signIn', err);
+
+    //   throw new InternalServerErrorException(
+    //     'Something went wrong while trying to sign in.'
+    //   );
+    // }
   }
 
   async preSignUp({ email }: PreSignUpInput) {
-    const user = await this.userRepository.findOneBy({ email });
+    // const user = await this.userRepository.findOneBy({ email });
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+    });
 
     if (user) {
       throw new BadRequestException(
@@ -138,16 +176,24 @@ export class AuthService {
 
     const { code, expiresAt } = await getCode(5, 10);
 
-    const newValidatedEmail = new ValidatedEmail();
-    newValidatedEmail.email = email;
-    newValidatedEmail.code = code.toString();
-    newValidatedEmail.expiresAt = expiresAt;
+    // const newValidatedEmail = new ValidatedEmail();
+    // newValidatedEmail.email = email;
+    // newValidatedEmail.code = code.toString();
+    // newValidatedEmail.expiresAt = expiresAt;
+
+    const newValidatedEmail = await this.prismaService.validatedEmail.create({
+      data: {
+        email,
+        code: code.toString(),
+        expiresAt,
+      },
+    });
 
     const subject = `وب سایت آموزشی ZeenZen - کد تایید ایمیل`;
 
     const html = `کد تایید ایمیل شما: ${code}`;
 
-    await this.validatedEmailRepository.manager.save(newValidatedEmail);
+    // await this.validatedEmailRepository.manager.save(newValidatedEmail);
 
     await sendEmail(getMailOptions(email, subject, html));
 
@@ -155,16 +201,23 @@ export class AuthService {
   }
 
   async removePreSignUpCode({ email }: RemovePreSignUpInput) {
-    const validatedEmail = await this.validateEmailCode(email);
+    await this.validateEmailCode(email);
 
-    await this.dataSource
-      .createQueryBuilder()
-      .delete()
-      .from(ValidatedEmail)
-      .where({ email })
-      .execute();
+    // await this.dataSource
+    //   .createQueryBuilder()
+    //   .delete()
+    //   .from(ValidatedEmail)
+    //   .where({ email })
+    //   .execute();
 
-    return validatedEmail;
+    // return validatedEmail;
+
+    return await this.prismaService.validatedEmail.delete({
+      where: {
+        // TODO: fix this and make it remove by email
+        id: Math.random(),
+      },
+    });
   }
 
   async signUp({ email, password, code }: SignUpInput) {
@@ -174,20 +227,35 @@ export class AuthService {
       throw new UnauthorizedException('Your code has been expired.');
     }
 
-    const user = await this.userRepository.findOneBy({ email });
+    // const user = await this.userRepository.findOneBy({ email });
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email,
+      },
+    });
 
     if (user) {
       throw new Error('Email is duplicate.');
     }
 
-    const newUser = new User();
-    newUser.email = email;
-    newUser.password = await argon2.hash(password);
-    newUser.cart = new Cart();
+    // const newUser = new User();
+    // newUser.email = email;
+    // newUser.password = await argon2.hash(password);
+    // newUser.cart = new Cart();
 
-    const savedUser = await this.userRepository.manager.save(newUser);
+    // const savedUser = await this.userRepository.manager.save(newUser);
 
-    return savedUser;
+    // return savedUser;
+
+    return await this.prismaService.user.create({
+      data: {
+        email,
+        password: await argon2.hash(password),
+        cart: {
+          create: {},
+        },
+      },
+    });
   }
 
   // logout first calls passport logout then destroy session and then it delete cookie

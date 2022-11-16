@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import * as argon2 from 'argon2';
+import { PrismaService } from '@zeenzen/database';
 
 import { User } from './entities/user.entity';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -15,22 +16,30 @@ import { Avatar } from '../uploads/entities/avatar.entity';
 import { RequestUser } from '../types';
 import { Cart } from '../cart/entities/cart.entity';
 import { CartItem } from '../cart/entities/cart-item.entity';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  private relations = ['cart', 'orders'];
-
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Avatar) private avatarRepository: Repository<Avatar>,
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    private readonly prismaService: PrismaService
   ) {}
 
   async validateUser(id: number, withDeleted = false, withAvatar = false) {
-    const user = await this.userRepository.findOne({
+    // const user = await this.userRepository.findOne({
+    //   where: { id },
+    //   withDeleted,
+    //   relations: {
+    //     avatar: withAvatar,
+    //   },
+    // });
+
+    const user = await this.prismaService.user.findUnique({
       where: { id },
-      withDeleted,
-      relations: {
+      // TODO: add deleted after adding prisma soft delete middleware
+      include: {
         avatar: withAvatar,
       },
     });
@@ -46,13 +55,18 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: number, values: QueryDeepPartialEntity<User>) {
-    await this.dataSource
-      .createQueryBuilder()
-      .update<User>(User)
-      .set(values)
-      .where({ id })
-      .execute();
+  async updateUser(id: number, values: Prisma.UserUpdateInput) {
+    // await this.dataSource
+    //   .createQueryBuilder()
+    //   .update<User>(User)
+    //   .set(values)
+    //   .where({ id })
+    //   .execute();
+
+    await this.prismaService.user.update({
+      where: { id },
+      data: values,
+    });
   }
 
   async limitedUpdateUser(
@@ -83,41 +97,78 @@ export class UserService {
       currUser.password = await argon2.hash(newPassword);
     }
 
-    currUser.firstname = firstname || currUser.firstname;
-    currUser.lastname = lastname || currUser.lastname;
-    currUser.email = email || currUser.email;
-    currUser.phoneNumber = phoneNumber || currUser.phoneNumber;
+    // currUser.firstname = firstname || currUser.firstname;
+    // currUser.lastname = lastname || currUser.lastname;
+    // currUser.email = email || currUser.email;
+    // currUser.phoneNumber = phoneNumber || currUser.phoneNumber;
 
-    await this.userRepository.manager.save(currUser);
+    // await this.userRepository.manager.save(currUser);
 
-    return currUser;
+    // return currUser;
+
+    return await this.prismaService.user.create({
+      data: {
+        firstname: firstname || currUser.firstname,
+        lastname: lastname || currUser.lastname,
+        email: email || currUser.email,
+        phoneNumber: phoneNumber || currUser.phoneNumber,
+        password: currUser.password,
+      },
+    });
   }
 
   async getAvatar(userId: number) {
-    return await this.avatarRepository.findOneBy({ user: { id: userId } });
+    // return await this.avatarRepository.findOneBy({ user: { id: userId } });
+    return await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
   }
 
   async getCart(userId: number) {
-    const cart = await this.dataSource
-      .getRepository(Cart)
-      .findOneBy({ user: { id: userId } });
+    // const cart = await this.dataSource
+    //   .getRepository(Cart)
+    //   .findOneBy({ user: { id: userId } });
 
-    const { totalPrice, totalPriceWithDiscount } = await this.dataSource
-      .getRepository(CartItem)
-      .createQueryBuilder('cartItems')
-      .where({ cart: { id: cart.id } })
-      .select('SUM(cartItems.unitPrice)', 'totalPrice')
-      .addSelect(
-        'SUM(cartItems.unitPriceWithDiscount)',
-        'totalPriceWithDiscount'
-      )
-      .getRawOne<{ totalPrice: number; totalPriceWithDiscount: number }>();
+    // const { totalPrice, totalPriceWithDiscount } = await this.dataSource
+    //   .getRepository(CartItem)
+    //   .createQueryBuilder('cartItems')
+    //   .where({ cart: { id: cart.id } })
+    //   .select('SUM(cartItems.unitPrice)', 'totalPrice')
+    //   .addSelect(
+    //     'SUM(cartItems.unitPriceWithDiscount)',
+    //     'totalPriceWithDiscount'
+    //   )
+    //   .getRawOne<{ totalPrice: number; totalPriceWithDiscount: number }>();
+
+    // return { ...cart, totalPrice, totalPriceWithDiscount };
+
+    const cart = await this.prismaService.cart.findFirst({
+      where: {
+        user: { id: userId },
+      },
+    });
+
+    const {
+      _sum: {
+        unitPrice: totalPrice,
+        unitPriceWithDiscount: totalPriceWithDiscount,
+      },
+    } = await this.prismaService.cartItem.aggregate({
+      where: {
+        cart,
+      },
+      _sum: {
+        unitPrice: true,
+        unitPriceWithDiscount: true,
+      },
+    });
 
     return { ...cart, totalPrice, totalPriceWithDiscount };
   }
 
   async findAll() {
-    return await this.userRepository.find();
+    // return await this.userRepository.find();
+    return await this.prismaService.user.findMany();
   }
 
   async findOne(id: number) {
@@ -133,26 +184,40 @@ export class UserService {
   }
 
   async remove(id: number) {
-    const user = await this.validateUser(id);
+    await this.validateUser(id);
 
-    await this.userRepository
-      .createQueryBuilder()
-      .softDelete()
-      .where({ id })
-      .execute();
+    // await this.userRepository
+    //   .createQueryBuilder()
+    //   .softDelete()
+    //   .where({ id })
+    //   .execute();
 
-    return user;
+    // return user;
+
+    return await this.prismaService.user.delete({
+      where: { id },
+    });
   }
 
   async restore(id: number) {
-    const user = await this.validateUser(id, true);
+    await this.validateUser(id, true);
 
-    await this.userRepository
-      .createQueryBuilder()
-      .restore()
-      .where({ id })
-      .execute();
+    // await this.userRepository
+    //   .createQueryBuilder()
+    //   .restore()
+    //   .where({ id })
+    //   .execute();
 
-    return user;
+    // return user;
+
+    // TODO: if possible, add a restore method via middleware
+    return await this.prismaService.user.update({
+      where: {
+        id,
+      },
+      data: {
+        deletedAt: null,
+      },
+    });
   }
 }

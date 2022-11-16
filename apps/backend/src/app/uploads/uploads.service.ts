@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { PrismaService } from '@zeenzen/database';
 
 import { Request } from 'express';
 import * as fs from 'fs/promises';
@@ -30,16 +31,20 @@ export class UploadsService {
     private readonly dataSource: DataSource,
     private readonly logsService: LogsService,
     private readonly userService: UserService,
-    private readonly courseService: CourseService
+    private readonly courseService: CourseService,
+    private readonly prismaService: PrismaService
   ) {}
 
-  async validateAvatar(
-    id: string,
-    user: RequestUser,
-    queryRunner: QueryRunner
-  ) {
-    const avatar = await queryRunner.manager.findOne(Avatar, {
-      where: { id, user: { id: user.sub } },
+  async validateAvatar(id: string, user: RequestUser) {
+    // const avatar = await queryRunner.manager.findOne(Avatar, {
+    //   where: { id, user: { id: user.sub } },
+    // });
+
+    const avatar = await this.prismaService.avatar.findFirst({
+      where: {
+        id,
+        user: { id: user.sub },
+      },
     });
 
     if (!avatar) {
@@ -49,9 +54,13 @@ export class UploadsService {
     return avatar;
   }
 
-  async validateCourseImage(id: string, queryRunner: QueryRunner) {
-    const courseImage = await queryRunner.manager.findOneBy(CourseImage, {
-      id,
+  async validateCourseImage(id: string) {
+    // const courseImage = await queryRunner.manager.findOneBy(CourseImage, {
+    //   id,
+    // });
+
+    const courseImage = await this.prismaService.courseImage.findUnique({
+      where: { id },
     });
 
     if (!courseImage) {
@@ -113,71 +122,89 @@ export class UploadsService {
       courseCover: [courseCover],
     }: CourseImagesFiles
   ) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-
-    await queryRunner.startTransaction();
-
-    try {
-      const course = await this.courseService.validateCourse(courseId)()(
-        queryRunner
-      );
+    await this.prismaService.$transaction(async (tx) => {
+      const course = await tx.course.findFirst({
+        include: {
+          courseImage: true,
+        },
+      });
 
       let currCourseImage: CourseImage;
 
-      if (course.image) {
-        currCourseImage = await queryRunner.manager.findOneBy(CourseImage, {
-          id: course.image.id,
+      if (course.courseImage) {
+        currCourseImage = await tx.courseImage.findFirst({
+          where: {
+            id: course.courseImage.id,
+          },
         });
-
-        await this.removeCourseImageWithQueryRunner(
-          currCourseImage.id,
-          queryRunner
-        );
-      } else {
-        currCourseImage = new CourseImage();
       }
+    });
 
-      const courseImagePath = `/uploads/${COURSES_UPLOAD_DIR}/${courseImage.filename}`;
-      const courseImageAbsolutePath = getUrl(req) + courseImagePath;
+    // const queryRunner = this.dataSource.createQueryRunner();
 
-      const courseCoverPath = `/uploads/${COURSES_UPLOAD_DIR}/${courseCover.filename}`;
-      const courseCoverAbsolutePath = getUrl(req) + courseCoverPath;
+    // await queryRunner.connect();
 
-      currCourseImage.image = courseImageAbsolutePath;
-      currCourseImage.coverImage = courseCoverAbsolutePath;
-      currCourseImage.course = course;
+    // await queryRunner.startTransaction();
 
-      await queryRunner.manager.save(currCourseImage);
+    // try {
+    //   const course = await this.courseService.validateCourse(courseId)()(
+    //     queryRunner
+    //   );
 
-      await queryRunner.commitTransaction();
+    //   let currCourseImage: CourseImage;
 
-      return {
-        courseImage: this.getUploadResponse(
-          courseImage.originalname,
-          courseImage.filename,
-          courseImagePath,
-          courseImageAbsolutePath
-        ),
-        courseCover: this.getUploadResponse(
-          courseCover.originalname,
-          courseCover.filename,
-          courseCoverPath,
-          courseCoverAbsolutePath
-        ),
-      };
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
+    //   if (course.image) {
+    //     currCourseImage = await queryRunner.manager.findOneBy(CourseImage, {
+    //       id: course.image.id,
+    //     });
 
-      await this.logsService.logError('', error);
+    //     await this.removeCourseImageWithQueryRunner(
+    //       currCourseImage.id,
+    //       queryRunner
+    //     );
+    //   } else {
+    //     currCourseImage = new CourseImage();
+    //   }
 
-      throw new InternalServerErrorException(
-        "Something wen't wrong while trying to upload course images."
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    //   const courseImagePath = `/uploads/${COURSES_UPLOAD_DIR}/${courseImage.filename}`;
+    //   const courseImageAbsolutePath = getUrl(req) + courseImagePath;
+
+    //   const courseCoverPath = `/uploads/${COURSES_UPLOAD_DIR}/${courseCover.filename}`;
+    //   const courseCoverAbsolutePath = getUrl(req) + courseCoverPath;
+
+    //   currCourseImage.image = courseImageAbsolutePath;
+    //   currCourseImage.coverImage = courseCoverAbsolutePath;
+    //   currCourseImage.course = course;
+
+    //   await queryRunner.manager.save(currCourseImage);
+
+    //   await queryRunner.commitTransaction();
+
+    //   return {
+    //     courseImage: this.getUploadResponse(
+    //       courseImage.originalname,
+    //       courseImage.filename,
+    //       courseImagePath,
+    //       courseImageAbsolutePath
+    //     ),
+    //     courseCover: this.getUploadResponse(
+    //       courseCover.originalname,
+    //       courseCover.filename,
+    //       courseCoverPath,
+    //       courseCoverAbsolutePath
+    //     ),
+    //   };
+    // } catch (error) {
+    //   await queryRunner.rollbackTransaction();
+
+    //   await this.logsService.logError('', error);
+
+    //   throw new InternalServerErrorException(
+    //     "Something wen't wrong while trying to upload course images."
+    //   );
+    // } finally {
+    //   await queryRunner.release();
+    // }
   }
 
   async uploadUserAvatar(

@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { LogsService } from './logs.service';
 import { LogsResolver } from './logs.resolver';
@@ -9,7 +10,11 @@ import { UserModule } from '../user/user.module';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([ErrorLog, UserLog]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([ErrorLog, UserLog]),
+    UserModule,
+    DatabaseModule,
+  ],
   providers: [LogsResolver, LogsService],
   exports: [LogsService],
 })
