@@ -212,10 +212,10 @@ export class AuthService {
 
     // return validatedEmail;
 
-    return await this.prismaService.validatedEmail.delete({
+    // it only delete one but only delete many supports email in where
+    return await this.prismaService.validatedEmail.deleteMany({
       where: {
-        // TODO: fix this and make it remove by email
-        id: Math.random(),
+        email,
       },
     });
   }

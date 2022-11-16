@@ -42,7 +42,7 @@ export class CommentService {
       }
 
       if (forUpdate) {
-        whereOptions.user = { id: user.sub };
+        whereOptions.author = { id: user.sub };
       }
 
       if (user && user.role !== UserRole.ADMIN) {
@@ -92,9 +92,9 @@ export class CommentService {
     // return a;
     return await this.prismaService.user.findFirst({
       where: {
-        comment: {
-          // TODO: I don't know what some do fix it
-          some: {
+        comments: {
+          // TODO: I don't know what 'every' do fix it
+          every: {
             id: commentId,
           },
         },
@@ -136,7 +136,7 @@ export class CommentService {
         course: {
           connect: { id: courseId },
         },
-        user: {
+        author: {
           connect: {
             id: user.sub,
           },
@@ -201,7 +201,7 @@ export class CommentService {
   async reply({ content, parentId }: ReplyCommentInput, user: RequestUser) {
     const parentComment = await this.validateComment(parentId)()()({
       course: true,
-    })({ comment: { NOT: null } });
+    })({ replies: { every: { NOT: null } } });
 
     validateEntity(parentComment, 'comment');
 
@@ -221,7 +221,7 @@ export class CommentService {
       data: {
         content,
         // parentId: parentComment.id,
-        comment: {
+        replies: {
           connect: {
             id: parentComment.id,
           },
@@ -231,7 +231,7 @@ export class CommentService {
             id: parentComment.courseId,
           },
         },
-        user: {
+        author: {
           connect: {
             id: user.sub,
           },
@@ -256,6 +256,9 @@ export class CommentService {
       where: {
         id,
       },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      softDelete: true,
     });
   }
 

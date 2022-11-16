@@ -254,12 +254,11 @@ export class OrderService {
       where: this.getWhereOptions(user, orderId),
       include: {
         user: true,
-        orderItem: {
+        orderItems: {
           include: {
             course: {
               include: {
-                // TODO: fix this
-                user_courses_course: true,
+                users: true,
               },
             },
           },
@@ -269,7 +268,7 @@ export class OrderService {
 
     order.status = OrderStatus.FULFILLED;
 
-    for (const orderItem of order.orderItem) {
+    for (const orderItem of order.orderItems) {
       // TODO: fix this
       // const course = this.courseRepository.create(
       //   orderItem.course

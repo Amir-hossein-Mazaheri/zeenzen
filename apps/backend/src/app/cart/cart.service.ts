@@ -488,9 +488,9 @@ export class CartService {
     // cart.totalPrice = new Decimal('0.00').toString();
     // cart.totalPriceWithDiscount = new Decimal('0.00').toString();
 
-    // TODO: fix this and remove ts-ignore
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
+    // TODO: fix this and remove ts-ignore
     const cartItemsIds = cart.cartItems.map(({ id }) => id);
 
     // await this.dataSource

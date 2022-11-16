@@ -60,7 +60,7 @@ export class LicenseService {
       where: this.getWhereOptions(user, id),
       include: {
         user: true,
-        // TODO: add course relation
+        courses: true,
       },
     });
 

@@ -57,7 +57,11 @@ export class PreRequirementService {
         id,
       },
       include: {
-        // TODO: add instructor relation
+        course: {
+          include: {
+            instructors: true,
+          },
+        },
       },
     });
 

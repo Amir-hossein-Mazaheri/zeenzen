@@ -39,9 +39,9 @@ export class InstructorService {
     const instructor = await this.prismaService.instructor.findUnique({
       where: { id },
       include: {
-        expertise: true,
-        social: true,
-        // TODO: add courses after fixation of prisma schema
+        expertises: true,
+        socials: true,
+        courses: true,
       },
     });
 
@@ -170,8 +170,8 @@ export class InstructorService {
 
     return await this.prismaService.instructor.findMany({
       include: {
-        expertise: true,
-        social: true,
+        expertises: true,
+        socials: true,
       },
     });
   }

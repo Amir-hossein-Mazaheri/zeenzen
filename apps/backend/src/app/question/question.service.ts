@@ -53,13 +53,22 @@ export class QuestionService {
 
     if (user && user.role === UserRole.CUSTOMER) {
       whereOptions.course = {
-        // TODO: add participants
+        users: {
+          every: {
+            id: user.sub,
+          },
+        },
       };
     }
 
     if (user.role === UserRole.INSTRUCTOR) {
       whereOptions.course = {
-        // TODO: add instructors
+        instructors: {
+          // TODO: it should be instructorId
+          every: {
+            id: user.sub,
+          },
+        },
       };
     }
 
@@ -78,7 +87,9 @@ export class QuestionService {
       const question = await this.prismaService.question.findFirst({
         where: this.getWhereOptions(user, id),
         include: {
-          // TODO: adds relations
+          whoAnswered: true,
+          whoAsked: true,
+          course: true,
         },
       });
 
@@ -123,8 +134,11 @@ export class QuestionService {
       data: {
         question,
         answer: '',
-        // TODO: fix whoAsked
-        // whoAskedId: user.sub
+        whoAsked: {
+          connect: {
+            id: user.sub,
+          },
+        },
       },
     });
   }
@@ -136,8 +150,11 @@ export class QuestionService {
     // });
     return await this.prismaService.question.findMany({
       where: this.getWhereOptions(user),
-      // TODO: fix relations
-      include: {},
+      include: {
+        whoAnswered: true,
+        whoAsked: true,
+        course: true,
+      },
     });
   }
 
@@ -152,10 +169,9 @@ export class QuestionService {
   ) {
     const question = await this.validateQuestion(id, user)();
 
-    // TODO: fix whoAsked
-    // if (question.whoAsked.id !== user.sub) {
-    //   throw new UnauthorizedException("You can't modify this question");
-    // }
+    if (question.whoAsked.id !== user.sub) {
+      throw new UnauthorizedException("You can't modify this question");
+    }
 
     return await this.updateQuestionBuilder(id, updateQuestionInput);
   }
@@ -167,10 +183,9 @@ export class QuestionService {
   ) {
     const question = await this.validateQuestion(id, user)();
 
-    // TODO: fix whoAnswered
-    // if (question.whoAnswered.id !== user.sub) {
-    //   throw new UnauthorizedException("You can't modify this question");
-    // }
+    if (question.whoAnswered.id !== user.sub) {
+      throw new UnauthorizedException("You can't modify this question");
+    }
 
     return await this.updateQuestionBuilder(id, updateQuestionAnswerInput);
   }

@@ -56,7 +56,7 @@ export class SectionService {
       include: {
         course: {
           include: {
-            // TODO: add instructors relations
+            instructors: true,
           },
         },
       },

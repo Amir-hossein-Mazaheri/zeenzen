@@ -114,12 +114,13 @@ export class CourseService {
 
     if (!this.passOnAdmin(userRole) && checkInstructor) {
       // whereOptions.instructors = { id: instructorId };
-      // TODO: fix course instructor
-      // whereOptions.course_instructors_instructor = {
-      //   every: {
-      //     course_id:
-      //   }
-      // }
+
+      whereOptions.instructors = {
+        // TODO: it must be ok but check 'every' functionality
+        every: {
+          id: instructorId,
+        },
+      };
     }
 
     return whereOptions;
@@ -161,7 +162,8 @@ export class CourseService {
             ),
           },
           include: {
-            // TODO: add categories and image relation
+            categories: true,
+            image: true,
           },
           // TODO: add with deleted
         };
@@ -190,7 +192,11 @@ export class CourseService {
     // });
     return await this.prismaService.instructor.findFirst({
       where: {
-        // TODO: add courses
+        courses: {
+          every: {
+            id: courseId,
+          },
+        },
       },
     });
   }
@@ -272,17 +278,25 @@ export class CourseService {
       shortDescription,
       progress,
       spotPlayerCourseId,
-      // TODO: add categories and instructors
-      preRequirement: {
+      // TODO: fix these ids, make them accept array of ids
+      categories: {
         connect: {
-          // TODO: add in id preRequirement
-          // id:
+          id: Math.random(),
         },
       },
-      section: {
+      instructors: {
         connect: {
-          // TODO: add in id section
-          // id:
+          id: Math.random(),
+        },
+      },
+      preRequirements: {
+        connect: {
+          id: Math.random(),
+        },
+      },
+      sections: {
+        connect: {
+          id: Math.random(),
         },
       },
     };

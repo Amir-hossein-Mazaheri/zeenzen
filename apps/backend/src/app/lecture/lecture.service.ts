@@ -23,15 +23,15 @@ export class LectureService {
     private readonly prismaService: PrismaService
   ) {}
 
-  private async validateInstructor(lecture: Lecture, instructorId: number) {
-    if (
-      !lecture.section.course.instructors.some(
-        (instructor) => instructor.id === instructorId
-      )
-    ) {
-      throw new BadRequestException("You can't modify this pre requirement.");
-    }
-  }
+  // private async validateInstructor(lecture: Lecture, instructorId: number) {
+  //   if (
+  //      !lecture.section.course.instructors.some(
+  //       (instructor) => instructor.id === instructorId
+  //     )
+  //   ) {
+  //     throw new BadRequestException("You can't modify this pre requirement.");
+  //   }
+  // }
 
   async validateLecture(
     id: number,
@@ -51,11 +51,18 @@ export class LectureService {
     //   this.validateInstructor(lecture, instructorId);
     // }
 
-    // TODO: adds instructor check
-    const whereOptions: Prisma.LectureWhereUniqueInput = { id };
+    const whereOptions: Prisma.LectureWhereInput = { id };
+
+    if (checkInstructor) {
+      whereOptions.section.course.instructors = {
+        some: {
+          id: instructorId,
+        },
+      };
+    }
 
     // TODO: adds withDeleted after adding soft delete middleware
-    const lecture = await this.prismaService.lecture.findUnique({
+    const lecture = await this.prismaService.lecture.findFirst({
       where: whereOptions,
       include: {
         section: {

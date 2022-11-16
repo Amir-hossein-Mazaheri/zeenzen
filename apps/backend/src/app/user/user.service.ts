@@ -199,6 +199,7 @@ export class UserService {
     });
   }
 
+  // TODO: replace with update and restore arg in prisma
   async restore(id: number) {
     await this.validateUser(id, true);
 
@@ -209,15 +210,5 @@ export class UserService {
     //   .execute();
 
     // return user;
-
-    // TODO: if possible, add a restore method via middleware
-    return await this.prismaService.user.update({
-      where: {
-        id,
-      },
-      data: {
-        deletedAt: null,
-      },
-    });
   }
 }
