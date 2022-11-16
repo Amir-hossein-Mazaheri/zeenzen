@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { OrderService } from './order.service';
 import { OrderResolver } from './order.resolver';
@@ -15,6 +16,7 @@ import { UserModule } from '../user/user.module';
     CartModule,
     UserModule,
     CourseModule,
+    DatabaseModule,
   ],
   providers: [OrderService, OrderResolver],
   exports: [OrderService],

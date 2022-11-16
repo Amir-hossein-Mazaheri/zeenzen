@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { CourseService } from './course.service';
 import { CourseResolver } from './course.resolver';
@@ -16,6 +17,7 @@ import { SectionModule } from '../section/section.module';
     InstructorModule,
     SectionModule,
     PreRequirementModule,
+    DatabaseModule,
   ],
   providers: [CourseService, CourseResolver],
   exports: [TypeOrmModule, CourseService],

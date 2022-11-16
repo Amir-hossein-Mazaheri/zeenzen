@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '@zeenzen/database';
 
 import { Request } from 'express';
@@ -35,12 +36,16 @@ export class UploadsService {
     private readonly prismaService: PrismaService
   ) {}
 
-  async validateAvatar(id: string, user: RequestUser) {
+  async validateAvatar(
+    id: string,
+    user: RequestUser,
+    transaction: Prisma.TransactionClient
+  ) {
     // const avatar = await queryRunner.manager.findOne(Avatar, {
     //   where: { id, user: { id: user.sub } },
     // });
 
-    const avatar = await this.prismaService.avatar.findFirst({
+    const avatar = await transaction.avatar.findFirst({
       where: {
         id,
         user: { id: user.sub },
@@ -54,12 +59,12 @@ export class UploadsService {
     return avatar;
   }
 
-  async validateCourseImage(id: string) {
+  async validateCourseImage(id: string, transaction: Prisma.TransactionClient) {
     // const courseImage = await queryRunner.manager.findOneBy(CourseImage, {
     //   id,
     // });
 
-    const courseImage = await this.prismaService.courseImage.findUnique({
+    const courseImage = await transaction.courseImage.findUnique({
       where: { id },
     });
 
@@ -122,14 +127,14 @@ export class UploadsService {
       courseCover: [courseCover],
     }: CourseImagesFiles
   ) {
-    await this.prismaService.$transaction(async (tx) => {
+    return await this.prismaService.$transaction(async (tx) => {
       const course = await tx.course.findFirst({
         include: {
           courseImage: true,
         },
       });
 
-      let currCourseImage: CourseImage;
+      let currCourseImage: Prisma.CourseImageGetPayload<unknown>;
 
       if (course.courseImage) {
         currCourseImage = await tx.courseImage.findFirst({
@@ -138,6 +143,14 @@ export class UploadsService {
           },
         });
       }
+
+      const courseImagePath = `/uploads/${COURSES_UPLOAD_DIR}/${courseImage.filename}`;
+      const courseImageAbsolutePath = getUrl(req) + courseImagePath;
+
+      const courseCoverPath = `/uploads/${COURSES_UPLOAD_DIR}/${courseCover.filename}`;
+      const courseCoverAbsolutePath = getUrl(req) + courseCoverPath;
+
+      // TODO: continue the code based on comment part below
     });
 
     // const queryRunner = this.dataSource.createQueryRunner();
@@ -212,78 +225,66 @@ export class UploadsService {
     { filename, originalname }: TFile,
     user: RequestUser
   ) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-
-    await queryRunner.startTransaction();
-
-    try {
-      const currUser = await this.userService.validateUser(
-        user.sub,
-        false,
-        true
-      );
-
-      let avatar: Avatar;
-
-      console.log(currUser);
-
-      if (currUser.avatar) {
-        avatar = await this.validateAvatar(
-          currUser.avatar.id,
-          user,
-          queryRunner
-        );
-
-        await this.removeUserAvatarWithQueryRunner(
-          avatar.id,
-          user,
-          queryRunner
-        );
-      } else {
-        avatar = new Avatar();
-      }
-
-      const path = `/uploads/${USERS_AVATAR_UPLOAD_DIR}/${filename}`;
-      const absolutePath = getUrl(req) + path;
-
-      avatar.fullPath = absolutePath;
-      avatar.originalName = originalname;
-      avatar.name = filename;
-      avatar.user = currUser;
-
-      await queryRunner.manager.save(avatar);
-
-      await queryRunner.commitTransaction();
-
-      return {
-        ...this.getUploadResponse(originalname, filename, path, absolutePath),
-        avatarId: avatar.id,
-      };
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-
-      await this.logsService.logError('uploadUserAvatar', error);
-
-      throw new InternalServerErrorException(
-        "Something wen't wrong while trying to upload your avatar."
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    // const queryRunner = this.dataSource.createQueryRunner();
+    // await queryRunner.connect();
+    // await queryRunner.startTransaction();
+    // try {
+    //   const currUser = await this.userService.validateUser(
+    //     user.sub,
+    //     false,
+    //     true
+    //   );
+    //   let avatar: Avatar;
+    //   console.log(currUser);
+    //   if (currUser.avatar) {
+    //     avatar = await this.validateAvatar(
+    //       currUser.avatar.id,
+    //       user,
+    //       queryRunner
+    //     );
+    //     await this.transactionalRemoveUserAvatar(avatar.id, user, queryRunner);
+    //   } else {
+    //     avatar = new Avatar();
+    //   }
+    //   const path = `/uploads/${USERS_AVATAR_UPLOAD_DIR}/${filename}`;
+    //   const absolutePath = getUrl(req) + path;
+    //   avatar.fullPath = absolutePath;
+    //   avatar.originalName = originalname;
+    //   avatar.name = filename;
+    //   avatar.user = currUser;
+    //   await queryRunner.manager.save(avatar);
+    //   await queryRunner.commitTransaction();
+    //   return {
+    //     ...this.getUploadResponse(originalname, filename, path, absolutePath),
+    //     avatarId: avatar.id,
+    //   };
+    // } catch (error) {
+    //   await queryRunner.rollbackTransaction();
+    //   await this.logsService.logError('uploadUserAvatar', error);
+    //   throw new InternalServerErrorException(
+    //     "Something wen't wrong while trying to upload your avatar."
+    //   );
+    // } finally {
+    //   await queryRunner.release();
+    // }
   }
 
-  async removeCourseImageWithQueryRunner(
+  async transactionalRemoveCourseImage(
     courseImageId: string,
-    queryRunner: QueryRunner
+    transaction: Prisma.TransactionClient
   ) {
     const courseImage = await this.validateCourseImage(
       courseImageId,
-      queryRunner
+      transaction
     );
 
-    await queryRunner.manager.delete(CourseImage, { id: courseImage.id });
+    // await queryRunner.manager.delete(CourseImage, { id: courseImage.id });
+
+    await transaction.courseImage.delete({
+      where: {
+        id: courseImage.id,
+      },
+    });
 
     await this.removeCourseImageFiles(
       this.getFilenameFromUrl(courseImage.image),
@@ -292,78 +293,104 @@ export class UploadsService {
   }
 
   async removeCourseImage(id: string) {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-
-    await queryRunner.startTransaction();
-
     const validation = this.validationConfirmation(id);
 
     if (typeof validation === 'object') {
       return validation;
     }
 
-    try {
-      await this.removeCourseImageWithQueryRunner(id, queryRunner);
+    return await this.prismaService.$transaction(async (tx) => {
+      await this.transactionalRemoveCourseImage(id, tx);
 
       IS_CONFIRMED = false;
-
-      await queryRunner.commitTransaction();
 
       return {
         message: 'Course image successfully deleted.',
       };
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
+    });
 
-      const code = err?.code;
+    // const queryRunner = this.dataSource.createQueryRunner();
 
-      if (code === 'ENOENT') {
-        throw new BadRequestException("File doesn't exists.");
-      }
+    // await queryRunner.connect();
 
-      await this.logsService.logError('removeCourseImage', err);
+    // await queryRunner.startTransaction();
 
-      throw new InternalServerErrorException(
-        'Something went wrong while trying to delete file.'
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    // const validation = this.validationConfirmation(id);
+
+    // if (typeof validation === 'object') {
+    //   return validation;
+    // }
+
+    // try {
+    //   await this.transactionalRemoveCourseImage(id, queryRunner);
+
+    //   IS_CONFIRMED = false;
+
+    //   await queryRunner.commitTransaction();
+
+    //   return {
+    //     message: 'Course image successfully deleted.',
+    //   };
+    // } catch (err) {
+    //   await queryRunner.rollbackTransaction();
+
+    //   const code = err?.code;
+
+    //   if (code === 'ENOENT') {
+    //     throw new BadRequestException("File doesn't exists.");
+    //   }
+
+    //   await this.logsService.logError('removeCourseImage', err);
+
+    //   throw new InternalServerErrorException(
+    //     'Something went wrong while trying to delete file.'
+    //   );
+    // } finally {
+    //   await queryRunner.release();
+    // }
   }
 
   async removeUserAvatarFile(filename: string) {
     await fs.unlink(getUploadsPath(USERS_AVATAR_UPLOAD_DIR, filename));
   }
 
-  async removeUserAvatarWithQueryRunner(
+  async transactionalRemoveUserAvatar(
     id: string,
     user: RequestUser,
-    queryRunner: QueryRunner
+    transaction: Prisma.TransactionClient
   ) {
-    const avatar = await this.validateAvatar(id, user, queryRunner);
+    const avatar = await this.validateAvatar(id, user, transaction);
 
-    await queryRunner.manager.delete(Avatar, { id: avatar.id });
+    // await queryRunner.manager.delete(Avatar, { id: avatar.id });
+
+    await transaction.avatar.delete({
+      where: {
+        id: avatar.id,
+      },
+    });
 
     await this.removeUserAvatarFile(avatar.name);
   }
 
   async removeUserAvatar(id: string, user: RequestUser) {
-    const queryRunner = this.dataSource.createQueryRunner();
+    await this.prismaService.$transaction(async (tx) => {
+      await this.transactionalRemoveUserAvatar(id, user, tx);
+    });
 
-    await queryRunner.connect();
+    // const queryRunner = this.dataSource.createQueryRunner();
 
-    await queryRunner.startTransaction();
+    // await queryRunner.connect();
 
-    try {
-      await this.removeUserAvatarWithQueryRunner(id, user, queryRunner);
+    // await queryRunner.startTransaction();
 
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
-    }
+    // try {
+    //   await this.transactionalRemoveUserAvatar(id, user, queryRunner);
+
+    //   await queryRunner.commitTransaction();
+    // } catch (err) {
+    //   await queryRunner.rollbackTransaction();
+    // } finally {
+    //   await queryRunner.release();
+    // }
   }
 }

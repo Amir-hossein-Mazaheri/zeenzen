@@ -7,6 +7,7 @@ import {
   QueryRunner,
   Repository,
 } from 'typeorm';
+import { PrismaService } from '@zeenzen/database';
 
 import { CreateCourseInput } from './dto/create-course.input';
 import { UpdateCourseInput } from './dto/update-course.input';
@@ -20,6 +21,8 @@ import { CourseGatheredData, UserRole, MixedKeyValue } from '../types';
 import { CourseImage } from '../uploads/entities/course-image.entity';
 import { purifiedTurndown } from '../utils/purifiedTurndown';
 import { toCamelCase } from '../utils/toCamelCase';
+import { Prisma } from '@prisma/client';
+import { text } from 'stream/consumers';
 
 const COURSE_PER_PAGE = 6;
 
@@ -36,7 +39,8 @@ export class CourseService {
     @InjectRepository(Section) private sectionRepository: Repository<Section>,
     @InjectRepository(PreRequirement)
     private preRequirementRepository: Repository<PreRequirement>,
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    private readonly prismaService: PrismaService
   ) {}
 
   private async gatherRelatedData(
@@ -106,10 +110,16 @@ export class CourseService {
     checkInstructor: boolean,
     instructorId?: number
   ) {
-    const whereOptions: FindOptionsWhere<Course> = { id, isDraft };
+    const whereOptions: Prisma.CourseWhereInput = { id, isDraft };
 
     if (!this.passOnAdmin(userRole) && checkInstructor) {
-      whereOptions.instructors = { id: instructorId };
+      // whereOptions.instructors = { id: instructorId };
+      // TODO: fix course instructor
+      // whereOptions.course_instructors_instructor = {
+      //   every: {
+      //     course_id:
+      //   }
+      // }
     }
 
     return whereOptions;
@@ -124,28 +134,46 @@ export class CourseService {
     withDraft = false
   ) {
     return (whereOptions?: FindOptionsWhere<Course>) =>
-      async (queryRunner?: QueryRunner) => {
-        const findOptions = {
+      async (transaction?: Prisma.TransactionClient) => {
+        // const findOptions = {
+        //   where: {
+        //     ...this.getWhereOptions(
+        //       id,
+        //       withDraft,
+        //       userRole,
+        //       checkInstructor,
+        //       instructorId
+        //     ),
+        //     ...whereOptions,
+        //   },
+        //   relations: this.relations,
+        //   withDeleted,
+        // };
+
+        const findOptions: Prisma.CourseFindFirstArgs = {
           where: {
             ...this.getWhereOptions(
               id,
-              withDraft,
+              withDeleted,
               userRole,
               checkInstructor,
               instructorId
             ),
-            ...whereOptions,
           },
-          relations: this.relations,
-          withDeleted,
+          include: {
+            // TODO: add categories and image relation
+          },
+          // TODO: add with deleted
         };
 
-        let course: Course;
+        let course: Prisma.CourseGetPayload<unknown>;
 
-        if (queryRunner) {
-          course = await queryRunner.manager.findOne(Course, findOptions);
+        if (transaction) {
+          // course = await queryRunner.manager.findOne(Course, findOptions);
+          course = await transaction.course.findFirst(findOptions);
         } else {
-          course = await this.courseRepository.findOne(findOptions);
+          // course = await this.courseRepository.findOne(findOptions);
+          course = await this.prismaService.course.findFirst(findOptions);
         }
 
         if (!course) {
@@ -157,15 +185,28 @@ export class CourseService {
   }
 
   async getInstructors(courseId: number) {
-    return await this.instructorRepository.findBy({
-      courses: { id: courseId },
+    // return await this.instructorRepository.findBy({
+    //   courses: { id: courseId },
+    // });
+    return await this.prismaService.instructor.findFirst({
+      where: {
+        // TODO: add courses
+      },
     });
   }
 
   async getImage(courseId: number) {
-    return await this.dataSource
-      .getRepository(CourseImage)
-      .findOneBy({ course: { id: courseId } });
+    // return await this.dataSource
+    //   .getRepository(CourseImage)
+    //   .findOneBy({ course: { id: courseId } });
+
+    return await this.prismaService.courseImage.findFirst({
+      where: {
+        course: {
+          id: courseId,
+        },
+      },
+    });
   }
 
   async create({
@@ -183,47 +224,88 @@ export class CourseService {
     sectionsId,
     discountPercent,
   }: CreateCourseInput) {
-    const [categories, preRequirements, instructors, sections] =
-      await this.validateGatheredDate(
-        categoriesId,
-        preRequirementsId,
-        instructorsId,
-        sectionsId
-      );
+    // const [categories, preRequirements, instructors, sections] =
+    //   await this.validateGatheredDate(
+    //     categoriesId,
+    //     preRequirementsId,
+    //     instructorsId,
+    //     sectionsId
+    //   );
 
-    const newCourse = new Course();
-    newCourse.spotPlayerCourseId = spotPlayerCourseId;
-    newCourse.title = title;
-    newCourse.shortDescription = shortDescription;
-    newCourse.description = purifiedTurndown(description);
-    newCourse.progress = progress;
+    // const newCourse = new Course();
+    // newCourse.spotPlayerCourseId = spotPlayerCourseId;
+    // newCourse.title = title;
+    // newCourse.shortDescription = shortDescription;
+    // newCourse.description = purifiedTurndown(description);
+    // newCourse.progress = progress;
 
-    newCourse.categories = categories;
-    newCourse.preRequirements = preRequirements;
-    newCourse.instructors = instructors;
-    newCourse.sections = sections;
+    // newCourse.categories = categories;
+    // newCourse.preRequirements = preRequirements;
+    // newCourse.instructors = instructors;
+    // newCourse.sections = sections;
+
+    // if (preRequirementsDescription) {
+    //   newCourse.preRequirementsDescription = purifiedTurndown(
+    //     preRequirementsDescription
+    //   );
+    // }
+
+    // if (price) {
+    //   newCourse.price = price;
+    // }
+
+    // if (level) {
+    //   newCourse.level = level;
+    // }
+
+    // if (discountPercent) {
+    //   newCourse.discountPercent = discountPercent;
+    // }
+
+    // await this.courseRepository.manager.save(newCourse);
+
+    // return newCourse;
+
+    const createCourseData: Prisma.CourseCreateInput = {
+      title,
+      description: purifiedTurndown(description),
+      shortDescription,
+      progress,
+      spotPlayerCourseId,
+      // TODO: add categories and instructors
+      preRequirement: {
+        connect: {
+          // TODO: add in id preRequirement
+          // id:
+        },
+      },
+      section: {
+        connect: {
+          // TODO: add in id section
+          // id:
+        },
+      },
+    };
 
     if (preRequirementsDescription) {
-      newCourse.preRequirementsDescription = purifiedTurndown(
-        preRequirementsDescription
-      );
+      createCourseData.preRequirementsDescription = preRequirementsDescription;
     }
 
     if (price) {
-      newCourse.price = price;
+      createCourseData.price = price;
     }
 
     if (level) {
-      newCourse.level = level;
+      createCourseData.level = level;
     }
 
     if (discountPercent) {
-      newCourse.discountPercent = discountPercent;
+      createCourseData.discountPercent = discountPercent;
     }
 
-    await this.courseRepository.manager.save(newCourse);
-
-    return newCourse;
+    return await this.prismaService.course.create({
+      data: createCourseData,
+    });
   }
 
   async publish(id: number) {
@@ -237,15 +319,24 @@ export class CourseService {
       true
     )()();
 
-    const course = await this.dataSource
-      .createQueryBuilder()
-      .update<Course>(Course)
-      .set({ isDraft: false })
-      .where({ id })
-      .returning('*')
-      .execute();
+    // const course = await this.dataSource
+    //   .createQueryBuilder()
+    //   .update<Course>(Course)
+    //   .set({ isDraft: false })
+    //   .where({ id })
+    //   .returning('*')
+    //   .execute();
 
-    return toCamelCase(course.raw[0]);
+    // return toCamelCase(course.raw[0]);
+
+    return await this.prismaService.course.update({
+      where: {
+        id,
+      },
+      data: {
+        isDraft: false,
+      },
+    });
   }
 
   // we shouldn't load all relations
@@ -339,30 +430,45 @@ export class CourseService {
       );
     }
 
-    const course = await this.dataSource
-      .createQueryBuilder()
-      .update<Course>(Course)
-      .set(updateCourseInput)
-      .where({ id })
-      .returning('*')
-      .execute();
+    // const course = await this.dataSource
+    //   .createQueryBuilder()
+    //   .update<Course>(Course)
+    //   .set(updateCourseInput)
+    //   .where({ id })
+    //   .returning('*')
+    //   .execute();
 
-    return toCamelCase(course.raw[0]);
+    // return toCamelCase(course.raw[0]);
+
+    return await this.prismaService.course.update({
+      where: {
+        id,
+      },
+      data: updateCourseInput,
+    });
   }
 
   async remove(id: number) {
     const randomNumber = Math.random();
-    const course = await this.validateCourse(id, false, randomNumber)()();
+    await this.validateCourse(id, false, randomNumber)()();
 
-    await this.courseRepository
-      .createQueryBuilder()
-      .softDelete()
-      .where({ id })
-      .execute();
+    // await this.courseRepository
+    //   .createQueryBuilder()
+    //   .softDelete()
+    //   .where({ id })
+    //   .execute();
 
-    return course;
+    // return course;
+
+    // TODO: change it to soft delete
+    return await this.prismaService.course.delete({
+      where: {
+        id,
+      },
+    });
   }
 
+  // TODO: replace with prisma
   async restore(id: number) {
     const randomNumber = Math.random();
     const course = await this.validateCourse(id, false, randomNumber, true)()();
