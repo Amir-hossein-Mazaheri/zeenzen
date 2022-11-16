@@ -9,307 +9,263 @@ datasource db {
 }
 
 model AskAmirhossein {
-  id         Int       @id(map: "PK_24de23185c763126b6bd0b29d12") @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   question   String    @db.VarChar(1000)
-  email      String    @db.VarChar(100)
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  userId     Int?      @map("user_id")
   answer     String?   @db.VarChar(1000)
+  email      String    @db.VarChar(100)
+  createdAt  DateTime  @default(now()) @map("created_at")
   answeredAt DateTime? @map("answered_at") @db.Date
-  user       User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_67644a1a9fe05bd5dd361d0eb73")
+  userId     Int?      @map("user_id")
+  user       User?     @relation(fields: [userId], references: [id])
 
   @@map("ask_amirhossein")
 }
 
 model Avatar {
-  id           String   @id(map: "PK_50e36da9d45349941038eaf149d") @default(uuid()) @db.Uuid
-  originalName String   @map("original_name") @db.VarChar
+  id           String   @id @default(uuid())
+  name         String   @db.VarChar(255)
+  originalName String   @map("original_name") @db.VarChar(255)
   fullPath     String   @map("full_path") @db.VarChar(1000)
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  name         String   @db.VarChar
+  createdAt    DateTime @default(now()) @map("created_at")
   user         User?
 
   @@map("avatar")
 }
 
 model Cart {
-  id        String     @id(map: "PK_c524ec48751b9b5bcfbf6e59be7") @default(uuid()) @db.Uuid
-  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamp(6)
+  id        String     @id @default(uuid())
   cartItems CartItem[]
+  createdAt DateTime   @default(now()) @map("created_at")
   user      User?
 
   @@map("cart")
 }
 
 model CartItem {
-  id                    Int     @id(map: "PK_bd94725aa84f8cf37632bcde997") @default(autoincrement())
-  quantity              Int
-  cartId                String? @map("cart_id") @db.Uuid
-  courseId              Int?    @map("course_id")
+  id                    Int     @id @default(autoincrement())
   unitPrice             Decimal @map("unit_price") @db.Decimal(20, 2)
   unitPriceWithDiscount Decimal @map("unit_price_with_discount") @db.Decimal(20, 2)
-  cart                  Cart?   @relation(fields: [cartId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6b2a4f1f533d89d218e70db941")
-  course                Course? @relation(fields: [courseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_d0599514eccb2bf2561849f4ccc")
+  quantity              Int
+  cartId                String? @map("cart_id")
+  cart                  Cart?   @relation(fields: [cartId], references: [id])
+  courseId              Int?    @map("course_id")
+  course                Course? @relation(fields: [courseId], references: [id])
 
   @@map("cart_item")
 }
 
 model Category {
-  id                         Int                          @id(map: "PK_9c4e4a89e3674fc9f382d733f03") @default(autoincrement())
-  label                      String                       @db.VarChar
-  createdAt                  DateTime                     @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt                  DateTime                     @default(now()) @map("updated_at") @db.Timestamp(6)
-  createdById                Int?                         @map("created_by_id")
-  user                       User?                        @relation(fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_d179629f2eb1981cb3055f4774b")
-  course_categories_category course_categories_category[]
+  id          Int      @id @default(autoincrement())
+  label       String   @db.VarChar
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  courses     Course[]
+  createdById Int?     @map("created_by_id")
+  createdBy   User?    @relation(fields: [createdById], references: [id])
 
   @@map("category")
 }
 
 model Comment {
-  id            Int       @id(map: "PK_0b0e4bbc8415ec426f87f3a88e2") @default(autoincrement())
-  content       String
-  isPublished   Boolean   @default(false) @map("is_published")
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt     DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
-  parentId      Int?      @map("parent_id")
-  courseId      Int?      @map("course_id")
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamp(6)
-  authorId      Int?      @map("author_id")
-  course        Course?   @relation(fields: [courseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_2d70a4dcee01cc63e073a85802b")
-  user          User?     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3ce66469b26697baa097f8da923")
-  comment       Comment?  @relation("commentTocomment", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_8bd8d0985c0d077c8129fb4a209")
-  otherComments Comment[] @relation("commentTocomment")
+  id          Int       @id @default(autoincrement())
+  content     String
+  isPublished Boolean   @default(false) @map("is_published")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deleted     Boolean?  @default(false) @map("deleted_at")
+  courseId    Int?      @map("course_id")
+  course      Course?   @relation(fields: [courseId], references: [id])
+  authorId    Int?      @map("author_id")
+  author      User?     @relation(fields: [authorId], references: [id])
+  parent      Comment?  @relation("commentTocomment", fields: [parentId], references: [id])
+  parentId    Int?      @map("parent_id")
+  replies     Comment[] @relation("commentTocomment")
 
   @@map("comment")
 }
 
 model Coupon {
-  id                    Int                     @id(map: "PK_fcbe9d72b60eed35f46dc35a682") @default(autoincrement())
-  description           String                  @db.VarChar
-  code                  String                  @unique(map: "UQ_62d3c5b0ce63a82c48e86d904bc") @db.VarChar
-  expiresAt             DateTime                @map("expires_at") @db.Date
-  applyToEveryThing     Boolean                 @default(false) @map("apply_to_every_thing")
-  createdAt             DateTime                @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt             DateTime                @default(now()) @map("updated_at") @db.Timestamp(6)
-  percent               Decimal                 @db.Decimal(5, 2)
-  maxEffect             Decimal?                @map("max_effect") @db.Decimal(20, 2)
-  course_coupons_coupon course_coupons_coupon[]
+  id                Int      @id @default(autoincrement())
+  description       String   @db.VarChar(255)
+  code              String   @unique @db.VarChar(255)
+  percent           Decimal  @db.Decimal(5, 2)
+  maxEffect         Decimal? @map("max_effect") @db.Decimal(20, 2)
+  expiresAt         DateTime @map("expires_at")
+  applyToEveryThing Boolean  @default(false) @map("apply_to_every_thing")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  courses           Course[]
 
   @@map("coupon")
 }
 
 model Course {
-  id                            Int                             @id(map: "PK_bf95180dd756fd204fb01ce4916") @default(autoincrement())
-  title                         String                          @db.VarChar
-  description                   String                          @db.VarChar
-  level                         CourseLevel                     @default(MIXED)
-  participantsCount             Int                             @default(0) @map("participants_count")
-  lecturesCount                 Int                             @default(0) @map("lectures_count")
-  hourseCount                   Int                             @default(0) @map("hours_count")
-  price                         Decimal                         @default(0) @db.Decimal(20, 2)
-  progress                      Decimal                         @default(0) @db.Decimal(5, 2)
-  createdAt                     DateTime                        @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt                     DateTime                        @default(now()) @map("updated_at") @db.Timestamp(6)
-  deletedAt                     DateTime?                       @map("deleted_at") @db.Timestamp(6)
-  isDraft                       Boolean                         @default(true) @map("is_draft")
-  spotPlayerCourseId            String                          @map("spot_player_course_id") @db.VarChar
-  shortDescription              String                          @map("short_description") @db.VarChar
-  preRequirementsDescription    String?                         @map("pre_requirements_description") @db.VarChar
-  imageId                       String?                         @unique(map: "UQ_c2553cd2a197d697fc1c8a37c60") @map("image_id") @db.Uuid
-  discountPercent               Decimal                         @default(0) @map("discount_percent") @db.Decimal(5, 2)
-  courseImage                   CourseImage?                    @relation(fields: [imageId], references: [id], onUpdate: NoAction, map: "FK_c2553cd2a197d697fc1c8a37c60")
-  cartItem                      CartItem[]
-  comment                       Comment[]
-  course_categories_category    course_categories_category[]
-  course_coupons_coupon         course_coupons_coupon[]
-  course_instructors_instructor course_instructors_instructor[]
-  course_licenses_license       course_licenses_license[]
-  orderItem                     OrderItem[]
-  preRequirement                PreRequirement[]
-  question                      Question[]
-  section                       Section[]
-  user_courses_course           user_courses_course[]
+  id                         Int              @id @default(autoincrement())
+  spotPlayerCourseId         String           @map("spot_player_course_id") @db.VarChar(255)
+  title                      String           @db.VarChar(255)
+  shortDescription           String           @map("short_description") @db.VarChar(255)
+  preRequirementsDescription String?          @map("pre_requirements_description") @db.VarChar(255)
+  description                String           @db.VarChar
+  level                      CourseLevel      @default(MIXED)
+  participantsCount          Int              @default(0) @map("participants_count")
+  lecturesCount              Int              @default(0) @map("lectures_count")
+  hourseCount                Int              @default(0) @map("hours_count")
+  price                      Decimal          @default(0) @db.Decimal(20, 2)
+  progress                   Decimal          @default(0) @db.Decimal(5, 2)
+  discountPercent            Decimal          @default(0) @map("discount_percent") @db.Decimal(5, 2)
+  createdAt                  DateTime         @default(now()) @map("created_at")
+  updatedAt                  DateTime         @updatedAt @map("updated_at")
+  deleted                    Boolean?         @default(false)
+  isDraft                    Boolean          @default(true) @map("is_draft")
+  imageId                    String?          @unique @map("image_id")
+  image                      CourseImage?     @relation(fields: [imageId], references: [id], onUpdate: SetNull)
+  cartItems                  CartItem[]
+  comments                   Comment[]
+  categories                 Category[]
+  coupons                    Coupon[]
+  instructors                Instructor[]
+  licenses                   License[]
+  orderItems                 OrderItem[]
+  preRequirements            PreRequirement[]
+  questions                  Question[]
+  sections                   Section[]
+  users                      User[]
 
   @@map("course")
 }
 
-model course_categories_category {
-  course_id   Int
-  category_id Int
-  course      Course   @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_5c816c082df054a20c4df50f76c")
-  category    Category @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a46d73cdebade5858b8696d6e47")
-
-  @@id([course_id, category_id], map: "PK_8afe3a0b3cd0e708787fc78c2b2")
-  @@index([course_id], map: "IDX_5c816c082df054a20c4df50f76")
-  @@index([category_id], map: "IDX_a46d73cdebade5858b8696d6e4")
-}
-
-model course_coupons_coupon {
-  course_id Int
-  coupon_id Int
-  course    Course @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_4d9c9bf2098a2143843d47d43da")
-  coupon    Coupon @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5e506dba5adf0e200a039146cac")
-
-  @@id([course_id, coupon_id], map: "PK_9c927d7ced7a691b90b6c64b533")
-  @@index([course_id], map: "IDX_4d9c9bf2098a2143843d47d43d")
-  @@index([coupon_id], map: "IDX_5e506dba5adf0e200a039146ca")
-}
-
 model CourseImage {
-  id         String   @id(map: "PK_c2553cd2a197d697fc1c8a37c60") @default(uuid()) @db.Uuid
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  id         String   @id @default(uuid())
   image      String   @db.VarChar(1000)
   coverImage String   @map("cover_image") @db.VarChar(1000)
+  createdAt  DateTime @default(now()) @map("created_at")
   course     Course?
 
   @@map("course_image")
 }
 
-model course_instructors_instructor {
-  course_id     Int
-  instructor_id Int
-  course        Course     @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_13379c99de35ffcafd648a30012")
-  instructor    Instructor @relation(fields: [instructor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_678b8ef549c5e457789379cd7bc")
-
-  @@id([course_id, instructor_id], map: "PK_9bb390160c194890ff19dba97ee")
-  @@index([course_id], map: "IDX_13379c99de35ffcafd648a3001")
-  @@index([instructor_id], map: "IDX_678b8ef549c5e457789379cd7b")
-}
-
-model course_licenses_license {
-  course_id  Int
-  license_id Int
-  license    License @relation(fields: [license_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_74e3fb1d40ed891c607403df12e")
-  course     Course  @relation(fields: [course_id], references: [id], onDelete: Cascade, map: "FK_7d1695ef14c23151b37ebaefc9d")
-
-  @@id([course_id, license_id], map: "PK_56b018a869dfaa930eef5d918d7")
-  @@index([license_id], map: "IDX_74e3fb1d40ed891c607403df12")
-  @@index([course_id], map: "IDX_7d1695ef14c23151b37ebaefc9")
-}
-
 model EmailSubscription {
-  id            Int      @id(map: "PK_3fab89deebd0355252568c36d0f") @default(autoincrement())
-  email         String   @unique(map: "UQ_fbfd28125a35bcee99ea58f1edb") @db.VarChar(100)
-  subscriptedAt DateTime @default(now()) @map("subscripted_at") @db.Timestamp(6)
+  id            Int      @id @default(autoincrement())
+  email         String   @unique @db.VarChar(100)
+  subscriptedAt DateTime @default(now()) @map("subscripted_at")
 
   @@map("email_subscription")
 }
 
 model ErrorLog {
-  id                      String    @id(map: "PK_0284e7aa7afe77ea1ce1621c252") @default(uuid()) @db.Uuid
-  action                  String    @db.VarChar
+  id                      String   @id @default(uuid())
+  action                  String   @db.VarChar
   error                   Json
-  time                    DateTime  @default(now()) @db.Timestamp(6)
-  serverPerformanceStatus Json      @map("server_performance_status")
-  comment                 String    @default("")
-  deletedAt               DateTime? @map("deleted_at") @db.Timestamp(6)
+  comment                 String   @default("")
+  time                    DateTime @default(now())
+  serverPerformanceStatus Json     @map("server_performance_status")
+  deleted                 Boolean  @default(false)
 
   @@map("error_log")
 }
 
 model Expertise {
-  id           Int            @id(map: "PK_0c1f773f9419573f6bc37eebb7f") @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   label        String         @db.VarChar
-  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt    DateTime       @default(now()) @map("updated_at") @db.Timestamp(6)
+  isPrimary    Boolean        @default(false) @map("is_primary")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
   validated    Boolean        @default(false)
   level        ExpertiseLevel
   instructorId Int?           @map("instructor_id")
-  isPrimary    Boolean        @default(false) @map("is_primary")
-  instructor   Instructor?    @relation(fields: [instructorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_cdaa49e96bab264944840731ada")
+  instructor   Instructor?    @relation(fields: [instructorId], references: [id])
 
   @@map("expertise")
 }
 
 model Instructor {
-  id                            Int                             @id(map: "PK_ccc0348eefb581ca002c05ef2f3") @default(autoincrement())
-  about                         String                          @db.VarChar
-  createdAt                     DateTime                        @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt                     DateTime                        @default(now()) @map("updated_at") @db.Timestamp(6)
-  course_instructors_instructor course_instructors_instructor[]
-  expertise                     Expertise[]
-  social                        Social[]
-  user                          User?
+  id         Int         @id @default(autoincrement())
+  about      String      @db.VarChar
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  user       User?
+  courses    Course[]
+  expertises Expertise[]
+  socials    Social[]
 
   @@map("instructor")
 }
 
 model Lecture {
-  id        Int       @id(map: "PK_2abef7c1e52b7b58a9f905c9643") @default(autoincrement())
-  label     String    @db.VarChar
-  duration  Int       @default(0)
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
-  sectionId Int?      @map("section_id")
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
-  section   Section?  @relation(fields: [sectionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_05b264a75ceaafc30411e2e986e")
+  id        Int      @id @default(autoincrement())
+  label     String   @db.VarChar
+  duration  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deleted   Boolean? @default(false)
+  sectionId Int?     @map("section_id")
+  section   Section? @relation(fields: [sectionId], references: [id])
 
   @@map("lecture")
 }
 
 model License {
-  id                      Int                       @id(map: "PK_f168ac1ca5ba87286d03b2ef905") @default(autoincrement())
-  licenseCode             String                    @map("license_code") @db.VarChar
-  createdAt               DateTime                  @default(now()) @map("created_at") @db.Timestamp(6)
-  userId                  Int?                      @map("user_id")
-  licenseId               String                    @map("license_id") @db.VarChar
-  licenseUrl              String                    @map("license_url") @db.VarChar
-  user                    User?                     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_260c9bd19158aa10bf92ded088e")
-  course_licenses_license course_licenses_license[]
+  id          Int      @id @default(autoincrement())
+  licenseCode String   @map("license_code") @db.VarChar(255)
+  licenseId   String   @map("license_id") @db.VarChar(255)
+  licenseUrl  String   @map("license_url") @db.VarChar
+  createdAt   DateTime @default(now()) @map("created_at")
+  userId      Int?     @map("user_id")
+  user        User?    @relation(fields: [userId], references: [id])
+  courses     Course[]
 
   @@map("license")
 }
 
 model Order {
-  id            Int         @id(map: "PK_1031171c13130102495201e3e20") @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   hasDiscount   Boolean     @default(false) @map("has_discount")
-  paymentMethod String      @map("payment_method") @db.VarChar
-  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamp(6)
-  userId        Int?        @map("user_id")
+  paymentMethod String      @map("payment_method") @db.VarChar(255)
   status        OrderStatus @default(PENDING)
-  paymentId     String?     @unique(map: "UQ_28c756d4fd41223fedfbd2750e1") @map("payment_id") @db.Uuid
-  user          User?       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_199e32a02ddc0f47cd93181d8fd")
-  payment       Payment?    @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_28c756d4fd41223fedfbd2750e1")
-  orderItem     OrderItem[]
+  createdAt     DateTime    @default(now()) @map("created_at")
+  userId        Int?        @map("user_id")
+  user          User?       @relation(fields: [userId], references: [id])
+  orderItems    OrderItem[]
+  paymentId     String?     @unique @map("payment_id")
+  payment       Payment?    @relation(fields: [paymentId], references: [id])
 
   @@map("order")
 }
 
 model OrderItem {
-  id                    Int     @id(map: "PK_d01158fe15b1ead5c26fd7f4e90") @default(autoincrement())
+  id                    Int     @id @default(autoincrement())
   quantity              Int
-  courseId              Int?    @map("course_id")
-  orderId               Int?    @map("order_id")
   unitPrice             Decimal @map("unit_price") @db.Decimal(20, 2)
   unitPriceWithDiscount Decimal @map("unit_price_with_discount") @db.Decimal(20, 2)
-  course                Course? @relation(fields: [courseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3b4602d28a4ee57ecf0a1bfb138")
-  order                 Order?  @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_e9674a6053adbaa1057848cddfa")
+  courseId              Int?    @map("course_id")
+  course                Course? @relation(fields: [courseId], references: [id])
+  orderId               Int?    @map("order_id")
+  order                 Order?  @relation(fields: [orderId], references: [id])
 
   @@map("order_item")
 }
 
 model Payment {
-  id             String        @id(map: "PK_fcaec7df5adf9cac408c686b2ab") @default(uuid()) @db.Uuid
+  id             String        @id @default(uuid())
+  paymentId      String        @unique @map("payment_id")
+  amount         Decimal       @db.Decimal(20, 2)
   status         PaymentStatus
   time           DateTime      @default(now()) @db.Timestamp(6)
   userId         Int?          @map("user_id")
-  amount         Decimal       @db.Decimal(20, 2)
-  paymentTrachId Int?          @unique(map: "UQ_7d55836a9260520c6814569191d") @map("payment_track_id")
-  paymentId      String        @unique(map: "UQ_9fff60ac6ac1844ea4e0cfba67a") @map("payment_id")
-  paymentTrack   PaymentTrack? @relation(fields: [paymentTrachId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7d55836a9260520c6814569191d")
-  user           User?         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c66c60a17b56ec882fcd8ec770b")
+  user           User?         @relation(fields: [userId], references: [id])
   order          Order?
+  paymentTrachId Int?          @unique @map("payment_track_id")
+  paymentTrack   PaymentTrack? @relation(fields: [paymentTrachId], references: [id])
 
   @@map("payment")
 }
 
 model PaymentTrack {
-  id               Int      @id(map: "PK_d67805928ae885c3ada500cfa9d") @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   idpayTrackId     BigInt   @map("id_pay_track_id")
   trackId          String   @map("track_id")
-  cardNumber       String   @map("card_number") @db.VarChar
-  hashedCardNumber String   @map("hashed_card_number") @db.VarChar
+  cardNumber       String   @map("card_number") @db.VarChar(255)
+  hashedCardNumber String   @map("hashed_card_number") @db.VarChar(255)
   paidDate         DateTime @map("paid_date") @db.Date
   verificationDate DateTime @map("verification_date") @db.Date
   payment          Payment?
@@ -318,167 +274,159 @@ model PaymentTrack {
 }
 
 model PreRequirement {
-  id          Int                 @id(map: "PK_b946bcac439293837773dfc800d") @default(autoincrement())
-  label       String              @db.VarChar
-  description String
-  createdAt   DateTime            @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt   DateTime            @default(now()) @map("updated_at") @db.Timestamp(6)
-  deletedAt   DateTime?           @map("deleted_at") @db.Timestamp(6)
-  courseId    Int?                @map("course_id")
-  image       String              @db.VarChar
+  id          Int                 @id @default(autoincrement())
+  label       String              @db.VarChar(255)
   level       PreRequirementLevel
-  course      Course?             @relation(fields: [courseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_1a0b53568bd53d0835a94b0e9d4")
+  description String
+  image       String              @db.VarChar(255)
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+  deletedAt   Boolean?            @default(false)
+  courseId    Int?                @map("course_id")
+  course      Course?             @relation(fields: [courseId], references: [id])
 
   @@map("pre_requirement")
 }
 
 model Question {
-  id                                  Int       @id(map: "PK_21e5786aa0ea704ae185a79b2d5") @default(autoincrement())
-  question                            String
-  answer                              String
-  createdAt                           DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt                           DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
-  whoAskedId                          Int?      @map("who_asked_id")
-  whoAnsweredId                       Int?      @map("who_answered_id")
-  deletedAt                           DateTime? @map("deleted_at") @db.Timestamp(6)
-  isClosed                            Boolean   @default(false) @map("is_closed")
-  courseId                            Int?      @map("course_id")
-  course                              Course?   @relation(fields: [courseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_0842463861fea20d1c74eea4723")
-  user_question_who_answered_idTouser User?     @relation("question_who_answered_idTouser", fields: [whoAnsweredId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3ca46176dae0d4a3ffc5d77e955")
-  user_question_who_asked_idTouser    User?     @relation("question_who_asked_idTouser", fields: [whoAskedId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_511d4554441655da331df3c3d1a")
+  id            Int      @id @default(autoincrement())
+  question      String
+  answer        String
+  isClosed      Boolean  @default(false) @map("is_closed")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  deletedAt     Boolean? @default(false)
+  whoAskedId    Int?     @map("who_asked_id")
+  whoAsked      User?    @relation("AskedQuestions", fields: [whoAskedId], references: [id])
+  whoAnsweredId Int?     @map("who_answered_id")
+  whoAnswered   User?    @relation("AnsweredQuestions", fields: [whoAnsweredId], references: [id])
+  courseId      Int?     @map("course_id")
+  course        Course?  @relation(fields: [courseId], references: [id])
+  User          User?    @relation(fields: [userId], references: [id])
+  userId        Int?
 
   @@map("question")
 }
 
 model Report {
-  id         Int      @id(map: "PK_99e4d0bea58cba73c57f935a546") @default(autoincrement())
-  title      String   @db.VarChar
+  id         Int      @id @default(autoincrement())
+  title      String   @db.VarChar(255)
   content    String   @db.VarChar(1000)
-  reportedAt DateTime @default(now()) @map("reported_at") @db.Timestamp(6)
+  reportedAt DateTime @default(now()) @map("reported_at")
   userId     Int?     @map("user_id")
-  user       User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c6686efa4cd49fa9a429f01bac8")
+  user       User?    @relation(fields: [userId], references: [id])
 
   @@map("report")
 }
 
 model Section {
-  id          Int       @id(map: "PK_3c41d2d699384cc5e8eac54777d") @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   label       String    @db.VarChar
   duration    Int       @default(0)
   description String
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  udpatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamp(6)
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamp(6)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  udpatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
   courseId    Int?      @map("course_id")
-  course      Course?   @relation(fields: [courseId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_7e12912705e3430a0bd74dad81f")
-  lecture     Lecture[]
+  course      Course?   @relation(fields: [courseId], references: [id])
+  lectures    Lecture[]
 
   @@map("section")
 }
 
 model Social {
-  id           Int         @id(map: "PK_645aa1cff2b9f7b0e3e73d66b4d") @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   type         SocialType
-  link         String      @db.VarChar
-  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt    DateTime    @default(now()) @map("updated_at") @db.Timestamp(6)
+  link         String      @db.VarChar(255)
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
   instructorId Int?        @map("instructor_id")
-  instructor   Instructor? @relation(fields: [instructorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_645b0384bc243d90ce4fdfbb757")
+  instructor   Instructor? @relation(fields: [instructorId], references: [id])
 
   @@map("social")
 }
 
 model Ticket {
-  id             Int             @id(map: "PK_d9a0835407701eb86f874474b7c") @default(autoincrement())
-  title          String          @db.VarChar
+  id             Int             @id @default(autoincrement())
+  title          String          @db.VarChar(255)
   description    String
+  topic          TicketTopic
+  priority       TicketPriority
   isClosed       Boolean         @default(false) @map("is_closed")
-  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
+  createdAt      DateTime        @default(now()) @map("created_at")
   closedAt       DateTime?       @map("closed_at") @db.Date
   whoAskedId     Int?            @map("who_asked_id")
-  priority       TicketPriority
-  topic          TicketTopic
-  user           User?           @relation(fields: [whoAskedId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_452a6cd397d29a6056363bff8a0")
+  whoAsked       User?           @relation(fields: [whoAskedId], references: [id])
   ticketMessages TicketMessage[]
 
   @@map("ticket")
 }
 
 model TicketMessage {
-  id       Int      @id(map: "PK_7d7c7fbe3303c18b7dbd6f1ce19") @default(autoincrement())
-  sentAt   DateTime @default(now()) @map("sent_at") @db.Timestamp(6)
-  userId   Int?     @map("user_id")
+  id       Int      @id @default(autoincrement())
   message  String   @db.VarChar(1000)
+  sentAt   DateTime @default(now()) @map("sent_at")
   ticketId Int?     @map("ticket_id")
-  ticket   Ticket?  @relation(fields: [ticketId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4ad0ee7daf9203dfd269bde1274")
-  user     User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_f838848778b4d433c72cb87a6be")
+  ticket   Ticket?  @relation(fields: [ticketId], references: [id])
+  userId   Int?     @map("user_id")
+  user     User?    @relation(fields: [userId], references: [id])
 
   @@map("ticket_message")
 }
 
 model User {
-  id                                      Int                   @id(map: "PK_cace4a159ff9f2512dd42373760") @default(autoincrement())
-  firstname                               String?               @db.VarChar(100)
-  lastname                                String?               @db.VarChar(100)
-  email                                   String                @unique(map: "UQ_e12875dfb3b1d92d7d7c5377e22") @db.VarChar(100)
-  phoneNumber                             String?               @unique(map: "UQ_01eea41349b6c9275aec646eee0") @map("phone_number") @db.VarChar(20)
-  role                                    UserRole              @default(CUSTOMER)
-  password                                String                @db.VarChar
-  scores                                  Decimal               @default(0) @db.Decimal(8, 2)
-  scoreGainRate                           Decimal               @default(1) @map("score_gain_rate") @db.Decimal(4, 2)
-  createdAt                               DateTime              @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt                               DateTime              @default(now()) @map("updated_at") @db.Timestamp(6)
-  deletedAt                               DateTime?             @map("deleted_at") @db.Timestamp(6)
-  cartId                                  String?               @unique(map: "REL_c506b756aa0682057bf66bdb3d") @map("cart_id") @db.Uuid
-  instructorId                            Int?                  @unique(map: "REL_11c03fb8b962b9a304677f462f") @map("instructor_id")
-  avatarId                                String?               @unique(map: "UQ_b777e56620c3f1ac0308514fc4c") @map("avatar_id") @db.Uuid
-  instructor                              Instructor?           @relation(fields: [instructorId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_11c03fb8b962b9a304677f462f4")
-  avatar                                  Avatar?               @relation(fields: [avatarId], references: [id], onUpdate: NoAction, map: "FK_b777e56620c3f1ac0308514fc4c")
-  cart                                    Cart?                 @relation(fields: [cartId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_c506b756aa0682057bf66bdb3d3")
-  askAmirhosseins                         AskAmirhossein[]
-  category                                Category[]
-  comment                                 Comment[]
-  license                                 License[]
-  order                                   Order[]
-  payment                                 Payment[]
-  question_question_who_answered_idTouser Question[]            @relation("question_who_answered_idTouser")
-  question_question_who_asked_idTouser    Question[]            @relation("question_who_asked_idTouser")
-  report                                  Report[]
-  ticket                                  Ticket[]
-  ticketMessages                          TicketMessage[]
-  user_courses_course                     user_courses_course[]
-  userLogs                                UserLog[]
+  id                Int              @id @default(autoincrement())
+  firstname         String?          @db.VarChar(100)
+  lastname          String?          @db.VarChar(100)
+  email             String           @unique @db.VarChar(100)
+  phoneNumber       String?          @unique @map("phone_number") @db.VarChar(20)
+  role              UserRole         @default(CUSTOMER)
+  password          String           @db.VarChar(255)
+  scores            Decimal          @default(0) @db.Decimal(8, 2)
+  scoreGainRate     Decimal          @default(1) @map("score_gain_rate") @db.Decimal(4, 2)
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+  deleted           Boolean?         @default(false)
+  avatarId          String?          @unique @map("avatar_id")
+  avatar            Avatar?          @relation(fields: [avatarId], references: [id])
+  cartId            String?          @unique @map("cart_id")
+  cart              Cart?            @relation(fields: [cartId], references: [id])
+  comments          Comment[]
+  instructorId      Int?             @unique @map("instructor_id")
+  instructor        Instructor?      @relation(fields: [instructorId], references: [id])
+  orders            Order[]
+  askedQuestions    Question[]       @relation("AskedQuestions")
+  answeredQuestion  Question[]       @relation("AnsweredQuestions")
+  courses           Course[]
+  createdCategories Category[]
+  logs              UserLog[]
+  tickets           Ticket[]
+  payments          Payment[]
+  ticketMessages    TicketMessage[]
+  licenses          License[]
+  askAmirhosseins   AskAmirhossein[]
+  reports           Report[]
+  Question          Question[]
 
   @@map("user")
 }
 
-model user_courses_course {
-  user_id   Int
-  course_id Int
-  course    Course @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_1b47fea24bd6fede2d4b241c765")
-  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_2ec90888221fddeaadfc23a8b69")
-
-  @@id([user_id, course_id], map: "PK_6dd699686985c05c3508b936c62")
-  @@index([course_id], map: "IDX_1b47fea24bd6fede2d4b241c76")
-  @@index([user_id], map: "IDX_2ec90888221fddeaadfc23a8b6")
-}
-
 model UserLog {
-  id        String        @id(map: "PK_eca046d4b8c20d9309b35f07b69") @default(uuid()) @db.Uuid
-  status    UserLogStatus
-  time      DateTime      @default(now()) @db.Timestamp(6)
-  userId    Int?          @map("user_id")
-  deletedAt DateTime?     @map("deleted_at") @db.Timestamp(6)
-  user      User?         @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_86d86e827a8e203ef7d390e081e")
+  id      String        @id @default(uuid())
+  status  UserLogStatus
+  time    DateTime      @default(now())
+  deleted Boolean?      @default(false)
+  userId  Int?          @map("user_id")
+  user    User?         @relation(fields: [userId], references: [id])
 
   @@map("user_log")
 }
 
 model ValidatedEmail {
-  id        Int      @id(map: "PK_b4f01b1cd40a9ef115ee4a1b1e8") @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   email     String   @db.VarChar(100)
-  code      String   @db.VarChar
-  expiresAt DateTime @map("expires_at") @db.Timestamp(6)
+  code      String   @db.VarChar(255)
+  expiresAt DateTime @map("expires_at")
 
   @@map("validated_email")
 }
