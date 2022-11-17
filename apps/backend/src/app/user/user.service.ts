@@ -27,7 +27,12 @@ export class UserService {
     private readonly prismaService: PrismaService
   ) {}
 
-  async validateUser(id: number, withDeleted = false, withAvatar = false) {
+  async validateUser(
+    id: number,
+    withDeleted = false,
+    withAvatar = false,
+    transaction?: Prisma.TransactionClient
+  ) {
     // const user = await this.userRepository.findOne({
     //   where: { id },
     //   withDeleted,
@@ -36,13 +41,25 @@ export class UserService {
     //   },
     // });
 
-    const user = await this.prismaService.user.findUnique({
+    let user: Prisma.UserGetPayload<{
+      include: {
+        avatar: true;
+      };
+    }>;
+
+    const findOptions = {
       where: { id },
       // TODO: add deleted after adding prisma soft delete middleware
       include: {
         avatar: withAvatar,
       },
-    });
+    };
+
+    if (transaction) {
+      user = await transaction.user.findUnique(findOptions);
+    } else {
+      user = await this.prismaService.user.findUnique(findOptions);
+    }
 
     if (!user) {
       throw new BadRequestException(

@@ -59,13 +59,25 @@ export class OrderService {
     return whereOptions;
   }
 
-  async validateOrder(id: number, user: RequestUser) {
+  async validateOrder(
+    id: number,
+    user: RequestUser,
+    transaction?: Prisma.TransactionClient
+  ) {
     // const order = await this.orderRepository.findOneBy(
     //   this.getFindOptions(user, id)
     // );
-    const order = await this.prismaService.order.findFirst({
-      where: this.getWhereOptions(user, id),
-    });
+    let order: Prisma.OrderGetPayload<unknown>;
+
+    if (transaction) {
+      order = await transaction.order.findFirst({
+        where: this.getWhereOptions(user, id),
+      });
+    } else {
+      order = await this.prismaService.order.findFirst({
+        where: this.getWhereOptions(user, id),
+      });
+    }
 
     if (!order) {
       throw new NotFoundException('Invalid order id.');

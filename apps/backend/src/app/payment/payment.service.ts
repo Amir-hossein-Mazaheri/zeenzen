@@ -167,10 +167,14 @@ export class PaymentService {
     description?: string
   ) {
     return await this.prismaService.$transaction(async (tx) => {
-      // TODO: make validateUser and validateOrder to accept transaction
-      const currUser = await this.userService.validateUser(user.sub);
+      const currUser = await this.userService.validateUser(
+        user.sub,
+        false,
+        false,
+        tx
+      );
 
-      await this.orderService.validateOrder(orderId, user);
+      await this.orderService.validateOrder(orderId, user, tx);
 
       const paymentInfo = await getIDPayDriver().requestPayment({
         amount: +amount,
