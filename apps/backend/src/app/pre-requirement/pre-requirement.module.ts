@@ -7,8 +7,11 @@ import { PreRequirementResolver } from './pre-requirement.resolver';
 import { PreRequirement } from './entities/pre-requirement.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PreRequirement]), DatabaseModule],
+  imports: [
+    // TypeOrmModule.forFeature([PreRequirement]),
+    DatabaseModule,
+  ],
   providers: [PreRequirementService, PreRequirementResolver],
-  exports: [TypeOrmModule],
+  // exports: [TypeOrmModule],
 })
 export class PreRequirementModule {}

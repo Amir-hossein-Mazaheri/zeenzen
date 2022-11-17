@@ -8,9 +8,9 @@ import { Course } from '../course/entities/course.entity';
 @Injectable()
 export class CartItemService {
   constructor(
-    @InjectRepository(Course)
-    private readonly courseRepository: Repository<Course>,
-    private readonly dataSource: DataSource,
+    // @InjectRepository(Course)
+    // private readonly courseRepository: Repository<Course>,
+    // private readonly dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 

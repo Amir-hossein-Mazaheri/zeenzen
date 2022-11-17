@@ -8,7 +8,11 @@ import { Lecture } from './entities/lecture.entity';
 import { SectionModule } from '../section/section.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Lecture]), SectionModule, DatabaseModule],
+  imports: [
+    // TypeOrmModule.forFeature([Lecture]),
+    SectionModule,
+    DatabaseModule,
+  ],
   providers: [LectureService, LectureResolver],
 })
 export class LectureModule {}

@@ -15,7 +15,5 @@ export class TasksService {
     this.logger.log(
       'announcing that this is the time that user less carts will be deleted soon.'
     );
-
-    await this.cartService.clearOwnerLessCarts();
   }
 }

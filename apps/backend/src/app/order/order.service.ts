@@ -21,13 +21,13 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class OrderService {
   constructor(
-    @InjectRepository(Order) private orderRepository: Repository<Order>,
-    @InjectRepository(OrderItem)
-    private orderItemRepository: Repository<OrderItem>,
-    @InjectRepository(Cart) private cartRepository: Repository<Cart>,
-    @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Course) private courseRepository: Repository<Course>,
-    private dataSource: DataSource,
+    // @InjectRepository(Order) private orderRepository: Repository<Order>,
+    // @InjectRepository(OrderItem)
+    // private orderItemRepository: Repository<OrderItem>,
+    // @InjectRepository(Cart) private cartRepository: Repository<Cart>,
+    // @InjectRepository(User) private userRepository: Repository<User>,
+    // @InjectRepository(Course) private courseRepository: Repository<Course>,
+    // private dataSource: DataSource,
     private cartService: CartService,
     private logsService: LogsService,
     private readonly prismaService: PrismaService

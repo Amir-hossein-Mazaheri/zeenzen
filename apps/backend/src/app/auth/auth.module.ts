@@ -20,7 +20,7 @@ import { CartModule } from '../cart/cart.module';
 @Global()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ValidatedEmail]),
+    // TypeOrmModule.forFeature([ValidatedEmail]),
     PassportModule.register({ session: true }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

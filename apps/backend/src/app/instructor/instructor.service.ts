@@ -21,11 +21,11 @@ export class InstructorService {
   // };
 
   constructor(
-    @InjectRepository(Instructor)
-    private instructorRepository: Repository<Instructor>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    private dataSource: DataSource,
+    // @InjectRepository(Instructor)
+    // private instructorRepository: Repository<Instructor>,
+    // @InjectRepository(User)
+    // private userRepository: Repository<User>,
+    // private dataSource: DataSource,
     private logsService: LogsService,
     private readonly prismaService: PrismaService
   ) {}

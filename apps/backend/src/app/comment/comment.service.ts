@@ -25,11 +25,11 @@ import { Comment } from './entities/comment.entity';
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
-    @InjectRepository(Course) private courseRepository: Repository<Course>,
-    @InjectRepository(User) private userRepository: Repository<User>,
-    private dataSource: DataSource,
-    private courseService: CourseService,
+    // @InjectRepository(Comment) private commentRepository: Repository<Comment>,
+    // @InjectRepository(Course) private courseRepository: Repository<Course>,
+    // @InjectRepository(User) private userRepository: Repository<User>,
+    // private dataSource: DataSource,
+    // private courseService: CourseService,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -265,12 +265,12 @@ export class CommentService {
   async restore(id: number) {
     const comment = await this.validateComment(id)()(true)()();
 
-    await this.commentRepository
-      .createQueryBuilder()
-      .restore()
-      .where({ id })
-      .execute();
+    // await this.commentRepository
+    //   .createQueryBuilder()
+    //   .restore()
+    //   .where({ id })
+    //   .execute();
 
-    return comment;
+    // return comment;
   }
 }

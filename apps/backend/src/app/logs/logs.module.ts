@@ -11,7 +11,7 @@ import { UserModule } from '../user/user.module';
 @Global()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ErrorLog, UserLog]),
+    // TypeOrmModule.forFeature([ErrorLog, UserLog]),
     UserModule,
     DatabaseModule,
   ],

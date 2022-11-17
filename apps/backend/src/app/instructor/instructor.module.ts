@@ -8,8 +8,12 @@ import { Instructor } from './entities/instructor.entity';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Instructor]), UserModule, DatabaseModule],
+  imports: [
+    // TypeOrmModule.forFeature([Instructor]),
+    UserModule,
+    DatabaseModule,
+  ],
   providers: [InstructorService, InstructorResolver],
-  exports: [TypeOrmModule],
+  // exports: [TypeOrmModule],
 })
 export class InstructorModule {}

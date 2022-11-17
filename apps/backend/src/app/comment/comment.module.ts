@@ -10,7 +10,7 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Comment]),
+    // TypeOrmModule.forFeature([Comment]),
     CourseModule,
     UserModule,
     DatabaseModule,

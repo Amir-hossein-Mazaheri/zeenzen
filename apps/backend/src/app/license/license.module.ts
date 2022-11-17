@@ -12,7 +12,7 @@ import { LicenseService } from './license.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([License]),
+    // TypeOrmModule.forFeature([License]),
     HttpModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -28,6 +28,9 @@ import { LicenseService } from './license.service';
     DatabaseModule,
   ],
   providers: [LicenseService, LicenseResolver],
-  exports: [TypeOrmModule, LicenseModule],
+  exports: [
+    // TypeOrmModule,
+    LicenseModule,
+  ],
 })
 export class LicenseModule {}

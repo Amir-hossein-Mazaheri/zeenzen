@@ -13,12 +13,15 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Cart, CartItem]),
+    // TypeOrmModule.forFeature([Cart, CartItem]),
     UserModule,
     CourseModule,
     DatabaseModule,
   ],
   providers: [CartService, CartResolver, CartItemResolver, CartItemService],
-  exports: [TypeOrmModule, CartService],
+  exports: [
+    // TypeOrmModule,
+    CartService,
+  ],
 })
 export class CartModule {}

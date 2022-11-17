@@ -8,8 +8,8 @@ import { EmailSubscription } from './entities/email-subscription.entity';
 @Injectable()
 export class EmailSubscriptionService {
   constructor(
-    @InjectRepository(EmailSubscription)
-    private readonly emailSubscriptionRepository: Repository<EmailSubscription>,
+    // @InjectRepository(EmailSubscription)
+    // private readonly emailSubscriptionRepository: Repository<EmailSubscription>,
     private readonly prismaService: PrismaService
   ) {}
 

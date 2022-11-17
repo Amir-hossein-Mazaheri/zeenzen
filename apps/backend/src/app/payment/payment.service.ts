@@ -19,23 +19,33 @@ import { UserService } from '../user/user.service';
 import { getIDPayDriver } from '../utils/getIDPayDriver';
 import { getUrl } from '../utils/getUrl';
 import { translatePaymentStatus } from '../utils/translatePaymentStatus';
+import { PrismaService } from '@zeenzen/database';
 
 @Injectable()
 export class PaymentService {
   constructor(
-    @InjectRepository(Payment)
-    private readonly paymentRepository: Repository<Payment>,
-    @InjectRepository(PaymentTrack)
-    private readonly paymentTrackRepository: Repository<PaymentTrack>,
+    // @InjectRepository(Payment)
+    // private readonly paymentRepository: Repository<Payment>,
+    // @InjectRepository(PaymentTrack)
+    // private readonly paymentTrackRepository: Repository<PaymentTrack>,
+    // private readonly dataSource: DataSource
     private readonly logsService: LogsService,
     private readonly orderService: OrderService,
     private readonly userService: UserService,
-    private readonly dataSource: DataSource
+    private readonly prismaService: PrismaService
   ) {}
 
   async validatePayment(paymentId: string) {
-    const payment = await this.paymentRepository.findOne({
-      where: { paymentId, paymentTrack: IsNull() },
+    // const payment = await this.paymentRepository.findOne({
+    //   where: { paymentId, paymentTrack: IsNull() },
+    // });
+    const payment = await this.prismaService.payment.findFirst({
+      where: {
+        paymentId,
+        paymentTrack: {
+          NOT: null,
+        },
+      },
     });
 
     if (!payment) {
@@ -83,7 +93,22 @@ export class PaymentService {
     orderId: number,
     user: RequestUser
   ) {
-    // TODO: migrate it to prisma
+    // TODO: fix payment track data
+    return await this.prismaService.$transaction(async (tx) => {
+      await tx.paymentTrack.create({
+        data: {
+          cardNumber: card_no,
+          hashedCardNumber: '',
+          trackId: '',
+          idpayTrackId: 5568,
+          paidDate: '',
+          verificationDate: '',
+        },
+      });
+
+      await this.orderService.orderSucceeded(orderId, user, tx);
+    });
+
     // const queryRunner = this.dataSource.createQueryRunner();
     // await queryRunner.connect();
     // await queryRunner.startTransaction();
@@ -106,6 +131,7 @@ export class PaymentService {
   }
 
   async verify(verifyPaymentDto: VerifyPaymentDTO) {
+    // TODO: fix functionality of this after deployment
     const { id, status, amount, card_no } = verifyPaymentDto;
 
     const payment = await this.validatePayment(id);
@@ -140,7 +166,38 @@ export class PaymentService {
     amount: string,
     description?: string
   ) {
-    // TODO: migrate it to prisma
+    return await this.prismaService.$transaction(async (tx) => {
+      // TODO: make validateUser and validateOrder to accept transaction
+      const currUser = await this.userService.validateUser(user.sub);
+
+      await this.orderService.validateOrder(orderId, user);
+
+      const paymentInfo = await getIDPayDriver().requestPayment({
+        amount: +amount,
+        callbackUrl: getUrl(req) + '/payment/verify',
+        description,
+        email: currUser.email,
+        name: currUser.firstname + ' ' + currUser.lastname,
+      });
+
+      const newPayment = await tx.payment.create({
+        data: {
+          paymentId: paymentInfo.referenceId.toString(),
+          status: PaymentStatus.PENDING,
+          amount,
+
+          user: {
+            connect: currUser,
+          },
+        },
+      });
+
+      return {
+        ...paymentInfo,
+        payment: newPayment,
+      };
+    });
+
     // try {
     //   const currUser = await this.userService.validateUser(user.sub);
     //   // const order = await this.orderService.validateOrder(orderId, user);

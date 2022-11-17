@@ -12,9 +12,9 @@ import { PreRequirement } from './entities/pre-requirement.entity';
 @Injectable()
 export class PreRequirementService {
   constructor(
-    @InjectRepository(PreRequirement)
-    private preRequirementRepository: Repository<PreRequirement>,
-    private dataSource: DataSource,
+    // @InjectRepository(PreRequirement)
+    // private preRequirementRepository: Repository<PreRequirement>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -175,12 +175,12 @@ export class PreRequirementService {
       true
     );
 
-    await this.preRequirementRepository
-      .createQueryBuilder()
-      .restore()
-      .where({ id })
-      .execute();
+    // await this.preRequirementRepository
+    //   .createQueryBuilder()
+    //   .restore()
+    //   .where({ id })
+    //   .execute();
 
-    return preRequirement;
+    // return preRequirement;
   }
 }

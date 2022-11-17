@@ -15,10 +15,10 @@ export class LicenseService {
   private readonly relations = ['courses', 'user'];
 
   constructor(
-    @InjectRepository(License)
-    private readonly licenseRepository: Repository<License>,
-    @InjectRepository(Course)
-    private readonly courseRepository: Repository<Course>,
+    // @InjectRepository(License)
+    // private readonly licenseRepository: Repository<License>,
+    // @InjectRepository(Course)
+    // private readonly courseRepository: Repository<Course>,
     private readonly httpService: HttpService,
     private readonly prismaService: PrismaService
   ) {}

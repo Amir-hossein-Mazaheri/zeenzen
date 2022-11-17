@@ -31,15 +31,15 @@ export class CourseService {
   private relations = ['categories', 'image'];
 
   constructor(
-    @InjectRepository(Course) private courseRepository: Repository<Course>,
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
-    @InjectRepository(Instructor)
-    private instructorRepository: Repository<Instructor>,
-    @InjectRepository(Section) private sectionRepository: Repository<Section>,
-    @InjectRepository(PreRequirement)
-    private preRequirementRepository: Repository<PreRequirement>,
-    private dataSource: DataSource,
+    // @InjectRepository(Course) private courseRepository: Repository<Course>,
+    // @InjectRepository(Category)
+    // private categoryRepository: Repository<Category>,
+    // @InjectRepository(Instructor)
+    // private instructorRepository: Repository<Instructor>,
+    // @InjectRepository(Section) private sectionRepository: Repository<Section>,
+    // @InjectRepository(PreRequirement)
+    // private preRequirementRepository: Repository<PreRequirement>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -48,21 +48,20 @@ export class CourseService {
     preRequirementsId: number[],
     instructorsId: number[],
     sectionsId: number[]
-  ): Promise<CourseGatheredData> {
-    const categories = await this.categoryRepository.find({
-      where: { id: In<number>(categoriesId) },
-    });
-    const preRequirements = await this.preRequirementRepository.find({
-      where: { id: In<number>(preRequirementsId) },
-    });
-    const instructors = await this.instructorRepository.find({
-      where: { id: In<number>(instructorsId) },
-    });
-    const sections = await this.sectionRepository.find({
-      where: { id: In<number>(sectionsId) },
-    });
-
-    return [categories, preRequirements, instructors, sections];
+  ) {
+    // const categories = await this.categoryRepository.find({
+    //   where: { id: In<number>(categoriesId) },
+    // });
+    // const preRequirements = await this.preRequirementRepository.find({
+    //   where: { id: In<number>(preRequirementsId) },
+    // });
+    // const instructors = await this.instructorRepository.find({
+    //   where: { id: In<number>(instructorsId) },
+    // });
+    // const sections = await this.sectionRepository.find({
+    //   where: { id: In<number>(sectionsId) },
+    // });
+    // return [categories, preRequirements, instructors, sections];
   }
 
   private async validateGatheredDate(
@@ -78,9 +77,9 @@ export class CourseService {
       sectionsId
     );
 
-    if (!gatheredData.every((d) => d.length !== 0)) {
-      throw new NotFoundException('One or more of ids list is not valid.');
-    }
+    // if (!gatheredData.every((d) => d.length !== 0)) {
+    //   throw new NotFoundException('One or more of ids list is not valid.');
+    // }
 
     return gatheredData;
   }
@@ -381,27 +380,40 @@ export class CourseService {
   // and also front end
   // each other parts should be called separately
   async findAll({ page, levels, categories }: PaginatedCoursesFilterInput) {
-    const whereOptions: FindOptionsWhere<Course> = { isDraft: false };
+    const whereOption: Prisma.CourseWhereInput = { isDraft: false };
 
     if (levels && levels.length > 0) {
-      whereOptions.level = In(levels);
+      whereOption.level = {
+        in: levels,
+      };
     }
 
     if (categories && categories.length > 0) {
-      whereOptions.categories = { id: In(categories) };
+      whereOption.categories = {
+        every: {
+          id: {
+            in: categories,
+          },
+        },
+      };
     }
 
-    const coursesCount = await this.courseRepository.countBy(whereOptions);
+    const coursesCount = await this.prismaService.course.count();
 
-    const courses = await this.courseRepository.find({
-      where: whereOptions,
+    const courses = await this.prismaService.course.findMany({
+      where: whereOption,
       take: COURSE_PER_PAGE,
       skip: (page - 1) * COURSE_PER_PAGE,
-      relations: this.relations,
+      include: {
+        categories: true,
+        image: true,
+      },
     });
 
     const totalPages = Math.ceil(coursesCount / COURSE_PER_PAGE);
+
     const hasNext = page < totalPages;
+
     const hasPrev = page !== 1;
 
     return {
@@ -411,6 +423,31 @@ export class CourseService {
       hasPrev,
       courses,
     };
+
+    // const whereOptions: FindOptionsWhere<Course> = { isDraft: false };
+    // if (levels && levels.length > 0) {
+    //   whereOptions.level = In(levels);
+    // }
+    // if (categories && categories.length > 0) {
+    //   whereOptions.categories = { id: In(categories) };
+    // }
+    // const coursesCount = await this.courseRepository.countBy(whereOptions);
+    // const courses = await this.courseRepository.find({
+    //   where: whereOptions,
+    //   take: COURSE_PER_PAGE,
+    //   skip: (page - 1) * COURSE_PER_PAGE,
+    //   relations: this.relations,
+    // });
+    // const totalPages = Math.ceil(coursesCount / COURSE_PER_PAGE);
+    // const hasNext = page < totalPages;
+    // const hasPrev = page !== 1;
+    // return {
+    //   page,
+    //   totalPages,
+    //   hasNext,
+    //   hasPrev,
+    //   courses,
+    // };
   }
 
   async findOne(id: number) {
@@ -418,18 +455,32 @@ export class CourseService {
   }
 
   async instructorCourses(instructorId: number, userRole: UserRole) {
-    const whereOption: MixedKeyValue = {};
+    const whereOption: Prisma.CourseWhereInput = {
+      isDraft: true,
+    };
 
     if (!this.passOnAdmin(userRole)) {
-      whereOption.instructors = { id: instructorId };
+      whereOption.instructors = {
+        some: {
+          id: instructorId,
+        },
+      };
     }
 
-    return await this.courseRepository.find({
-      where: {
-        isDraft: true,
-        ...whereOption,
+    // return await this.courseRepository.find({
+    //   where: {
+    //     isDraft: true,
+    //     ...whereOption,
+    //   },
+    //   relations: this.relations,
+    // });
+
+    return await this.prismaService.course.findMany({
+      where: whereOption,
+      include: {
+        categories: true,
+        image: true,
       },
-      relations: this.relations,
     });
   }
 
@@ -510,12 +561,12 @@ export class CourseService {
     const randomNumber = Math.random();
     const course = await this.validateCourse(id, false, randomNumber, true)()();
 
-    await this.courseRepository
-      .createQueryBuilder()
-      .restore()
-      .where({ id })
-      .execute();
+    // await this.courseRepository
+    //   .createQueryBuilder()
+    //   .restore()
+    //   .where({ id })
+    //   .execute();
 
-    return course;
+    // return course;
   }
 }

@@ -23,12 +23,12 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class CartService {
   constructor(
-    @InjectRepository(Cart) private cartRepository: Repository<Cart>,
-    @InjectRepository(CartItem)
-    private cartItemRepository: Repository<CartItem>,
-    @InjectRepository(Course) private courseRepository: Repository<Course>,
-    @InjectRepository(User) private userRepository: Repository<User>,
-    private dataSource: DataSource,
+    // @InjectRepository(Cart) private cartRepository: Repository<Cart>,
+    // @InjectRepository(CartItem)
+    // private cartItemRepository: Repository<CartItem>,
+    // @InjectRepository(Course) private courseRepository: Repository<Course>,
+    // @InjectRepository(User) private userRepository: Repository<User>,
+    // private dataSource: DataSource,
     private logsService: LogsService,
     private readonly prismaService: PrismaService
   ) {}
@@ -61,11 +61,7 @@ export class CartService {
       },
     };
 
-    let cart: Prisma.CartGetPayload<{
-      include: {
-        _count: false;
-      };
-    }>;
+    let cart: Prisma.CartGetPayload<unknown>;
 
     // if (viaQueryRunner) {
     //   cart = await queryRunner.manager.findOne(Cart, findOptions);
@@ -243,19 +239,17 @@ export class CartService {
   }
 
   async findAll() {
-    const carts = await this.cartRepository.find();
-
-    // TODO: fix totalPrice and totalPriceWithDiscount aggregation
-    const { totalPrice, totalPriceWithDiscount } = await this.cartItemRepository
-      .createQueryBuilder('cartItems')
-      .select('SUM(cartItems.unitPrice)', 'totalPrice')
-      .addSelect(
-        'SUM(cartItems.unitPriceWithDiscount)',
-        'totalPriceWithDiscount'
-      )
-      .getRawOne<{ totalPrice: number; totalPriceWithDiscount: number }>();
-
-    return await this.cartRepository.find({ where: { user: true } });
+    // const carts = await this.cartRepository.find();
+    // // TODO: fix totalPrice and totalPriceWithDiscount aggregation
+    // const { totalPrice, totalPriceWithDiscount } = await this.cartItemRepository
+    //   .createQueryBuilder('cartItems')
+    //   .select('SUM(cartItems.unitPrice)', 'totalPrice')
+    //   .addSelect(
+    //     'SUM(cartItems.unitPriceWithDiscount)',
+    //     'totalPriceWithDiscount'
+    //   )
+    //   .getRawOne<{ totalPrice: number; totalPriceWithDiscount: number }>();
+    // return await this.cartRepository.find({ where: { user: true } });
   }
 
   // id is string because its uuid which is a string type

@@ -41,12 +41,12 @@ export class TicketsService {
   };
 
   constructor(
-    @InjectRepository(Ticket)
-    private readonly ticketRepository: Repository<Ticket>,
-    @InjectRepository(TicketMessage)
-    private readonly ticketMessageRepository: Repository<TicketMessage>,
-    private readonly dataSource: DataSource,
-    private readonly userService: UserService,
+    // @InjectRepository(Ticket)
+    // private readonly ticketRepository: Repository<Ticket>,
+    // @InjectRepository(TicketMessage)
+    // private readonly ticketMessageRepository: Repository<TicketMessage>,
+    // private readonly dataSource: DataSource,
+    // private readonly userService: UserService,
     private readonly prismaService: PrismaService
   ) {}
 

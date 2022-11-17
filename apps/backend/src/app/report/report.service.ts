@@ -11,9 +11,9 @@ import { Report } from './entities/report.entity';
 @Injectable()
 export class ReportService {
   constructor(
-    @InjectRepository(Report)
-    private readonly reportRepository: Repository<Report>,
-    private readonly userService: UserService,
+    // @InjectRepository(Report)
+    // private readonly reportRepository: Repository<Report>,
+    // private readonly userService: UserService,
     private readonly prismaService: PrismaService
   ) {}
 

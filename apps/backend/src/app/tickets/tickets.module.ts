@@ -10,7 +10,7 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Ticket, TicketMessage]),
+    // TypeOrmModule.forFeature([Ticket, TicketMessage]),
     UserModule,
     DatabaseModule,
   ],

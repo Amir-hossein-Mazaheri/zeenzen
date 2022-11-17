@@ -15,13 +15,13 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class LogsService {
   constructor(
-    @InjectRepository(ErrorLog)
-    private errorLogRepository: Repository<ErrorLog>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    @InjectRepository(UserLog)
-    private userLogRepository: Repository<UserLog>,
-    private dataSource: DataSource,
+    // @InjectRepository(ErrorLog)
+    // private errorLogRepository: Repository<ErrorLog>,
+    // @InjectRepository(User)
+    // private userRepository: Repository<User>,
+    // @InjectRepository(UserLog)
+    // private userLogRepository: Repository<UserLog>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 

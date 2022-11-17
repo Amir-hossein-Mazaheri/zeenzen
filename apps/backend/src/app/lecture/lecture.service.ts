@@ -17,9 +17,9 @@ import { Lecture } from './entities/lecture.entity';
 @Injectable()
 export class LectureService {
   constructor(
-    @InjectRepository(Lecture) private lectureRepository: Repository<Lecture>,
-    @InjectRepository(Section) private sectionRepository: Repository<Section>,
-    private dataSource: DataSource,
+    // @InjectRepository(Lecture) private lectureRepository: Repository<Lecture>,
+    // @InjectRepository(Section) private sectionRepository: Repository<Section>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -162,12 +162,12 @@ export class LectureService {
   async restore(id: number, instructorId: number) {
     const lecture = await this.validateLecture(id, true, instructorId, true);
 
-    await this.lectureRepository
-      .createQueryBuilder()
-      .restore()
-      .where({ id })
-      .execute();
+    // await this.lectureRepository
+    //   .createQueryBuilder()
+    //   .restore()
+    //   .where({ id })
+    //   .execute();
 
-    return lecture;
+    // return lecture;
   }
 }

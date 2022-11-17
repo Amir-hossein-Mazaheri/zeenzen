@@ -9,7 +9,7 @@ import { InstructorModule } from '../instructor/instructor.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Expertise]),
+    // TypeOrmModule.forFeature([Expertise]),
     InstructorModule,
     DatabaseModule,
   ],

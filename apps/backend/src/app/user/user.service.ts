@@ -21,9 +21,9 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Avatar) private avatarRepository: Repository<Avatar>,
-    private dataSource: DataSource,
+    // @InjectRepository(User) private userRepository: Repository<User>,
+    // @InjectRepository(Avatar) private avatarRepository: Repository<Avatar>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -119,8 +119,12 @@ export class UserService {
 
   async getAvatar(userId: number) {
     // return await this.avatarRepository.findOneBy({ user: { id: userId } });
-    return await this.prismaService.user.findUnique({
-      where: { id: userId },
+    return await this.prismaService.avatar.findFirst({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
     });
   }
 
@@ -163,7 +167,11 @@ export class UserService {
       },
     });
 
-    return { ...cart, totalPrice, totalPriceWithDiscount };
+    return {
+      ...cart,
+      totalPrice: totalPrice || '0.00',
+      totalPriceWithDiscount: totalPriceWithDiscount || '0.00',
+    };
   }
 
   async findAll() {

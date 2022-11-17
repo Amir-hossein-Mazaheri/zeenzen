@@ -12,7 +12,7 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, OrderItem]),
+    // TypeOrmModule.forFeature([Order, OrderItem]),
     CartModule,
     UserModule,
     CourseModule,

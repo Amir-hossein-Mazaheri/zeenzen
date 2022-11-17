@@ -25,11 +25,11 @@ export class CouponService {
   private readonly relations = ['course'];
 
   constructor(
-    @InjectRepository(Coupon) private couponRepository: Repository<Coupon>,
-    @InjectRepository(Course) private courseRepository: Repository<Course>,
-    private dataSource: DataSource,
-    private cartService: CartService,
-    private logsService: LogsService,
+    // @InjectRepository(Coupon) private couponRepository: Repository<Coupon>,
+    // @InjectRepository(Course) private courseRepository: Repository<Course>,
+    // private dataSource: DataSource,
+    // private cartService: CartService,
+    // private logsService: LogsService,
     private readonly prismaService: PrismaService
   ) {}
 

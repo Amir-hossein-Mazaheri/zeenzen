@@ -15,8 +15,8 @@ import { Section } from './entities/section.entity';
 @Injectable()
 export class SectionService {
   constructor(
-    @InjectRepository(Section) private sectionRepository: Repository<Section>,
-    private dataSource: DataSource,
+    // @InjectRepository(Section) private sectionRepository: Repository<Section>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -170,11 +170,11 @@ export class SectionService {
   async restore(id: number, instructorId: number) {
     const section = await this.validateSection(id, true, instructorId, true);
 
-    await this.sectionRepository
-      .createQueryBuilder()
-      .restore()
-      .where({ id })
-      .execute();
+    // await this.sectionRepository
+    //   .createQueryBuilder()
+    //   .restore()
+    //   .where({ id })
+    //   .execute();
 
     return section;
   }

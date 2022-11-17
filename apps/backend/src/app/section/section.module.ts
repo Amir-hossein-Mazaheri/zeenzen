@@ -7,8 +7,11 @@ import { SectionResolver } from './section.resolver';
 import { Section } from './entities/section.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Section]), DatabaseModule],
+  imports: [
+    // TypeOrmModule.forFeature([Section]),
+    DatabaseModule,
+  ],
   providers: [SectionService, SectionResolver],
-  exports: [TypeOrmModule],
+  // exports: [TypeOrmModule],
 })
 export class SectionModule {}

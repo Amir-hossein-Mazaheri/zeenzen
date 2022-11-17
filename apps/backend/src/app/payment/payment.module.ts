@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
@@ -10,9 +11,10 @@ import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Payment, PaymentTrack]),
+    // TypeOrmModule.forFeature([Payment, PaymentTrack]),
     UserModule,
     OrderModule,
+    DatabaseModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService],

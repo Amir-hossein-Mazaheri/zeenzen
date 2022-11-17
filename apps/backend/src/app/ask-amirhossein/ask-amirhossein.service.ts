@@ -27,12 +27,12 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class AskAmirhosseinService {
   constructor(
-    @InjectRepository(AskAmirhossein)
-    private readonly askAmirhosseinRepository: Repository<AskAmirhossein>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    private readonly userService: UserService,
-    private readonly dataSource: DataSource,
+    // @InjectRepository(AskAmirhossein)
+    // private readonly askAmirhosseinRepository: Repository<AskAmirhossein>,
+    // @InjectRepository(User)
+    // private readonly userRepository: Repository<User>,
+    // private readonly userService: UserService,
+    // private readonly dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 

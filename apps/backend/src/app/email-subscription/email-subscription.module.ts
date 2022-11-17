@@ -7,7 +7,10 @@ import { EmailSubscriptionResolver } from './email-subscription.resolver';
 import { EmailSubscription } from './entities/email-subscription.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EmailSubscription]), DatabaseModule],
+  imports: [
+    // TypeOrmModule.forFeature([EmailSubscription]),
+    DatabaseModule,
+  ],
   providers: [EmailSubscriptionService, EmailSubscriptionResolver],
 })
 export class EmailSubscriptionModule {}

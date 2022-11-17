@@ -11,7 +11,7 @@ import { LogsModule } from '../logs/logs.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Coupon]),
+    // TypeOrmModule.forFeature([Coupon]),
     CourseModule,
     CartModule,
     LogsModule,

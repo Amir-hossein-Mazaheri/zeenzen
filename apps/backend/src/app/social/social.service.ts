@@ -19,10 +19,10 @@ export class SocialService {
   private relations = ['instructor'];
 
   constructor(
-    @InjectRepository(Social) private socialRepository: Repository<Social>,
-    @InjectRepository(Instructor)
-    private instructorRepository: Repository<Instructor>,
-    private dataSource: DataSource,
+    // @InjectRepository(Social) private socialRepository: Repository<Social>,
+    // @InjectRepository(Instructor)
+    // private instructorRepository: Repository<Instructor>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 

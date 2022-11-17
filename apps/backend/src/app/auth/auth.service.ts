@@ -33,12 +33,12 @@ import { Prisma } from '@prisma/client';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(ValidatedEmail)
-    private readonly validatedEmailRepository: Repository<ValidatedEmail>,
-    private readonly jwtService: JwtService,
+    // @InjectRepository(User) private readonly userRepository: Repository<User>,
+    // @InjectRepository(ValidatedEmail)
+    // private readonly validatedEmailRepository: Repository<ValidatedEmail>,
+    // private readonly jwtService: JwtService,
     private readonly logsService: LogsService,
-    private readonly dataSource: DataSource,
+    // private readonly dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -164,7 +164,7 @@ export class AuthService {
 
   async preSignUp({ email }: PreSignUpInput) {
     // const user = await this.userRepository.findOneBy({ email });
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.findFirst({
       where: { email },
     });
 

@@ -65,27 +65,26 @@ import { EmailSubscriptionModule } from './email-subscription/email-subscription
         EMAIL_PORT: Joi.number().required(),
       }).required(),
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        const isDev = config.get('NODE_ENV') === 'development';
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (config: ConfigService) => {
+    //     const isDev = config.get('NODE_ENV') === 'development';
 
-        return {
-          type: 'postgres',
-          host: config.get('DATABASE_HOST', 'localhost'),
-          port: +config.get<number>('DATABASE_PORT', 5432),
-          username: config.get('DATABASE_USERNAME'),
-          password: config.get('DATABASE_PASSWORD'),
-          database: config.get('DATABASE', 'myshop'),
-          synchronize: isDev,
-          useUTC: true,
-          autoLoadEntities: true,
-          logging: isDev,
-          namingStrategy: new SnakeNamingStrategy(),
-        };
-      },
-    }),
+    //     return {
+    //       type: 'postgres',
+    //       host: config.get('DATABASE_HOST', 'localhost'),
+    //       port: +config.get<number>('DATABASE_PORT', 5432),
+    //       username: config.get('DATABASE_USERNAME'),
+    //       password: config.get('DATABASE_PASSWORD'),
+    //       database: config.get('DATABASE', 'myshop'),
+    //       synchronize: isDev,
+    //       useUTC: true,
+    //       autoLoadEntities: true,
+    //       namingStrategy: new SnakeNamingStrategy(),
+    //     };
+    //   },
+    // }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       imports: [ConfigModule],
       inject: [ConfigService],

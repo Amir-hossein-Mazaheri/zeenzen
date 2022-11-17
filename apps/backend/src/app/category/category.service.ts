@@ -21,10 +21,10 @@ export class CategoryService {
   };
 
   constructor(
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    // @InjectRepository(Category)
+    // private categoryRepository: Repository<Category>,
+    // @InjectRepository(User)
+    // private userRepository: Repository<User>,
     private readonly prismaService: PrismaService
   ) {}
 

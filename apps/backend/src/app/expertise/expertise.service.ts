@@ -30,11 +30,11 @@ export class ExpertiseService {
   };
 
   constructor(
-    @InjectRepository(Expertise)
-    private readonly expertiseRepository: Repository<Expertise>,
-    @InjectRepository(Instructor)
-    private readonly instructorRepository: Repository<Instructor>,
-    private readonly dataSource: DataSource,
+    // @InjectRepository(Expertise)
+    // private readonly expertiseRepository: Repository<Expertise>,
+    // @InjectRepository(Instructor)
+    // private readonly instructorRepository: Repository<Instructor>,
+    // private readonly dataSource: DataSource,
     private readonly logsService: LogsService,
     private readonly prismaService: PrismaService
   ) {}
@@ -109,60 +109,73 @@ export class ExpertiseService {
   }
 
   async markExpertiseAsPrimary(id: number, user: RequestInstructor) {
-    await this.validateExpertise(id, user.instructorId);
-
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-
-    await queryRunner.startTransaction();
-
-    try {
-      const expertisesIds = (
-        await queryRunner.manager.findOne(Instructor, {
-          where: { id: user.instructorId },
-          relations: {
-            expertises: true,
+    // TODO: add catch part
+    return await this.prismaService.$transaction(async (tx) => {
+      await tx.expertise.updateMany({
+        where: {
+          instructor: {
+            id: user.instructorId,
           },
-          select: {
-            expertises: {
-              id: true,
-            },
-          },
-        })
-      ).expertises.map((expertise) => expertise.id);
+        },
+        data: {
+          isPrimary: false,
+        },
+      });
 
-      await this.dataSource
-        .createQueryBuilder()
-        .setQueryRunner(queryRunner)
-        .update<Expertise>(Expertise)
-        .where({ id: In(expertisesIds) })
-        .set({ isPrimary: false })
-        .execute();
+      return await tx.expertise.update({
+        where: {
+          id,
+        },
+        data: {
+          isPrimary: false,
+        },
+      });
+    });
 
-      const expertise = await this.dataSource
-        .createQueryBuilder()
-        .setQueryRunner(queryRunner)
-        .update<Expertise>(Expertise)
-        .where({ id })
-        .set({ isPrimary: true })
-        .returning('*')
-        .execute();
-
-      await queryRunner.commitTransaction();
-
-      return toCamelCase(expertise.raw[0]);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-
-      await this.logsService.logError('markExpertiseAsPrimary', error);
-
-      throw new InternalServerErrorException(
-        "Something wen't wrong while trying to mark expertise as primary."
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    // await this.validateExpertise(id, user.instructorId);
+    // const queryRunner = this.dataSource.createQueryRunner();
+    // await queryRunner.connect();
+    // await queryRunner.startTransaction();
+    // try {
+    //   const expertisesIds = (
+    //     await queryRunner.manager.findOne(Instructor, {
+    //       where: { id: user.instructorId },
+    //       relations: {
+    //         expertises: true,
+    //       },
+    //       select: {
+    //         expertises: {
+    //           id: true,
+    //         },
+    //       },
+    //     })
+    //   ).expertises.map((expertise) => expertise.id);
+    //   await this.dataSource
+    //     .createQueryBuilder()
+    //     .setQueryRunner(queryRunner)
+    //     .update<Expertise>(Expertise)
+    //     .where({ id: In(expertisesIds) })
+    //     .set({ isPrimary: false })
+    //     .execute();
+    //   const expertise = await this.dataSource
+    //     .createQueryBuilder()
+    //     .setQueryRunner(queryRunner)
+    //     .update<Expertise>(Expertise)
+    //     .where({ id })
+    //     .set({ isPrimary: true })
+    //     .returning('*')
+    //     .execute();
+    //   await queryRunner.commitTransaction();
+    //   return toCamelCase(expertise.raw[0]);
+    // } catch (error) {
+    //   await queryRunner.rollbackTransaction();
+    //   await this.logsService.logError('markExpertiseAsPrimary', error);
+    //   throw new InternalServerErrorException(
+    //     "Something wen't wrong while trying to mark expertise as primary."
+    //   );
+    // } finally {
+    //   await queryRunner.release();
+    // }
   }
 
   async adminValidateExpertise(id: number) {

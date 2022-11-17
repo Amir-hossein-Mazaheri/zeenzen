@@ -22,11 +22,11 @@ export class QuestionService {
   private readonly relations = ['whoAnswered', 'whoAsked', 'course'];
 
   constructor(
-    @InjectRepository(Question)
-    private questionRepository: Repository<Question>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-    private dataSource: DataSource,
+    // @InjectRepository(Question)
+    // private questionRepository: Repository<Question>,
+    // @InjectRepository(User)
+    // private userRepository: Repository<User>,
+    // private dataSource: DataSource,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -213,11 +213,11 @@ export class QuestionService {
   async restore(id: number) {
     const question = await this.validateQuestion(id)(true);
 
-    await this.questionRepository
-      .createQueryBuilder()
-      .restore()
-      .where({ id })
-      .execute();
+    // await this.questionRepository
+    //   .createQueryBuilder()
+    //   .restore()
+    //   .where({ id })
+    //   .execute();
 
     return question;
   }

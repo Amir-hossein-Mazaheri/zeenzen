@@ -29,10 +29,10 @@ let IS_CONFIRMED = false;
 @Injectable()
 export class UploadsService {
   constructor(
-    private readonly dataSource: DataSource,
-    private readonly logsService: LogsService,
+    // private readonly dataSource: DataSource,
     private readonly userService: UserService,
     private readonly courseService: CourseService,
+    private readonly logsService: LogsService,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -134,14 +134,8 @@ export class UploadsService {
         },
       });
 
-      let currCourseImage: Prisma.CourseImageGetPayload<unknown>;
-
       if (course.image) {
-        currCourseImage = await tx.courseImage.findFirst({
-          where: {
-            id: course.image.id,
-          },
-        });
+        await this.transactionalRemoveCourseImage(course.image.id, tx);
       }
 
       const courseImagePath = `/uploads/${COURSES_UPLOAD_DIR}/${courseImage.filename}`;
@@ -150,7 +144,40 @@ export class UploadsService {
       const courseCoverPath = `/uploads/${COURSES_UPLOAD_DIR}/${courseCover.filename}`;
       const courseCoverAbsolutePath = getUrl(req) + courseCoverPath;
 
-      // TODO: continue the code based on comment part below
+      await tx.courseImage.upsert({
+        create: {
+          image: courseImageAbsolutePath,
+          course: {
+            connect: course,
+          },
+          coverImage: courseCoverAbsolutePath,
+        },
+        update: {
+          image: courseImageAbsolutePath,
+          course: {
+            connect: course,
+          },
+          coverImage: courseCoverAbsolutePath,
+        },
+        where: {
+          id: course.image.id,
+        },
+      });
+
+      return {
+        courseImage: this.getUploadResponse(
+          courseImage.originalname,
+          courseImage.filename,
+          courseImagePath,
+          courseImageAbsolutePath
+        ),
+        courseCover: this.getUploadResponse(
+          courseCover.originalname,
+          courseCover.filename,
+          courseCoverPath,
+          courseCoverAbsolutePath
+        ),
+      };
     });
 
     // const queryRunner = this.dataSource.createQueryRunner();
@@ -225,6 +252,45 @@ export class UploadsService {
     { filename, originalname }: TFile,
     user: RequestUser
   ) {
+    // TODO: adds catch part
+    return await this.prismaService.$transaction(async (tx) => {
+      const currUser = await this.userService.validateUser(
+        user.sub,
+        false,
+        true
+      );
+
+      if (currUser.avatar) {
+        await this.transactionalRemoveUserAvatar(currUser.avatar.id, user, tx);
+      }
+
+      const path = `/uploads/${USERS_AVATAR_UPLOAD_DIR}/${filename}`;
+      const absolutePath = getUrl(req) + path;
+
+      const upsertData: Prisma.AvatarCreateArgs['data'] = {
+        fullPath: absolutePath,
+        originalName: originalname,
+        name: filename,
+
+        user: {
+          connect: currUser,
+        },
+      };
+
+      const avatar = await tx.avatar.upsert({
+        create: upsertData,
+        update: upsertData,
+        where: {
+          id: currUser.avatar.id,
+        },
+      });
+
+      return {
+        ...this.getUploadResponse(originalname, filename, path, absolutePath),
+        avatarId: avatar.id,
+      };
+    });
+
     // const queryRunner = this.dataSource.createQueryRunner();
     // await queryRunner.connect();
     // await queryRunner.startTransaction();

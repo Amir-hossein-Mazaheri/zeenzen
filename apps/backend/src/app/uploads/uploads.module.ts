@@ -13,13 +13,16 @@ import { UserModule } from '../user/user.module';
 @Global()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CourseImage, Avatar]),
+    // TypeOrmModule.forFeature([CourseImage, Avatar]),
     UserModule,
     CourseModule,
     DatabaseModule,
   ],
   controllers: [UploadsController],
   providers: [UploadsService, ImageValidationPipe],
-  exports: [TypeOrmModule, UploadsService],
+  exports: [
+    // TypeOrmModule,
+    UploadsService,
+  ],
 })
 export class UploadsModule {}

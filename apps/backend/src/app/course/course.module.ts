@@ -12,7 +12,7 @@ import { SectionModule } from '../section/section.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Course]),
+    // TypeOrmModule.forFeature([Course]),
     CategoryModule,
     InstructorModule,
     SectionModule,
@@ -20,6 +20,9 @@ import { SectionModule } from '../section/section.module';
     DatabaseModule,
   ],
   providers: [CourseService, CourseResolver],
-  exports: [TypeOrmModule, CourseService],
+  exports: [
+    // TypeOrmModule,
+    CourseService,
+  ],
 })
 export class CourseModule {}
