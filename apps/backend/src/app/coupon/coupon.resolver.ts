@@ -7,6 +7,7 @@ import { UpdateCouponInput } from './dto/update-coupon.input';
 import { ApplyCouponInput } from './dto/apply-coupon.input';
 import { UserRole, RequestUser } from '../types';
 import { Roles } from '../user/decorators/roles.decorator';
+import { GetUser } from '../user/decorators/user.decorator';
 
 @Roles(UserRole.ADMIN)
 @Resolver(() => Coupon)
@@ -57,8 +58,17 @@ export class CouponResolver {
   })
   applyCoupon(
     @Args('applyCouponInput') applyCouponInput: ApplyCouponInput,
-    user: RequestUser
+    @GetUser() user: RequestUser
   ) {
     return this.couponService.apply(applyCouponInput, user);
+  }
+
+  @Roles(UserRole.CUSTOMER)
+  @Mutation(() => Coupon, {
+    description:
+      'remove effect of coupon code and return it to state which it was before applying coupon code.',
+  })
+  misApplyCoupon(@Args('cartId') cartId: string, @GetUser() user: RequestUser) {
+    return this.couponService.misApply(cartId, user);
   }
 }

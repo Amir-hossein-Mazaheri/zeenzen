@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@zeenzen/database';
 
 import { CouponService } from './coupon.service';
 import { CouponResolver } from './coupon.resolver';
@@ -14,6 +15,7 @@ import { LogsModule } from '../logs/logs.module';
     CourseModule,
     CartModule,
     LogsModule,
+    DatabaseModule,
   ],
   providers: [CouponResolver, CouponService],
 })
