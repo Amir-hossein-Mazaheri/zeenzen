@@ -72,7 +72,7 @@ model Comment {
   isPublished Boolean   @default(false) @map("is_published")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-  deleted     Boolean   @default(false)
+  deletedAt   DateTime? @map("deleted_at")
   courseId    Int?      @map("course_id")
   course      Course?   @relation(fields: [courseId], references: [id])
   authorId    Int?      @map("author_id")
@@ -115,7 +115,7 @@ model Course {
   discountPercent            Decimal          @default(0) @map("discount_percent") @db.Decimal(5, 2)
   createdAt                  DateTime         @default(now()) @map("created_at")
   updatedAt                  DateTime         @updatedAt @map("updated_at")
-  deleted                    Boolean          @default(false)
+  deletedAt                  DateTime?        @map("deleted_at")
   isDraft                    Boolean          @default(true) @map("is_draft")
   imageId                    String?          @unique @map("image_id")
   image                      CourseImage?     @relation(fields: [imageId], references: [id], onUpdate: SetNull)
@@ -153,13 +153,13 @@ model EmailSubscription {
 }
 
 model ErrorLog {
-  id                      String   @id @default(uuid())
-  action                  String   @db.VarChar
+  id                      String    @id @default(uuid())
+  action                  String    @db.VarChar
   error                   Json
-  comment                 String   @default("")
-  time                    DateTime @default(now())
-  serverPerformanceStatus Json     @map("server_performance_status")
-  deleted                 Boolean  @default(false)
+  comment                 String    @default("")
+  time                    DateTime  @default(now())
+  serverPerformanceStatus Json      @map("server_performance_status")
+  deletedAt               DateTime? @map("deleted_at")
 
   @@map("error_log")
 }
@@ -192,12 +192,13 @@ model Instructor {
 }
 
 model Lecture {
-  id        Int      @id @default(autoincrement())
-  label     String   @db.VarChar
-  duration  Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  deleted   Boolean  @default(false)
+  id        Int       @id @default(autoincrement())
+  label     String    @db.VarChar(255)
+  duration  Int       @default(0)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
   sectionId Int?     @map("section_id")
   section   Section? @relation(fields: [sectionId], references: [id])
 
@@ -326,7 +327,7 @@ model Section {
   description String
   createdAt   DateTime  @default(now()) @map("created_at")
   udpatedAt   DateTime  @updatedAt @map("updated_at")
-  deleted     Boolean   @default(false)
+  deletedAt   DateTime? @map("deleted_at")
   courseId    Int?      @map("course_id")
   course      Course?   @relation(fields: [courseId], references: [id])
   lectures    Lecture[]
@@ -386,7 +387,7 @@ model User {
   scoreGainRate     Decimal          @default(1) @map("score_gain_rate") @db.Decimal(4, 2)
   createdAt         DateTime         @default(now()) @map("created_at")
   updatedAt         DateTime         @updatedAt @map("updated_at")
-  deleted           Boolean          @default(false)
+  deletedAt         DateTime?        @map("deleted_at")
   avatarId          String?          @unique @map("avatar_id")
   avatar            Avatar?          @relation(fields: [avatarId], references: [id])
   cartId            String?          @unique @map("cart_id")
@@ -412,12 +413,12 @@ model User {
 }
 
 model UserLog {
-  id      String        @id @default(uuid())
-  status  UserLogStatus
-  time    DateTime      @default(now())
-  deleted Boolean       @default(false)
-  userId  Int?          @map("user_id")
-  user    User?         @relation(fields: [userId], references: [id])
+  id        String        @id @default(uuid())
+  status    UserLogStatus
+  time      DateTime      @default(now())
+  deletedAt DateTime?     @map("deleted_at")
+  userId    Int?          @map("user_id")
+  user      User?         @relation(fields: [userId], references: [id])
 
   @@map("user_log")
 }
