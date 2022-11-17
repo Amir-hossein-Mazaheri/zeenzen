@@ -272,53 +272,76 @@ export class CourseService {
 
     // return newCourse;
 
-    const createCourseData: Prisma.CourseCreateInput = {
-      title,
-      description: purifiedTurndown(description),
-      shortDescription,
-      progress,
-      spotPlayerCourseId,
-      // TODO: fix these ids, make them accept array of ids
-      categories: {
-        connect: {
-          id: Math.random(),
+    // TODO: instead of creating course with pre created categories, instructors, and etc, make it create them here
+    return await this.prismaService.$transaction(async (tx) => {
+      const createCourseData: Prisma.CourseCreateInput = {
+        title,
+        description: purifiedTurndown(description),
+        shortDescription,
+        progress,
+        spotPlayerCourseId,
+
+        categories: {
+          connect: await tx.category.findMany({
+            where: {
+              id: {
+                in: categoriesId,
+              },
+            },
+          }),
         },
-      },
-      instructors: {
-        connect: {
-          id: Math.random(),
+
+        instructors: {
+          connect: await tx.instructor.findMany({
+            where: {
+              id: {
+                in: instructorsId,
+              },
+            },
+          }),
         },
-      },
-      preRequirements: {
-        connect: {
-          id: Math.random(),
+
+        preRequirements: {
+          connect: await tx.preRequirement.findMany({
+            where: {
+              id: {
+                in: preRequirementsId,
+              },
+            },
+          }),
         },
-      },
-      sections: {
-        connect: {
-          id: Math.random(),
+
+        sections: {
+          connect: await tx.section.findMany({
+            where: {
+              id: {
+                in: sectionsId,
+              },
+            },
+          }),
         },
-      },
-    };
+      };
 
-    if (preRequirementsDescription) {
-      createCourseData.preRequirementsDescription = preRequirementsDescription;
-    }
+      if (preRequirementsDescription) {
+        createCourseData.preRequirementsDescription =
+          preRequirementsDescription;
+      }
 
-    if (price) {
-      createCourseData.price = price;
-    }
+      if (price) {
+        createCourseData.price = price;
+      }
 
-    if (level) {
-      createCourseData.level = level;
-    }
+      if (level) {
+        createCourseData.level = level;
+      }
 
-    if (discountPercent) {
-      createCourseData.discountPercent = discountPercent;
-    }
+      if (discountPercent) {
+        createCourseData.discountPercent = discountPercent;
+      }
 
-    return await this.prismaService.course.create({
-      data: createCourseData,
+      return await tx.course.create({
+        data: createCourseData,
+      });
     });
   }
 

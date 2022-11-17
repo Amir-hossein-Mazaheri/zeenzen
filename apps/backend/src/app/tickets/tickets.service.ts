@@ -70,7 +70,7 @@ export class TicketsService {
     }
 
     if (user.role !== UserRole.ADMIN) {
-      whereOptions.user = { id: user.sub };
+      whereOptions.whoAsked = { id: user.sub };
     }
 
     return whereOptions;
@@ -93,7 +93,7 @@ export class TicketsService {
     const ticket = await this.prismaService.ticket.findFirst({
       where: this.getWhereOptions(user, id),
       include: {
-        user: true,
+        whoAsked: true,
         ticketMessages: true,
       },
       orderBy: {},
@@ -179,7 +179,7 @@ export class TicketsService {
     const whereOptions: Prisma.TicketWhereInput = {};
 
     if (user.role !== UserRole.ADMIN) {
-      whereOptions.user = { id: user.sub };
+      whereOptions.whoAsked = { id: user.sub };
     }
 
     // return await this.ticketRepository

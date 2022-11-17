@@ -26,26 +26,34 @@ export class SocialService {
     private readonly prismaService: PrismaService
   ) {}
 
-  async validateSocial(id: number) {
+  validateSocial(id: number) {
     // const social = await this.socialRepository.findOne({
     //   where: { id },
     //   relations: this.relations,
     // });
 
-    const social = await this.prismaService.social.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        instructor: true,
-      },
-    });
+    return async (instructorId?: number) => {
+      const whereOptions: Prisma.SocialWhereInput = { id };
 
-    if (!social) {
-      throw new BadRequestException('Invalid social id.');
-    }
+      if (instructorId) {
+        whereOptions.instructor = {
+          id: instructorId,
+        };
+      }
 
-    return social;
+      const social = await this.prismaService.social.findFirst({
+        where: whereOptions,
+        include: {
+          instructor: true,
+        },
+      });
+
+      if (!social) {
+        throw new BadRequestException('Invalid social id.');
+      }
+
+      return social;
+    };
   }
 
   validateInstructor(
@@ -106,10 +114,9 @@ export class SocialService {
     updateSocialInput: UpdateSocialInput,
     instructorId: number
   ) {
-    const social = await this.validateSocial(id);
+    await this.validateSocial(id)(instructorId);
 
-    // TODO: move validate instructor into prisma query
-    this.validateInstructor(instructorId, social);
+    // this.validateInstructor(instructorId, social);
 
     // const updatedSocial = await this.dataSource
     //   .createQueryBuilder()
@@ -130,10 +137,9 @@ export class SocialService {
   }
 
   async remove(id: number, instructorId: number) {
-    const social = await this.validateSocial(id);
+    await this.validateSocial(id)(instructorId);
 
-    // TODO: move validate instructor to prisma query
-    this.validateInstructor(instructorId, social);
+    // this.validateInstructor(instructorId, social);
 
     // await this.dataSource
     //   .createQueryBuilder()

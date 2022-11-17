@@ -130,16 +130,16 @@ export class UploadsService {
     return await this.prismaService.$transaction(async (tx) => {
       const course = await tx.course.findFirst({
         include: {
-          courseImage: true,
+          image: true,
         },
       });
 
       let currCourseImage: Prisma.CourseImageGetPayload<unknown>;
 
-      if (course.courseImage) {
+      if (course.image) {
         currCourseImage = await tx.courseImage.findFirst({
           where: {
-            id: course.courseImage.id,
+            id: course.image.id,
           },
         });
       }

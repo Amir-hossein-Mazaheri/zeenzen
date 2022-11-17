@@ -250,6 +250,21 @@ export class OrderService {
     //   },
     // });
 
+    // order.status = OrderStatus.FULFILLED;
+
+    // for (const orderItem of order.orderItems) {
+    // const course = this.courseRepository.create(
+    //   orderItem.course
+    // ) as unknown as Course;
+    // course.participants.push(order.user);
+    // course.participantsCount++;
+    // await queryRunner.manager.save(course);
+    // }
+
+    // await queryRunner.manager.save(order);
+
+    // await queryRunner.commitTransaction();
+
     const order = await transaction.order.findFirst({
       where: this.getWhereOptions(user, orderId),
       include: {
@@ -266,23 +281,30 @@ export class OrderService {
       },
     });
 
-    order.status = OrderStatus.FULFILLED;
-
+    // TODO: test this for loop and make sure its working fine
     for (const orderItem of order.orderItems) {
-      // TODO: fix this
-      // const course = this.courseRepository.create(
-      //   orderItem.course
-      // ) as unknown as Course;
-      // course.participants.push(order.user);
-      // course.participantsCount++;
-      // await queryRunner.manager.save(course);
+      orderItem.course.participantsCount++;
+      orderItem.course.users.push(order.user);
+
+      await transaction.course.update({
+        where: {
+          id: orderItem.course.id,
+        },
+        data: {
+          ...orderItem.course,
+          users: {
+            connect: orderItem.course.users,
+          },
+        },
+      });
     }
 
-    // TODO: and this!
-    // await queryRunner.manager.save(order);
-
-    // await queryRunner.commitTransaction();
-
-    return order;
+    // it doesn't update many only updates one record
+    return await transaction.order.updateMany({
+      where: this.getWhereOptions(user, orderId),
+      data: {
+        status: OrderStatus.FULFILLED,
+      },
+    });
   }
 }

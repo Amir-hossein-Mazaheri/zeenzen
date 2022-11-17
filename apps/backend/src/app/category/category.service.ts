@@ -17,7 +17,7 @@ import { Category } from './entities/category.entity';
 @Injectable()
 export class CategoryService {
   private relations: Prisma.CategoryInclude = {
-    user: true,
+    createdBy: true,
   };
 
   constructor(
@@ -37,7 +37,7 @@ export class CategoryService {
     const category = await this.prismaService.category.findUnique({
       where: { id },
       include: {
-        user: true,
+        createdBy: true,
       },
     });
 
@@ -68,7 +68,7 @@ export class CategoryService {
     return await this.prismaService.category.create({
       data: {
         label,
-        user: {
+        createdBy: {
           connect: { id: user.sub },
         },
       },
@@ -95,7 +95,7 @@ export class CategoryService {
   ) {
     const category = await this.validateCategory(id);
 
-    if (category.user.id !== user.sub) {
+    if (category.createdBy.id !== user.sub) {
       throw new ForbiddenException("You can't modify this category");
     }
 

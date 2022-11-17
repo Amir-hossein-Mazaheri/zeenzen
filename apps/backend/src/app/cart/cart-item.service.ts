@@ -21,7 +21,7 @@ export class CartItemService {
 
     return await this.prismaService.course.findFirst({
       where: {
-        cartItem: {
+        cartItems: {
           // TODO: I don't know about every check it later
           every: {
             id: cartItemId,
