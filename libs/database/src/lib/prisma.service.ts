@@ -1,5 +1,6 @@
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import * as moment from 'moment';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -8,6 +9,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       log: ['error', 'info', 'query', 'warn'],
       errorFormat: 'pretty',
     });
+  }
+
+  async onModuleInit() {
+    await this.$connect();
+
+    const deletedAt = moment.utc().toDate();
 
     // this middleware adds soft delete by passing softDelete to args
     this.$use(async (params, next) => {
@@ -18,7 +25,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         params.action = 'update';
 
         params.args['data'] = {
-          deleted: true,
+          deletedAt,
         };
       }
 
@@ -26,10 +33,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         params.action = 'updateMany';
 
         if (params.args.data !== undefined) {
-          params.args.data['deleted'] = true;
+          params.args.data['deletedAt'] = deletedAt;
         } else {
           params.args['data'] = {
-            deleted: true,
+            deletedAt,
           };
         }
       }
@@ -39,24 +46,29 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     // this middleware filter soft deleted records
     this.$use(async (params, next) => {
-      const withDeleted = !!params.args['withDeleted'];
+      const dynamicDeletedAt = params.args['withDeleted']
+        ? deletedAt
+        : undefined;
 
       if (params.action === 'findFirst' || params.action === 'findUnique') {
         params.action = 'findFirst';
-        params.args.where['deleted'] = withDeleted;
+
+        params.args.where['deletedAt'] = dynamicDeletedAt;
       }
 
       if (params.action === 'findMany') {
         if (params.args.where) {
           if (params.args.where.deleted === undefined) {
-            params.args.where['deleted'] = withDeleted;
+            params.args.where['deleted'] = dynamicDeletedAt;
           }
         } else {
           params.args['where'] = {
-            deleted: withDeleted,
+            deleted: dynamicDeletedAt,
           };
         }
       }
+
+      console.log(params);
 
       return next(params);
     });
@@ -68,14 +80,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
       if (params.action === 'update') {
         params.args.data = {
-          deleted: false,
+          deletedAt,
         };
       }
 
       if (params.action === 'updateMany') {
         // TODO: this piece must be tested, because of lack of type safety
         params.args.data = params.args.data.map(() => ({
-          deleted: false,
+          deletedAt,
         }));
       }
 
@@ -90,7 +102,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       if (params.action === 'update') {
         params.action = 'updateMany';
 
-        params.args.where['deleted'] = false;
+        params.args.where['deletedAt'] = deletedAt;
       }
 
       if (params.action === 'updateMany') {
@@ -98,17 +110,19 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
           params.args.where['deleted'] = false;
         } else {
           params.args['where'] = {
-            deleted: false,
+            deletedAt,
           };
         }
       }
 
       return next(params);
     });
-  }
 
-  async onModuleInit() {
-    await this.$connect();
+    this.$use(async (params, next) => {
+      console.log('prisma params: ', params);
+
+      return next(params);
+    });
   }
 
   async enableShutdownHooks(app: INestApplication) {
