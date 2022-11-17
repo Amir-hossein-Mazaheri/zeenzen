@@ -72,7 +72,7 @@ model Comment {
   isPublished Boolean   @default(false) @map("is_published")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-  deleted     Boolean?  @default(false) @map("deleted_at")
+  deleted     Boolean   @default(false)
   courseId    Int?      @map("course_id")
   course      Course?   @relation(fields: [courseId], references: [id])
   authorId    Int?      @map("author_id")
@@ -115,7 +115,7 @@ model Course {
   discountPercent            Decimal          @default(0) @map("discount_percent") @db.Decimal(5, 2)
   createdAt                  DateTime         @default(now()) @map("created_at")
   updatedAt                  DateTime         @updatedAt @map("updated_at")
-  deleted                    Boolean?         @default(false)
+  deleted                    Boolean          @default(false)
   isDraft                    Boolean          @default(true) @map("is_draft")
   imageId                    String?          @unique @map("image_id")
   image                      CourseImage?     @relation(fields: [imageId], references: [id], onUpdate: SetNull)
@@ -197,7 +197,7 @@ model Lecture {
   duration  Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  deleted   Boolean? @default(false)
+  deleted   Boolean  @default(false)
   sectionId Int?     @map("section_id")
   section   Section? @relation(fields: [sectionId], references: [id])
 
@@ -281,7 +281,7 @@ model PreRequirement {
   image       String              @db.VarChar(255)
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime            @updatedAt @map("updated_at")
-  deletedAt   Boolean?            @default(false)
+  deletedAt   Boolean             @default(false)
   courseId    Int?                @map("course_id")
   course      Course?             @relation(fields: [courseId], references: [id])
 
@@ -295,7 +295,7 @@ model Question {
   isClosed      Boolean  @default(false) @map("is_closed")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
-  deletedAt     Boolean? @default(false)
+  deletedAt     Boolean  @default(false)
   whoAskedId    Int?     @map("who_asked_id")
   whoAsked      User?    @relation("AskedQuestions", fields: [whoAskedId], references: [id])
   whoAnsweredId Int?     @map("who_answered_id")
@@ -326,7 +326,7 @@ model Section {
   description String
   createdAt   DateTime  @default(now()) @map("created_at")
   udpatedAt   DateTime  @updatedAt @map("updated_at")
-  deletedAt   DateTime? @map("deleted_at")
+  deleted     Boolean   @default(false)
   courseId    Int?      @map("course_id")
   course      Course?   @relation(fields: [courseId], references: [id])
   lectures    Lecture[]
@@ -386,7 +386,7 @@ model User {
   scoreGainRate     Decimal          @default(1) @map("score_gain_rate") @db.Decimal(4, 2)
   createdAt         DateTime         @default(now()) @map("created_at")
   updatedAt         DateTime         @updatedAt @map("updated_at")
-  deleted           Boolean?         @default(false)
+  deleted           Boolean          @default(false)
   avatarId          String?          @unique @map("avatar_id")
   avatar            Avatar?          @relation(fields: [avatarId], references: [id])
   cartId            String?          @unique @map("cart_id")
@@ -415,7 +415,7 @@ model UserLog {
   id      String        @id @default(uuid())
   status  UserLogStatus
   time    DateTime      @default(now())
-  deleted Boolean?      @default(false)
+  deleted Boolean       @default(false)
   userId  Int?          @map("user_id")
   user    User?         @relation(fields: [userId], references: [id])
 
