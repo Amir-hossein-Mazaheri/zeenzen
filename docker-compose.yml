@@ -28,7 +28,7 @@ services:
     ports:
       - 6379:6379
   postgres:
-    image: postgres:latest
+    image: postgres:13-bullseye
     environment:
       - POSTGRES_DB=myshop
       - POSTGRES_USER=admin
