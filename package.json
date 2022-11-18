@@ -11,6 +11,7 @@
     "lint": "nx lint",
     "lint:all": "nx run-many --target=lint",
     "test": "nx test",
+    "test:all": "nx run-many --target=test",
     "gql": "graphql-codegen --config codegen.yml",
     "prepare": "husky install"
   },
