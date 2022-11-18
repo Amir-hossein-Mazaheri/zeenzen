@@ -5,7 +5,8 @@
     "module": "commonjs",
     "types": ["jest", "node"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true
   },
   "include": [
     "jest.config.ts",
