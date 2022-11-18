@@ -8,11 +8,11 @@ import {
   ResolveField,
   Parent,
 } from '@nestjs/graphql';
+
 import { AuthenticatedGuard } from '../auth/guards/authenticated.guard';
 import { Cart } from '../cart/entities/cart.entity';
 import { RequestUser, UserRole } from '../types';
 import { Avatar } from '../uploads/entities/avatar.entity';
-
 import { Roles } from './decorators/roles.decorator';
 import { SkipRoles } from './decorators/skip-roles.decorator';
 import { GetUser } from './decorators/user.decorator';
