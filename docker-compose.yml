@@ -1,13 +1,13 @@
 version: '3.9'
 
 services:
-  backend:
+  app:
     depends_on:
       - redis
       - postgres
     build: ./
     environment:
-      PORT: 5000
+      PORT: 4000
       DATABASE: myshop
       DATABASE_PORT: 5432
       DATABASE_HOST: postgres
@@ -18,9 +18,7 @@ services:
       REDIS_PASSWORD: '@mir1990_redis'
       REDIS_HOST: redis
     ports:
-      - 5000:5000
-    volumes:
-      - ./src:/app/src
+      - 4000:4000
   redis:
     image: redis:latest
     environment:
@@ -35,3 +33,11 @@ services:
       - POSTGRES_PASSWORD=@mir1990
     ports:
       - 5432:5432
+  uploads:
+    depends_on:
+      - redis
+      - postgres
+      # - backend
+    image: node:18.12.1-slim
+    volumes:
+      - ./public/uploads:/app/upload-storage
