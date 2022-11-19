@@ -6,6 +6,7 @@ services:
       - redis
       - postgres
     build: ./
+    restart: on-failure
     environment:
       PORT: 4000
       DATABASE: myshop
@@ -21,18 +22,22 @@ services:
       - 4000:4000
   redis:
     image: redis:latest
+    restart: always
     environment:
       - REDIS_PASSWORD=@mir1990_redis
     ports:
       - 6379:6379
   postgres:
     image: postgres:13-bullseye
+    restart: always
     environment:
       - POSTGRES_DB=myshop
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=@mir1990
     ports:
       - 5432:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
   uploads:
     depends_on:
       - redis
@@ -40,4 +45,9 @@ services:
       # - backend
     image: node:18.12.1-slim
     volumes:
-      - ./public/uploads:/app/upload-storage
+      - upload_storage:/app/upload-storage
+
+volumes:
+  db_data:
+    driver: local
+  upload_storage:
