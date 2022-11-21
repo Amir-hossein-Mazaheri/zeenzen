@@ -20,6 +20,8 @@ services:
       REDIS_HOST:
     ports:
       - 4000:4000
+    volumes:
+      - ./public/uploads:./uploads
   redis:
     image: redis:latest
     restart: always
@@ -38,17 +40,7 @@ services:
       - 5432:5432
     volumes:
       - db_data:/var/lib/postgresql/data
-  uploads:
-    depends_on:
-      - redis
-      - postgres
-      # - backend
-    image: node:18.12.1-slim
-    volumes:
-      - upload_storage:/app/upload-storage
 
 volumes:
   db_data:
     driver: local
-  upload_storage:
-    external: true
