@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -39,6 +39,10 @@ const pages = [
   {
     title: 'از امیرحسین بپرس',
     link: '/ask-amirhossein',
+  },
+  {
+    title: 'سوالات ترجمه شده StackOverflow',
+    link: '/stack-overflow',
   },
 ];
 
@@ -108,4 +112,4 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
   );
 };
 
-export default Navbar;
+export default memo(Navbar);
