@@ -90,7 +90,10 @@ export class AskAmirhosseinService {
     };
   }
 
-  async create({ question, email }: CreateAskAmirhosseinInput) {
+  async create(
+    { question, email }: CreateAskAmirhosseinInput,
+    user: RequestUser
+  ) {
     // if (!user && !email) {
     //   throw new BadRequestException(
     //     'Either you should enter email address or be logged in.'
@@ -115,17 +118,26 @@ export class AskAmirhosseinService {
 
     // return newAskAmirhossein;
 
-    return await this.prismaService.askAmirhossein.create({
+    console.log('user is: ', user);
+
+    const createAskAmirhosseinData: Prisma.AskAmirhosseinCreateArgs = {
       data: {
         question,
         email,
-        user: {
-          connect: {
-            email,
-          },
-        },
       },
-    });
+    };
+
+    if (user) {
+      createAskAmirhosseinData.data.user = {
+        connect: {
+          email: user.email,
+        },
+      };
+    }
+
+    return await this.prismaService.askAmirhossein.create(
+      createAskAmirhosseinData
+    );
   }
 
   // answer ask amirhossein flow:
