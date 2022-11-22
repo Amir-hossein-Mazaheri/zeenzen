@@ -18,10 +18,9 @@ export class AskAmirhosseinResolver {
   @Mutation(() => AskAmirhossein)
   createAskAmirhossein(
     @Args('createAskAmirhosseinInput')
-    createAskAmirhosseinInput: CreateAskAmirhosseinInput,
-    @GetUser() user: RequestUser
+    createAskAmirhosseinInput: CreateAskAmirhosseinInput
   ) {
-    return this.askAmirhosseinService.create(createAskAmirhosseinInput, user);
+    return this.askAmirhosseinService.create(createAskAmirhosseinInput);
   }
 
   @Roles(UserRole.ADMIN)

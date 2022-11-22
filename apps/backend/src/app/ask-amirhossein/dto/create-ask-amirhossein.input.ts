@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class CreateAskAmirhosseinInput {
@@ -8,11 +8,9 @@ export class CreateAskAmirhosseinInput {
   question: string;
 
   @Field(() => String, {
-    nullable: true,
     description: 'Example field (placeholder)',
   })
-  @IsOptional()
   @IsNotEmpty()
   @IsEmail()
-  email?: string;
+  email: string;
 }
