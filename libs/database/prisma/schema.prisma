@@ -9,14 +9,16 @@ datasource db {
 }
 
 model AskAmirhossein {
-  id         Int       @id @default(autoincrement())
-  question   String    @db.VarChar(1000)
-  answer     String?   @db.VarChar(1000)
-  email      String    @db.VarChar(100)
-  createdAt  DateTime  @default(now()) @map("created_at")
-  answeredAt DateTime? @map("answered_at") @db.Date
-  userId     Int?      @map("user_id")
-  user       User?     @relation(fields: [userId], references: [id])
+  id            Int       @id @default(autoincrement())
+  question      String    @db.VarChar(1000)
+  answer        String?   @db.VarChar(1000)
+  email         String    @db.VarChar(100)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  answeredAt    DateTime? @map("answered_at") @db.Date
+  whoAskedId    Int?      @map("who_asked_id")
+  whoAsked      User?     @relation("whoAsked", fields: [whoAskedId], references: [id])
+  whoAnsweredId Int?      @map("who_answered_id")
+  whoAnswered   User?     @relation("whoAnswered", fields: [whoAnsweredId], references: [id])
 
   @@map("ask_amirhossein")
 }
@@ -376,38 +378,39 @@ model TicketMessage {
 }
 
 model User {
-  id                Int              @id @default(autoincrement())
-  firstname         String?          @db.VarChar(100)
-  lastname          String?          @db.VarChar(100)
-  email             String           @unique @db.VarChar(100)
-  phoneNumber       String?          @unique @map("phone_number") @db.VarChar(20)
-  role              UserRole         @default(CUSTOMER)
-  password          String           @db.VarChar(255)
-  scores            Decimal          @default(0) @db.Decimal(8, 2)
-  scoreGainRate     Decimal          @default(1) @map("score_gain_rate") @db.Decimal(4, 2)
-  createdAt         DateTime         @default(now()) @map("created_at")
-  updatedAt         DateTime         @updatedAt @map("updated_at")
-  deletedAt         DateTime?        @map("deleted_at")
-  avatarId          String?          @unique @map("avatar_id")
-  avatar            Avatar?          @relation(fields: [avatarId], references: [id])
-  cartId            String?          @unique @map("cart_id")
-  cart              Cart?            @relation(fields: [cartId], references: [id])
-  comments          Comment[]
-  instructorId      Int?             @unique @map("instructor_id")
-  instructor        Instructor?      @relation(fields: [instructorId], references: [id])
-  orders            Order[]
-  askedQuestions    Question[]       @relation("AskedQuestions")
-  answeredQuestion  Question[]       @relation("AnsweredQuestions")
-  courses           Course[]
-  createdCategories Category[]
-  logs              UserLog[]
-  tickets           Ticket[]
-  payments          Payment[]
-  ticketMessages    TicketMessage[]
-  licenses          License[]
-  askAmirhosseins   AskAmirhossein[]
-  reports           Report[]
-  Question          Question[]
+  id                      Int              @id @default(autoincrement())
+  firstname               String?          @db.VarChar(100)
+  lastname                String?          @db.VarChar(100)
+  email                   String           @unique @db.VarChar(100)
+  phoneNumber             String?          @unique @map("phone_number") @db.VarChar(20)
+  role                    UserRole         @default(CUSTOMER)
+  password                String           @db.VarChar(255)
+  scores                  Decimal          @default(0) @db.Decimal(8, 2)
+  scoreGainRate           Decimal          @default(1) @map("score_gain_rate") @db.Decimal(4, 2)
+  createdAt               DateTime         @default(now()) @map("created_at")
+  updatedAt               DateTime         @updatedAt @map("updated_at")
+  deletedAt               DateTime?        @map("deleted_at")
+  avatarId                String?          @unique @map("avatar_id")
+  avatar                  Avatar?          @relation(fields: [avatarId], references: [id])
+  cartId                  String?          @unique @map("cart_id")
+  cart                    Cart?            @relation(fields: [cartId], references: [id])
+  comments                Comment[]
+  instructorId            Int?             @unique @map("instructor_id")
+  instructor              Instructor?      @relation(fields: [instructorId], references: [id])
+  orders                  Order[]
+  askedQuestions          Question[]       @relation("AskedQuestions")
+  answeredQuestion        Question[]       @relation("AnsweredQuestions")
+  courses                 Course[]
+  createdCategories       Category[]
+  logs                    UserLog[]
+  tickets                 Ticket[]
+  payments                Payment[]
+  ticketMessages          TicketMessage[]
+  licenses                License[]
+  askAmirhosseinsAsked    AskAmirhossein[] @relation("whoAsked")
+  askAmirhosseinsAnswered AskAmirhossein[] @relation("whoAnswered")
+  reports                 Report[]
+  Question                Question[]
 
   @@map("user")
 }
