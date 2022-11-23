@@ -1,0 +1,27 @@
+mutation CreateAskAmirhossein(
+  $createAskAmirhosseinInput: CreateAskAmirhosseinInput!
+) {
+  createAskAmirhossein(createAskAmirhosseinInput: $createAskAmirhosseinInput) {
+    id
+    email
+    question
+    createdAt
+  }
+}
+
+query AskAmirhosseins {
+  paginatedAskAmirhosseins {
+    page
+    count
+    hasPrev
+    hasNext
+    totalPages
+    askAmirhosseins {
+      id
+      question
+      createdAt
+      answer
+      email
+    }
+  }
+}
