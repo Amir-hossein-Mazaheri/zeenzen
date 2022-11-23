@@ -16,10 +16,18 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     const deletedAt = moment.utc().toDate();
 
+    this.$use(async (params, next) => {
+      if (!params?.args) {
+        params.args = {};
+      }
+
+      return next(params);
+    });
+
     // this middleware adds soft delete by passing softDelete to args
     this.$use(async (params, next) => {
       // make sure that softDelete is passed
-      if (!params.args['softDelete']) return next(params);
+      if (!params.args?.softDelete) return next(params);
 
       if (params.action === 'delete') {
         params.action = 'update';
@@ -46,9 +54,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     // this middleware filter soft deleted records
     this.$use(async (params, next) => {
-      const dynamicDeletedAt = params.args['withDeleted']
-        ? deletedAt
-        : undefined;
+      const dynamicDeletedAt = params.args?.withDeleted ? deletedAt : undefined;
 
       if (params.action === 'findFirst' || params.action === 'findUnique') {
         params.action = 'findFirst';
@@ -57,18 +63,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
 
       if (params.action === 'findMany') {
-        if (params.args.where) {
-          if (params.args.where.deleted === undefined) {
+        if (params.args?.where) {
+          if (params.args?.where?.deleted === undefined) {
             params.args.where['deleted'] = dynamicDeletedAt;
           }
         } else {
-          params.args['where'] = {
+          params.args.where = {
             deleted: dynamicDeletedAt,
           };
         }
       }
-
-      console.log(params);
 
       return next(params);
     });
@@ -76,7 +80,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     // this middleware adds restoring soft deleted record(s)
     this.$use(async (params, next) => {
       // makes sure that restore is passed
-      if (!params.args['restore']) return next(params);
+      if (!params?.args?.restore) return next(params);
 
       if (params.action === 'update') {
         params.args.data = {
@@ -97,7 +101,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     // this middleware makes sure that only not soft deleted records can get be updated
     this.$use(async (params, next) => {
       // make sure that this middleware doesn't override restore middleware
-      if (params.args['restore']) return next(params);
+      if (params?.args?.restore) return next(params);
 
       if (params.action === 'update') {
         params.action = 'updateMany';
@@ -107,7 +111,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
       if (params.action === 'updateMany') {
         if (params.args.where !== undefined) {
-          params.args.where['deleted'] = false;
+          params.args.where['deletedAt'] = deletedAt;
         } else {
           params.args['where'] = {
             deletedAt,
