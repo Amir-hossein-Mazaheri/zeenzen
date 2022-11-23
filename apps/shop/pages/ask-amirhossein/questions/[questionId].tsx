@@ -1,8 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 
-import { NextPageWithLayout } from '../_app';
-import ShopLayout from '../../src/layouts/ShopLayout';
+import { NextPageWithLayout } from '../../_app';
+import ShopLayout from '../../../src/layouts/ShopLayout';
 
 const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
   return (
