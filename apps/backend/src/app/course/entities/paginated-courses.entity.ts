@@ -1,21 +1,10 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
+import { BasePaginated } from '../../utils/BasePaginated';
 import { Course } from './course.entity';
 
 @ObjectType()
-export class PaginatedCourses {
-  @Field(() => Int)
-  page: number;
-
-  @Field(() => Int)
-  totalPages: number;
-
-  @Field(() => Boolean)
-  hasNext: boolean;
-
-  @Field(() => Boolean)
-  hasPrev: boolean;
-
+export class PaginatedCourses extends BasePaginated {
   @Field(() => [Course])
   courses: Course[];
 }
