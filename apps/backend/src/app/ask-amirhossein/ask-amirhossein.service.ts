@@ -24,6 +24,8 @@ import { sendEmail } from '../utils/sendEmail';
 import { toCamelCase } from '../utils/toCamelCase';
 import { Prisma } from '@prisma/client';
 
+const ASK_AMIRHOSSEINS_PER_PAGE = 15;
+
 @Injectable()
 export class AskAmirhosseinService {
   constructor(
@@ -63,7 +65,7 @@ export class AskAmirhosseinService {
     if (!user) {
       whereOptions.email = email;
     } else if (user.role !== UserRole.ADMIN) {
-      whereOptions.user = { id: user.sub };
+      whereOptions.whoAsked = { id: user.sub };
     }
 
     return whereOptions;
@@ -128,7 +130,7 @@ export class AskAmirhosseinService {
     };
 
     if (user) {
-      createAskAmirhosseinData.data.user = {
+      createAskAmirhosseinData.data.whoAsked = {
         connect: {
           email: user.email,
         },
@@ -177,7 +179,32 @@ export class AskAmirhosseinService {
     // return askAmirhossein;
   }
 
-  async findAll(
+  async findAll(page?: number) {
+    const currPage = page || 1;
+
+    const count = await this.prismaService.askAmirhossein.count();
+
+    const askAmirhosseins = await this.prismaService.askAmirhossein.findMany({
+      take: ASK_AMIRHOSSEINS_PER_PAGE,
+      skip: (currPage - 1) * ASK_AMIRHOSSEINS_PER_PAGE,
+    });
+
+    const totalPages = Math.ceil(count / ASK_AMIRHOSSEINS_PER_PAGE);
+
+    const hasPrev = currPage !== 1;
+    const hasNext = currPage < totalPages;
+
+    return {
+      page: currPage,
+      count,
+      totalPages,
+      hasPrev,
+      hasNext,
+      askAmirhosseins,
+    };
+  }
+
+  async findAllUserRelated(
     findAllAskAmirhosseinInput: FindAllAskAmirhosseinInput,
     user: RequestUser
   ) {

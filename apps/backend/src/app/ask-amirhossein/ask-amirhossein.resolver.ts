@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 
 import { AskAmirhosseinService } from './ask-amirhossein.service';
 import { AskAmirhossein } from './entities/ask-amirhossein.entity';
@@ -10,6 +10,7 @@ import { FindOneAskAmirhosseinInput } from './dto/find-one-ask-amirhossein.input
 import { RequestUser, UserRole } from '../types';
 import { Roles } from '../user/decorators/roles.decorator';
 import { GetUser } from '../user/decorators/user.decorator';
+import { PaginatedAskAmirhosseins } from './entities/paginated-ask-amirhosseins.entity';
 
 @Resolver(() => AskAmirhossein)
 export class AskAmirhosseinResolver {
@@ -36,13 +37,21 @@ export class AskAmirhosseinResolver {
     );
   }
 
-  @Query(() => [AskAmirhossein], { name: 'askAmirhosseins' })
-  findAll(
+  @Query(() => PaginatedAskAmirhosseins, { name: 'paginatedAskAmirhosseins' })
+  findAll(@Args('page', { type: () => Int, nullable: true }) page: number) {
+    return this.askAmirhosseinService.findAll(page);
+  }
+
+  @Query(() => [AskAmirhossein], { name: 'askAmirhosseinsRelated' })
+  findAllUserRelated(
     @Args('findAllAskAmirhosseinInput', { nullable: true })
     findAllAskAmirhosseinInput: FindAllAskAmirhosseinInput,
     @GetUser() user: RequestUser
   ) {
-    return this.askAmirhosseinService.findAll(findAllAskAmirhosseinInput, user);
+    return this.askAmirhosseinService.findAllUserRelated(
+      findAllAskAmirhosseinInput,
+      user
+    );
   }
 
   @Query(() => AskAmirhossein, { name: 'askAmirhossein' })
