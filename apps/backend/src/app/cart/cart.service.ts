@@ -7,7 +7,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, IsNull, QueryRunner, Repository } from 'typeorm';
 import { PrismaService } from '@zeenzen/database';
-import Decimal from 'decimal.js';
 
 import { AddCartItemInput } from './dto/add-cart-item.input';
 import { DecrementCartItemInput } from './dto/decrement-cart-item.input';

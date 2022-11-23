@@ -6,9 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, In, Repository } from 'typeorm';
 import * as moment from 'moment';
-import Decimal from 'decimal.js';
-import { PrismaService } from '@zeenzen/database';
+import { Prisma } from '@prisma/client';
 
+import { PrismaService } from '@zeenzen/database';
 import { CreateCouponInput } from './dto/create-coupon.input';
 import { UpdateCouponInput } from './dto/update-coupon.input';
 import { Coupon } from './entities/coupon.entity';
@@ -18,7 +18,6 @@ import { Course } from '../course/entities/course.entity';
 import { LogsService } from '../logs/logs.service';
 import { RequestUser } from '../types';
 import { toCamelCase } from '../utils/toCamelCase';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CouponService {
