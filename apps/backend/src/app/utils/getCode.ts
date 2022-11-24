@@ -15,6 +15,7 @@ function promisifiedRandomInt(min: number, max: number) {
   });
 }
 
+// liveFor is in minutes
 export async function getCode(size: number, liveFor: number) {
   const [min, max] = getMinMaxRange(size);
   const code = await promisifiedRandomInt(min, max);
