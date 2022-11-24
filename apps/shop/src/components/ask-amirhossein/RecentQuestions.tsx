@@ -21,7 +21,10 @@ const AskAmirhosseinRecentQuestions = () => {
         <div className="space-y-10">
           {askAmirhosseinsData?.paginatedAskAmirhosseins.askAmirhosseins.map(
             (askAmirhossein) => (
-              <AskAmirhosseinQuestion {...askAmirhossein} />
+              <AskAmirhosseinQuestion
+                key={askAmirhossein.id}
+                {...askAmirhossein}
+              />
             )
           )}
         </div>
