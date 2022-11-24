@@ -1,5 +1,6 @@
 import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
+import * as z from 'zod';
 import { usePostCommentMutation } from '@zeenzen/data';
 import {
   graphqlClient,
@@ -14,7 +15,7 @@ import {
 import CommentFormSkeleton from '../../common/Skeleton/CommentFormSkeleton';
 import useToast from '../../hooks/useToast';
 import useUser from '../../hooks/useUser';
-import CommentForm, { CommentFormFields } from './CommentForm';
+import CommentForm, { commentSchema } from './CommentForm';
 import useCommentStore from '../../store/useCommentStore';
 
 interface PostCommentProps {
@@ -35,9 +36,9 @@ const PostComment: React.FC<PostCommentProps> = ({ courseId }) => {
 
   const toast = useToast();
 
-  const handlePostComment: SubmitHandler<CommentFormFields> = async ({
-    content,
-  }) => {
+  const handlePostComment: SubmitHandler<
+    z.infer<typeof commentSchema>
+  > = async ({ content }) => {
     try {
       await postCommentMutation.mutateAsync({
         createCommentInput: {

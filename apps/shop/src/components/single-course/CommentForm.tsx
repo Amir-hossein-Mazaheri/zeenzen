@@ -1,31 +1,28 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { ChangeEventHandler } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import * as Yup from 'yup';
+import * as z from 'zod';
 import { AppButton, AppInput } from '@zeenzen/common';
 
 import getFormErrorMessages from '../../utils/getFormErrorMessages';
 
-export interface CommentFormFields {
-  content: string;
-}
+export const commentSchema = z.object({
+  content: z.string().min(1, { message: getFormErrorMessages().required }),
+});
+
 interface CommentFormProps {
-  handleSubmit: SubmitHandler<CommentFormFields>;
+  handleSubmit: SubmitHandler<z.infer<typeof commentSchema>>;
   defaultValue?: string;
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
 }
-
-const commentSchema = Yup.object({
-  content: Yup.string().required(getFormErrorMessages().required),
-});
 
 const CommentForm: React.FC<CommentFormProps> = ({
   handleSubmit,
   defaultValue,
   onChange,
 }) => {
-  const methods = useForm<CommentFormFields>({
-    resolver: yupResolver(commentSchema),
+  const methods = useForm<z.infer<typeof commentSchema>>({
+    resolver: zodResolver(commentSchema),
   });
 
   return (

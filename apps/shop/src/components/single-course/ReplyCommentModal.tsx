@@ -3,10 +3,11 @@ import React, { Fragment } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import { useReplyCommentMutation } from '@zeenzen/data';
 import { graphqlClient } from '@zeenzen/common';
+import * as z from 'zod';
 
 import useToast from '../../hooks/useToast';
 import getErrorMessages from '../../utils/getErrorMessages';
-import CommentForm, { CommentFormFields } from './CommentForm';
+import CommentForm, { commentSchema } from './CommentForm';
 import useCommentStore from '../../store/useCommentStore';
 
 const ReplyCommentModal = () => {
@@ -25,7 +26,7 @@ const ReplyCommentModal = () => {
 
   console.log('reply comment modal: ', isReplyCommentModalOpen);
 
-  const handlePostReply: SubmitHandler<CommentFormFields> = async ({
+  const handlePostReply: SubmitHandler<z.infer<typeof commentSchema>> = async ({
     content,
   }) => {
     try {
