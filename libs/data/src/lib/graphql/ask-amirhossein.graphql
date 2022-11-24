@@ -3,9 +3,6 @@ mutation CreateAskAmirhossein(
 ) {
   createAskAmirhossein(createAskAmirhosseinInput: $createAskAmirhosseinInput) {
     id
-    email
-    question
-    createdAt
   }
 }
 
@@ -16,12 +13,18 @@ query AskAmirhosseins($page: Int) {
     hasPrev
     hasNext
     totalPages
+
     askAmirhosseins {
       id
+      fullName
       question
       createdAt
-      answer
-      email
+
+      answers {
+        id
+        createdAt
+        answer
+      }
     }
   }
 }
