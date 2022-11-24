@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GetStaticProps } from 'next';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { useAskAmirhosseinsQuery } from '@zeenzen/data';
-import { Alert, graphqlClient, Pagination } from '@zeenzen/common';
+import { Alert, AppButton, graphqlClient, Pagination } from '@zeenzen/common';
 
 import { NextPageWithLayout } from '../../_app';
 import ShopLayout from '../../../src/layouts/ShopLayout';
@@ -23,9 +23,15 @@ const AskAmirhosseinQuestionsPage: NextPageWithLayout = () => {
 
   return (
     <div>
-      <h1 className="font-extrabold text-3xl text-title-black">
-        تمامی سوالاتی که شما پرسیده اید
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-extrabold text-3xl text-title-black">
+          تمامی سوالاتی که شما پرسیده اید
+        </h1>
+
+        <AppButton link href="/ask-amirhossein/#question-form" rounded outline>
+          <span>سوال بپرس 🤔</span>
+        </AppButton>
+      </div>
 
       <Alert color="warn" className="mt-10 px-12 py-4" rounded>
         <span>
