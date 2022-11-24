@@ -1,8 +1,8 @@
 import React, { ChangeEventHandler } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 import Head from 'next/head';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useLimitedUpdateUserMutation } from '@zeenzen/data';
 import {
   Avatar,
@@ -18,40 +18,50 @@ import UserDashboardLayout from '../../../src/layouts/UserDashboardLayout';
 import { NextPageWithLayout } from '../../_app';
 import useAlert from '../../../src/hooks/useAlert';
 import useProtectedRoute from '../../../src/hooks/useProtectedRoute';
-import getPasswordRegex from '../../../src/utils/getPasswordRegex';
+import getFormErrorMessages from '../../../src/utils/getFormErrorMessages';
 import useToast from '../../../src/hooks/useToast';
 import addToTitle from '../../../src/utils/addToTitle';
+import getPasswordRegex from 'apps/shop/src/utils/getPasswordRegex';
+import getErrorMessages from 'apps/shop/src/utils/getErrorMessages';
 
-interface UserProfileFields {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  newPassword: string;
-  repeatNewPassword: string;
-}
-
-const userProfileSchema = Yup.object({
-  firstname: Yup.string(),
-  lastname: Yup.string(),
-  email: Yup.string().email('ایمیل نا معتبر'),
-  password: Yup.string().required(
-    'برای اعمال تغییرات باید رمز عبور خود را وارد کنید'
-  ),
-  newPassword: Yup.string().matches(...getPasswordRegex(true)),
-  repeatNewPassword: Yup.string().oneOf(
-    [Yup.ref('newPassword'), null],
-    'رمز عبور ها مطابقت ندارند'
-  ),
-});
+const userProfileSchema = z
+  .object({
+    firstname: z
+      .string()
+      .min(3, { message: 'حداقل طول نام 3 حرف است' })
+      .optional(),
+    lastname: z.string().optional(),
+    email: z.string().email({ message: 'ایمیل نا معتبر' }),
+    password: z
+      .string()
+      .min(1, { message: getFormErrorMessages().required })
+      .optional(),
+    newPassword: z.preprocess(
+      (val: string) => (val.trim() === '' ? undefined : val),
+      z
+        .string()
+        .regex(...getPasswordRegex())
+        .optional()
+    ),
+    repeatNewPassword: z.string().optional(),
+  })
+  .superRefine(({ repeatNewPassword, newPassword }, ctx) => {
+    if (newPassword && repeatNewPassword && repeatNewPassword !== newPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'رمز عبور ها تطابق ندارند',
+        path: ['repeatNewPassword'],
+      });
+    }
+  });
 
 const UserProfilePage: NextPageWithLayout = () => {
   const { loading, user, refetch: refetchUser } = useProtectedRoute();
 
   const updateUserMutation = useLimitedUpdateUserMutation(graphqlClient);
 
-  const methods = useForm<UserProfileFields>({
-    resolver: yupResolver(userProfileSchema),
+  const methods = useForm<z.infer<typeof userProfileSchema>>({
+    resolver: zodResolver(userProfileSchema),
   });
 
   const toast = useToast();
@@ -103,9 +113,9 @@ const UserProfilePage: NextPageWithLayout = () => {
     }
   };
 
-  const handleUserProfileUpdate: SubmitHandler<UserProfileFields> = async (
-    data
-  ) => {
+  const handleUserProfileUpdate: SubmitHandler<
+    z.infer<typeof userProfileSchema>
+  > = async (data) => {
     const filteredData = new Map();
 
     Object.entries(data).map(([key, value]) => {
@@ -127,11 +137,13 @@ const UserProfilePage: NextPageWithLayout = () => {
     } catch (err: any) {
       console.log(err);
 
-      alert({
-        title: 'مشکلی پیش آمده است',
-        icon: 'error',
-        description: err?.response.errors[0].message,
-      }).fire();
+      getErrorMessages(err).map((message) => {
+        alert({
+          title: 'مشکلی پیش آمده است',
+          icon: 'error',
+          description: message,
+        }).fire();
+      });
     }
   };
 
@@ -201,14 +213,14 @@ const UserProfilePage: NextPageWithLayout = () => {
                   placeholder=""
                 />
               </div>
+
+              <div className="flex justify-end">
+                <AppButton type="submit" loading={updateUserMutation.isLoading}>
+                  <span className="font-semibold">اعمال تغییرات</span>
+                </AppButton>
+              </div>
             </form>
           </FormProvider>
-
-          <div className="flex justify-end">
-            <AppButton type="submit">
-              <span className="font-semibold">اعمال تغییرات</span>
-            </AppButton>
-          </div>
         </div>
       </Loadable>
     </>
