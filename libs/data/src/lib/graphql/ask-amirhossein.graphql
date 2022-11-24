@@ -17,7 +17,8 @@ query AskAmirhosseins($page: Int) {
     askAmirhosseins {
       id
       fullName
-      question
+      title
+      description
       createdAt
 
       answers {
