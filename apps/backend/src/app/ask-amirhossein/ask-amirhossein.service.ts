@@ -187,6 +187,9 @@ export class AskAmirhosseinService {
     const askAmirhosseins = await this.prismaService.askAmirhossein.findMany({
       take: ASK_AMIRHOSSEINS_PER_PAGE,
       skip: (currPage - 1) * ASK_AMIRHOSSEINS_PER_PAGE,
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     const totalPages = Math.ceil(count / ASK_AMIRHOSSEINS_PER_PAGE);
