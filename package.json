@@ -104,7 +104,6 @@
     "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.0",
     "vazirmatn": "^33.0.3",
-    "yup": "^0.32.11",
     "zod": "^3.19.1",
     "zustand": "^4.1.4"
   },
