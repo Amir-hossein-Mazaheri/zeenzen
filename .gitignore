@@ -47,3 +47,5 @@ public/uploads
 apps/backend/public/uploads
 
 apps/backend/.env
+
+libs/data/src/lib/generated/queries.ts
