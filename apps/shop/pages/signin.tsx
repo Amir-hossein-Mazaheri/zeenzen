@@ -2,8 +2,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as z from 'zod';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import Head from 'next/head';
 import { useSignInMutation } from '@zeenzen/data';
@@ -18,6 +17,7 @@ import {
   Loadable,
   graphqlClient,
 } from '@zeenzen/common';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import signInIllustration from '../src/assets/images/signin-signup/signin.svg';
 import CenterLayout from '../src/layouts/CenterLayout';
@@ -26,15 +26,13 @@ import useToast from '../src/hooks/useToast';
 import addToTitle from '../src/utils/addToTitle';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 
-interface SignInFields {
-  email: string;
-  password: string;
-}
-
-const signInSchema = Yup.object({
-  email: Yup.string().email('ایمیل نا معتبر').required('این فیلد اجباری است'),
-  password: Yup.string().required('این فیلد اجباری است'),
-}).required('این فیلد اجباری است');
+const signInSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: 'این فیلد اجباری است' })
+    .email({ message: 'ایمیل نا معتبر است' }),
+  password: z.string().min(1, { message: 'این فیلد اجباری است' }),
+});
 
 const SignInPage: NextPageWithLayout = () => {
   useSkipForUsers();
@@ -45,8 +43,8 @@ const SignInPage: NextPageWithLayout = () => {
 
   const mutation = useSignInMutation(graphqlClient);
 
-  const methods = useForm<SignInFields>({
-    resolver: yupResolver(signInSchema),
+  const methods = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
   });
 
   const toast = useToast();
@@ -60,7 +58,9 @@ const SignInPage: NextPageWithLayout = () => {
     });
   };
 
-  const handleSignIn: SubmitHandler<SignInFields> = async (data) => {
+  const handleSignIn: SubmitHandler<z.infer<typeof signInSchema>> = async (
+    data
+  ) => {
     try {
       const { signIn } = await mutation.mutateAsync({
         signInInput: data,
