@@ -93,7 +93,7 @@ export class AskAmirhosseinService {
   }
 
   async create(
-    { question, email }: CreateAskAmirhosseinInput,
+    { question, email, fullName }: CreateAskAmirhosseinInput,
     user: RequestUser
   ) {
     // if (!user && !email) {
@@ -120,12 +120,11 @@ export class AskAmirhosseinService {
 
     // return newAskAmirhossein;
 
-    console.log('user is: ', user);
-
     const createAskAmirhosseinData: Prisma.AskAmirhosseinCreateArgs = {
       data: {
         question,
         email,
+        fullName,
       },
     };
 
