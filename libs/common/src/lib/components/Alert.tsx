@@ -9,12 +9,14 @@ export interface AlertProps {
   onClose?: MouseEventHandler<SVGSVGElement>;
   color: AlertColor;
   className?: string;
+  rounded?: boolean;
 }
 
 export const Alert: React.FC<AlertProps> = ({
   color,
   onClose,
   className,
+  rounded = false,
   children,
 }) => {
   const style = useMemo(() => {
@@ -24,7 +26,7 @@ export const Alert: React.FC<AlertProps> = ({
       case 'error':
         return 'text-red-700 bg-red-200';
       case 'warn':
-        return 'text-yellow-700 bg-yellow-200';
+        return 'text-yellow-700 bg-yellow-100';
       case 'info':
         return 'text-sky-700 bg-sky-200';
     }
@@ -32,7 +34,9 @@ export const Alert: React.FC<AlertProps> = ({
 
   return (
     <div
-      className={`flex justify-between px-8 py-3 rounded ${style} ${className}`}
+      className={`flex justify-between px-8 py-3 ${
+        rounded ? 'rounded-full' : 'rounded-lg'
+      } ${style} ${className}`}
     >
       {children}
 
