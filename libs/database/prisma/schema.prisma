@@ -11,7 +11,7 @@ datasource db {
 model AskAmirhossein {
   id          Int                    @id @default(autoincrement())
   question    String                 @db.VarChar(1000)
-  answer      String?                @db.VarChar(1000)
+  fullName    String                 @map("full_name") @db.VarChar(255)
   email       String                 @db.VarChar(100)
   isPublished Boolean                @default(false) @map("is_published")
   createdAt   DateTime               @default(now()) @map("created_at")
