@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import * as Yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import useDigitInput from 'react-digit-input';
 import { useRouter } from 'next/router';
@@ -41,17 +41,16 @@ import useUserStore from '../src/store/useUserStore';
 
 const Countdown = dynamic(() => import('react-countdown'));
 
-interface PreSignUpFields {
-  email: string;
-  password: string;
-}
-
-const signUpSchema = Yup.object({
-  email: Yup.string().email('ایمیل نا معتبر').required('این فیلد اجباری است'),
-  password: Yup.string()
-    .required('این فیلد اجباری است')
-    .matches(...getPasswordRegex()),
-}).required('این فیلد اجباری است');
+const signUpSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: 'این فیلد اجباری است' })
+    .email({ message: 'ایمیل نا معتبر' }),
+  password: z
+    .string()
+    .min(1, { message: 'این فیلد اجباری است' })
+    .regex(...getPasswordRegex()),
+});
 
 const SignUpPage: NextPageWithLayout = () => {
   useSkipForUsers();
@@ -70,8 +69,8 @@ const SignUpPage: NextPageWithLayout = () => {
   const removeEmailValidationMutation =
     useRemoveEmailValidationCodeMutation(graphqlClient);
 
-  const methods = useForm<PreSignUpFields>({
-    resolver: yupResolver(signUpSchema),
+  const methods = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
   });
 
   const router = useRouter();
@@ -96,7 +95,9 @@ const SignUpPage: NextPageWithLayout = () => {
     });
   };
 
-  const handlePreSignUp: SubmitHandler<PreSignUpFields> = async (data) => {
+  const handlePreSignUp: SubmitHandler<z.infer<typeof signUpSchema>> = async (
+    data
+  ) => {
     try {
       const {
         preSignUp: { expiresAt },
