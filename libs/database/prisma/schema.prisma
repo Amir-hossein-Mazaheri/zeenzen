@@ -9,15 +9,16 @@ datasource db {
 }
 
 model AskAmirhossein {
-  id         Int                    @id @default(autoincrement())
-  question   String                 @db.VarChar(1000)
-  answer     String?                @db.VarChar(1000)
-  email      String                 @db.VarChar(100)
-  createdAt  DateTime               @default(now()) @map("created_at")
-  answeredAt DateTime?              @map("answered_at") @db.Date
-  whoAskedId Int?                   @map("who_asked_id")
-  whoAsked   User?                  @relation(fields: [whoAskedId], references: [id])
-  answers    AskAmirhosseinAnswer[]
+  id          Int                    @id @default(autoincrement())
+  question    String                 @db.VarChar(1000)
+  answer      String?                @db.VarChar(1000)
+  email       String                 @db.VarChar(100)
+  isPublished Boolean                @default(false) @map("is_published")
+  createdAt   DateTime               @default(now()) @map("created_at")
+  answeredAt  DateTime?              @map("answered_at") @db.Date
+  whoAskedId  Int?                   @map("who_asked_id")
+  whoAsked    User?                  @relation(fields: [whoAskedId], references: [id])
+  answers     AskAmirhosseinAnswer[]
 
   @@map("ask_amirhossein")
 }
@@ -25,6 +26,8 @@ model AskAmirhossein {
 model AskAmirhosseinAnswer {
   id            Int             @id @default(autoincrement())
   answer        String
+  createdAt     DateTime        @default(now()) @map("created_at")
+  isPublished   Boolean         @default(false) @map("is_published")
   whoAnsweredId Int             @map("who_answered_id")
   whoAnswered   User            @relation("whoAnswered", fields: [whoAnsweredId], references: [id])
   questionId    Int?            @map("question_id")
