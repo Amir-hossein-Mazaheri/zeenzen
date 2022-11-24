@@ -38,17 +38,18 @@ import signUpIllustration from '../src/assets/images/signin-signup/signup.svg';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getPasswordRegex from '../src/utils/getPasswordRegex';
 import useUserStore from '../src/store/useUserStore';
+import getFormErrorMessages from '../src/utils/getFormErrorMessages';
 
 const Countdown = dynamic(() => import('react-countdown'));
 
 const signUpSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'این فیلد اجباری است' })
-    .email({ message: 'ایمیل نا معتبر' }),
+    .min(1, { message: getFormErrorMessages().required })
+    .email({ message: getFormErrorMessages().email }),
   password: z
     .string()
-    .min(1, { message: 'این فیلد اجباری است' })
+    .min(1, { message: getFormErrorMessages().required })
     .regex(...getPasswordRegex()),
 });
 

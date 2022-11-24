@@ -1,10 +1,10 @@
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import Head from 'next/head';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
-import Head from 'next/head';
 import { useSignInMutation } from '@zeenzen/data';
 import {
   AppInput,
@@ -25,13 +25,14 @@ import { NextPageWithLayout } from './_app';
 import useToast from '../src/hooks/useToast';
 import addToTitle from '../src/utils/addToTitle';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
+import getFormErrorMessages from '../src/utils/getFormErrorMessages';
 
 const signInSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'این فیلد اجباری است' })
-    .email({ message: 'ایمیل نا معتبر است' }),
-  password: z.string().min(1, { message: 'این فیلد اجباری است' }),
+    .min(1, { message: getFormErrorMessages().required })
+    .email({ message: getFormErrorMessages().email }),
+  password: z.string().min(1, { message: getFormErrorMessages().required }),
 });
 
 const SignInPage: NextPageWithLayout = () => {

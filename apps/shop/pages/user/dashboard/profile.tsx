@@ -28,10 +28,10 @@ const userProfileSchema = z
   .object({
     firstname: z
       .string()
-      .min(3, { message: 'حداقل طول نام 3 حرف است' })
+      .min(3, { message: getFormErrorMessages().min('نام', 3) })
       .optional(),
     lastname: z.string().optional(),
-    email: z.string().email({ message: 'ایمیل نا معتبر' }),
+    email: z.string().email({ message: getFormErrorMessages().email }),
     password: z
       .string()
       .min(1, { message: getFormErrorMessages().required })
@@ -49,7 +49,7 @@ const userProfileSchema = z
     if (newPassword && repeatNewPassword && repeatNewPassword !== newPassword) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'رمز عبور ها تطابق ندارند',
+        message: getFormErrorMessages().incorrectRepeatPassword,
         path: ['repeatNewPassword'],
       });
     }

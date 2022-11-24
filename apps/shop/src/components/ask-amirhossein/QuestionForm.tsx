@@ -12,10 +12,11 @@ import standingMan from '../../assets/images/ask-amirhossein/standing-man.png';
 import getErrorMessages from '../../utils/getErrorMessages';
 import useToast from '../../hooks/useToast';
 import useUser from '../../hooks/useUser';
+import getFormErrorMessages from '../../utils/getFormErrorMessages';
 
 const askAmirhosseinSchema = z.object({
-  email: z.string().email({ message: 'ایمیل معتبر وارد کنید' }),
-  question: z.string().min(1, { message: 'پر کردن این فیلد الزامی می باشد' }),
+  email: z.string().email({ message: getFormErrorMessages().email }),
+  question: z.string().min(1, { message: getFormErrorMessages().required }),
 });
 
 const AskAmirhosseinQuestionForm = () => {
