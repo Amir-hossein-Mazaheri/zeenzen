@@ -27,11 +27,18 @@ const AskAmirhosseinQuestionsPage: NextPageWithLayout = () => {
         تمامی سوالاتی که شما پرسیده اید
       </h1>
 
-      <Alert color="info" className="mt-10 px-12 py-4" rounded>
+      <Alert color="warn" className="mt-10 px-12 py-4" rounded>
         <span>
           توجه: این صفحه هر 8 ساعت یکبار آپدیت می شود پس اگه سوال شما تایید شده
           و در این صفحه نیست نگران نباشید بزودی سوال شما در این صفحه قرار می
           گیرد.
+        </span>
+      </Alert>
+
+      <Alert color="info" className="mt-5 px-12 py-4" rounded>
+        <span>
+          برای پاسخ به هریک از سوالات بر روی <b>مشاهده سوال و پاسخ</b> کلیک
+          کنید.
         </span>
       </Alert>
 
