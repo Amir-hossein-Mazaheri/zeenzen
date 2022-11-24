@@ -45,3 +45,5 @@ graphql/schema.gql
 
 public/uploads
 apps/backend/public/uploads
+
+apps/backend/.env
