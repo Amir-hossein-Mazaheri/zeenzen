@@ -15,6 +15,7 @@ import useUser from '../../hooks/useUser';
 import getFormErrorMessages from '../../utils/getFormErrorMessages';
 
 const askAmirhosseinSchema = z.object({
+  fullName: z.string().min(1, { message: getFormErrorMessages().required }),
   email: z.string().email({ message: getFormErrorMessages().email }),
   question: z.string().min(1, { message: getFormErrorMessages().required }),
 });
@@ -35,17 +36,17 @@ const AskAmirhosseinQuestionForm = () => {
 
   const handleSubmitAskAmirhossein: SubmitHandler<
     z.infer<typeof askAmirhosseinSchema>
-  > = async ({ email, question }) => {
+  > = async ({ email, question, fullName }) => {
     try {
       await createAskAmirhosseinMutation.mutateAsync({
         createAskAmirhosseinInput: {
+          fullName,
           email,
           question,
         },
       });
 
-      methods.resetField('email');
-      methods.resetField('question');
+      methods.reset();
 
       toast().fire({
         title: 'هورااا، سوال شما با موفقیت ارسال شد 👍',
@@ -87,6 +88,16 @@ const AskAmirhosseinQuestionForm = () => {
                 className="h-full"
               >
                 <div className="flex flex-col justify-between h-full gap-9">
+                  <AppInput
+                    label="نام و نام خانوادگی"
+                    name="fullName"
+                    defaultValue={
+                      isAuthenticated && user?.firstname && user.lastname
+                        ? `${user?.firstname} ${user?.lastname}`
+                        : ''
+                    }
+                  />
+
                   <AppInput
                     label="ایمیل"
                     name="email"
