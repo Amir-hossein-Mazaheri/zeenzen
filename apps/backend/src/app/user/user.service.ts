@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import * as argon2 from 'argon2';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '@zeenzen/database';
 
 import { User } from './entities/user.entity';
@@ -16,7 +17,6 @@ import { Avatar } from '../uploads/entities/avatar.entity';
 import { RequestUser } from '../types';
 import { Cart } from '../cart/entities/cart.entity';
 import { CartItem } from '../cart/entities/cart-item.entity';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -123,7 +123,10 @@ export class UserService {
 
     // return currUser;
 
-    return await this.prismaService.user.create({
+    return await this.prismaService.user.update({
+      where: {
+        id: user.sub,
+      },
       data: {
         firstname: firstname || currUser.firstname,
         lastname: lastname || currUser.lastname,
