@@ -11,8 +11,11 @@ export class AskAmirhossein {
   @Field(() => String, { description: 'full name of who asked.' })
   fullName: string;
 
-  @Field(() => String, { description: 'question body.' })
-  question: string;
+  @Field(() => String, { description: 'question title.' })
+  title: string;
+
+  @Field(() => String, { description: 'question description.' })
+  description: string;
 
   @Field(() => Boolean, {
     description: 'determine ask amirhossein is available to public or not.',

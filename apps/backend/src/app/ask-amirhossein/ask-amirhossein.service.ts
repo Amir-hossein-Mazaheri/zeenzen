@@ -93,7 +93,7 @@ export class AskAmirhosseinService {
   }
 
   async create(
-    { question, email, fullName }: CreateAskAmirhosseinInput,
+    { title, email, fullName, description }: CreateAskAmirhosseinInput,
     user: RequestUser
   ) {
     // if (!user && !email) {
@@ -122,7 +122,8 @@ export class AskAmirhosseinService {
 
     const createAskAmirhosseinData: Prisma.AskAmirhosseinCreateArgs = {
       data: {
-        question,
+        title,
+        description,
         email,
         fullName,
       },
@@ -184,6 +185,9 @@ export class AskAmirhosseinService {
     const count = await this.prismaService.askAmirhossein.count();
 
     const askAmirhosseins = await this.prismaService.askAmirhossein.findMany({
+      // where: {
+      //   isPublished: true,
+      // },
       take: ASK_AMIRHOSSEINS_PER_PAGE,
       skip: (currPage - 1) * ASK_AMIRHOSSEINS_PER_PAGE,
       orderBy: {
