@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { GetStaticProps } from 'next';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { useAskAmirhosseinsQuery } from '@zeenzen/data';
-import { graphqlClient, Pagination } from '@zeenzen/common';
+import { Alert, graphqlClient, Pagination } from '@zeenzen/common';
 
 import { NextPageWithLayout } from '../../_app';
 import ShopLayout from '../../../src/layouts/ShopLayout';
@@ -26,6 +26,14 @@ const AskAmirhosseinQuestionsPage: NextPageWithLayout = () => {
       <h1 className="font-extrabold text-3xl text-title-black">
         تمامی سوالاتی که شما پرسیده اید
       </h1>
+
+      <Alert color="info" className="mt-10 px-12 py-4" rounded>
+        <span>
+          توجه: این صفحه هر 8 ساعت یکبار آپدیت می شود پس اگه سوال شما تایید شده
+          و در این صفحه نیست نگران نباشید بزودی سوال شما در این صفحه قرار می
+          گیرد.
+        </span>
+      </Alert>
 
       <div className="space-y-10 mt-16">
         {data?.paginatedAskAmirhosseins?.askAmirhosseins.map(
