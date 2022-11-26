@@ -9,8 +9,9 @@ interface TextEditorProps {
 
 const TextEditor: React.FC<TextEditorProps> = ({ defaultValue, onChange }) => {
   return (
-    <div>
+    <div className="prose max-w-full">
       <CKEditor
+        className="w-full"
         editor={Editor}
         data={defaultValue}
         onChange={(event, editor) => onChange(editor.getData())}
