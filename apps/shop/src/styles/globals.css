@@ -8,6 +8,7 @@ body {
   font-family: 'Vazirmatn FD', sans-serif;
   text-align: right;
   direction: rtl;
+  scroll-behavior: smooth;
 }
 
 code,
