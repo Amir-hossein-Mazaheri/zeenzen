@@ -77,13 +77,35 @@ export class AskAmirhosseinService {
           id,
           ...whereOptions,
         },
+        include: {
+          answers: {
+            include: {
+              whoAnswered: {
+                include: {
+                  avatar: true,
+                },
+              },
+              _count: {
+                select: {
+                  likedUsers: true,
+                },
+              },
+            },
+          },
+        },
       });
 
       if (!askAmirhossein) {
         throw new NotFoundException('Invalid ask amirhossein id.');
       }
 
-      return askAmirhossein;
+      return {
+        ...askAmirhossein,
+        answers: askAmirhossein.answers.map((answer) => ({
+          ...answer,
+          likesCount: answer._count.likedUsers,
+        })),
+      };
     };
   }
 
@@ -233,8 +255,6 @@ export class AskAmirhosseinService {
     findOneAskAmirhosseinInput: FindOneAskAmirhosseinInput,
     user: RequestUser
   ) {
-    console.log('typeof ask amirhossein id is: ', typeof id);
-
     return await this.validateAskAmirhossein(id)(
       await this.getWhereOptions(findOneAskAmirhosseinInput?.email, user)
     );
