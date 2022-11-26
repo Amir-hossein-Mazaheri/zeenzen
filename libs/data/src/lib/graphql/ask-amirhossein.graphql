@@ -6,6 +6,12 @@ mutation CreateAskAmirhossein(
   }
 }
 
+mutation AnswerAskAmirhossein($answerAskAmirhosseinInput: AnswerAskAmirhosseinInput!) {
+  answerAskAmirhossein(answerAskAmirhosseinInput: $answerAskAmirhosseinInput) {
+    id
+  }
+}
+
 query AskAmirhosseins($page: Int) {
   paginatedAskAmirhosseins(page: $page) {
     page
@@ -42,6 +48,19 @@ query AskAmirhossein($askAmirhosseinInput: FindOneAskAmirhosseinInput!) {
       id
       answer
       createdAt
+      likesCount
+
+      whoAnswered {
+        id
+        firstname
+        lastname
+        role
+
+        avatar {
+          id
+          fullPath
+        }
+      }
     }
   }
 }
