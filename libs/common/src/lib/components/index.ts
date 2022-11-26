@@ -24,3 +24,4 @@ export * from './ShadowBox';
 export * from './TrueCondition';
 export * from './UnderlinedTitle';
 export * from './Select';
+export * from './MarkDown';

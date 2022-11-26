@@ -1,8 +1,6 @@
-import { Tab } from '@headlessui/react';
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { ShadowBox } from '@zeenzen/common';
+import { Tab } from '@headlessui/react';
+import { ShadowBox, MarkDown } from '@zeenzen/common';
 
 import Comments from './Comments';
 
@@ -24,7 +22,7 @@ const ContentTab: React.FC<ContentTabProps> = ({
         titleSize="lg"
         className="py-[3rem] px-14 min-w-full prose prose-slate w-full"
       >
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <MarkDown markdown={content} />
       </ShadowBox>
 
       <Comments courseId={courseId} />
