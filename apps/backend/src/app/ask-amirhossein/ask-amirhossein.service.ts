@@ -39,12 +39,6 @@ export class AskAmirhosseinService {
   ) {}
 
   async getWhereOptions(email: string, user: RequestUser) {
-    if (!user && !email) {
-      throw new BadRequestException(
-        'Either you should enter email address or be logged in.'
-      );
-    }
-
     if (email) {
       // const registeredUser = await this.userRepository.findOneBy({ email });
       const registeredUser = await this.prismaService.user.findUnique({
@@ -231,6 +225,8 @@ export class AskAmirhosseinService {
     findOneAskAmirhosseinInput: FindOneAskAmirhosseinInput,
     user: RequestUser
   ) {
+    console.log('typeof ask amirhossein id is: ', typeof id);
+
     return await this.validateAskAmirhossein(id)(
       await this.getWhereOptions(findOneAskAmirhosseinInput?.email, user)
     );
