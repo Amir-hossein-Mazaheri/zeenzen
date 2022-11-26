@@ -6,6 +6,7 @@ interface ShadowBoxProps {
   children?: React.ReactNode;
   className?: string;
   titleClassName?: string;
+  id?: string;
 }
 
 export const ShadowBox: React.FC<ShadowBoxProps> = ({
@@ -14,9 +15,11 @@ export const ShadowBox: React.FC<ShadowBoxProps> = ({
   children,
   className,
   titleClassName,
+  id,
 }) => {
   return (
     <div
+      id={id}
       className={`relative px-8 ${
         title ? 'py-8' : 'py-7'
       } bg-white rounded-xl shadow-mild-shadow shadow-gray-200/60 ${className}`}
