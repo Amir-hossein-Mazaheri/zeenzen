@@ -4,3 +4,4 @@ export * from './courseLevelTranslator';
 export * from './parseSelectValue';
 export * from './range';
 export * from './isProd';
+export * from './userRoleTranslator';
