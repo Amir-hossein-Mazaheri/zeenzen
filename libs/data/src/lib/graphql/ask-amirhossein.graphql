@@ -29,3 +29,19 @@ query AskAmirhosseins($page: Int) {
     }
   }
 }
+
+query AskAmirhossein($askAmirhosseinInput: FindOneAskAmirhosseinInput!) {
+  askAmirhossein(findOneAskAmirhossein: $askAmirhosseinInput) {
+    id
+    title
+    description
+    createdAt
+    fullName
+
+    answers {
+      id
+      answer
+      createdAt
+    }
+  }
+}
