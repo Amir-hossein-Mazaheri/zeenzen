@@ -5,13 +5,17 @@ import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface AskAmirhosseinQuestionProps
-  extends Pick<AskAmirhossein, 'id' | 'question' | 'createdAt' | 'fullName'> {
+  extends Pick<
+    AskAmirhossein,
+    'id' | 'title' | 'description' | 'createdAt' | 'fullName'
+  > {
   answers?: Pick<AskAmirhosseinAnswer, 'id'>[] | null;
 }
 
 const AskAmirhosseinQuestion: React.FC<AskAmirhosseinQuestionProps> = ({
   id,
-  question,
+  title,
+  description,
   createdAt,
   fullName,
   answers,
@@ -21,11 +25,10 @@ const AskAmirhosseinQuestion: React.FC<AskAmirhosseinQuestionProps> = ({
   return (
     <div className="px-10 pt-8 pb-5 rounded-xl border border-gray-200 relative">
       <div className="flex items-center justify-between absolute px-8 top-0 right-0 left-0 -translate-y-1/2">
-        <p className="flex items-center gap-1 leading-[0] bg-white p-3 text-green-500">
+        <h3 className="flex items-center gap-1 leading-[0] bg-white p-3 text-lg font-semibold text-green-500">
           <FontAwesomeIcon icon={faCircleQuestion} className="aspect-square" />
-          <span>پرسیده شده توسط </span>
-          <span>{fullName}</span>
-        </p>
+
+        </h3>
 
         <div className="flex gap-3 items-center">
           <p
@@ -46,7 +49,7 @@ const AskAmirhosseinQuestion: React.FC<AskAmirhosseinQuestionProps> = ({
         </div>
       </div>
 
-      <p>{question}</p>
+      <p>{description}</p>
 
       <div className="flex justify-end mt-4">
         <AppLink
