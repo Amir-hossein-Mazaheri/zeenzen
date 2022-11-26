@@ -25,15 +25,17 @@ export class AskAmirhosseinResolver {
     return this.askAmirhosseinService.create(createAskAmirhosseinInput, user);
   }
 
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.CUSTOMER)
   @Mutation(() => AskAmirhossein)
   answerAskAmirhossein(
     @Args('answerAskAmirhosseinInput')
-    answerAskAmirhosseinInput: AnswerAskAmirhosseinInput
+    answerAskAmirhosseinInput: AnswerAskAmirhosseinInput,
+    @GetUser() user: RequestUser
   ) {
     return this.askAmirhosseinService.answer(
       answerAskAmirhosseinInput.id,
-      answerAskAmirhosseinInput
+      answerAskAmirhosseinInput,
+      user
     );
   }
 

@@ -23,6 +23,7 @@ import { getMailOptions } from '../utils/getMailOptions';
 import { sendEmail } from '../utils/sendEmail';
 import { toCamelCase } from '../utils/toCamelCase';
 import { Prisma } from '@prisma/client';
+import { purifiedTurndown } from '../utils/purifiedTurndown';
 
 const ASK_AMIRHOSSEINS_PER_PAGE = 15;
 
@@ -143,19 +144,17 @@ export class AskAmirhosseinService {
   // 4. send email to target email
   // 5. saved the updated ask amirhossein record
   // 6. return the saved ask amirhossein record
-  async answer(id: number, { answer }: AnswerAskAmirhosseinInput) {
+  async answer(
+    id: number,
+    { answer }: AnswerAskAmirhosseinInput,
+    user: RequestUser
+  ) {
     const askAmirhossein = await this.validateAskAmirhossein(id)();
-
-    if (askAmirhossein.answer) {
-      throw new ConflictException(
-        "You can't answer twice, if you want to update use update mutation."
-      );
-    }
 
     // askAmirhossein.answer = answer;
     // askAmirhossein.answeredAt = moment.utc().toDate();
 
-    const subject = `Ask Amirhossein - The answer to your "${askAmirhossein.question}" question`;
+    const subject = `ZeenZen - از امیرحسین بپرس - یک نفر به سوال ${askAmirhossein.title} پاسخ داده است`;
 
     await sendEmail(getMailOptions(askAmirhossein.email, subject, answer));
 
@@ -164,9 +163,18 @@ export class AskAmirhosseinService {
     return await this.prismaService.askAmirhossein.update({
       where: { id: askAmirhossein.id },
       data: {
-        ...askAmirhossein,
-        answer,
-        answeredAt: moment.utc().toDate(),
+        answers: {
+          create: [
+            {
+              answer: purifiedTurndown(answer), //supports html
+              whoAnswered: {
+                connect: {
+                  id: user.sub,
+                },
+              },
+            },
+          ],
+        },
       },
     });
 
