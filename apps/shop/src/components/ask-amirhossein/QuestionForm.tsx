@@ -17,7 +17,8 @@ import getFormErrorMessages from '../../utils/getFormErrorMessages';
 const askAmirhosseinSchema = z.object({
   fullName: z.string().min(1, { message: getFormErrorMessages().required }),
   email: z.string().email({ message: getFormErrorMessages().email }),
-  question: z.string().min(1, { message: getFormErrorMessages().required }),
+  title: z.string().min(1, { message: getFormErrorMessages().required }),
+  description: z.string().min(1, { message: getFormErrorMessages().required }),
 });
 
 const AskAmirhosseinQuestionForm = () => {
@@ -36,13 +37,14 @@ const AskAmirhosseinQuestionForm = () => {
 
   const handleSubmitAskAmirhossein: SubmitHandler<
     z.infer<typeof askAmirhosseinSchema>
-  > = async ({ email, question, fullName }) => {
+  > = async ({ email, title, description, fullName }) => {
     try {
       await createAskAmirhosseinMutation.mutateAsync({
         createAskAmirhosseinInput: {
           fullName,
           email,
-          question,
+          title,
+          description,
         },
       });
 
@@ -106,8 +108,19 @@ const AskAmirhosseinQuestionForm = () => {
 
                   <AppInput
                     label="سوال"
-                    name="question"
-                    placeholder="سوالتو اینجا بنویس..."
+                    placeholder="سوالتو اینجا بنویس"
+                    name="title"
+                    defaultValue={
+                      isAuthenticated && user?.firstname && user?.lastname
+                        ? `${user?.firstname} ${user?.lastname}`
+                        : ''
+                    }
+                  />
+
+                  <AppInput
+                    label="توضیحات سوال"
+                    name="description"
+                    placeholder="جزییات سوالتو اینجا بنویس..."
                     className="min-h-[10rem]"
                     textArea
                   />
