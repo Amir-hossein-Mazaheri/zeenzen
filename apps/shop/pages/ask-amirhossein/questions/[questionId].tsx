@@ -9,30 +9,31 @@ import {
   useAskAmirhosseinQuery,
   useAskAmirhosseinsQuery,
 } from '@zeenzen/data';
-import { getJalaliDate, graphqlClient, Loadable } from '@zeenzen/common';
-import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
-import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  AppLink,
+  getJalaliDate,
+  graphqlClient,
+  Loadable,
+  MarkDown,
+} from '@zeenzen/common';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { NextPageWithLayout } from '../../_app';
 import ShopLayout from '../../../src/layouts/ShopLayout';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import addToTitle from '../../../src/utils/addToTitle';
-
-const askAmirhosseinAnswerSchema = z.object({});
+import SendAnswerForm from '../../../src/components/ask-amirhossein/SendAnswerForm';
+import Answers from '../../../src/components/ask-amirhossein/Answers';
 
 const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
   const { query, isFallback } = useRouter();
 
+  const questionId = useMemo(() => Number(query.questionId) ?? 1, [query]);
+
   const { data, error } = useAskAmirhosseinQuery(graphqlClient, {
     askAmirhosseinInput: {
-      id: Number(query.questionId) ?? 1,
+      id: questionId,
     },
-  });
-
-  const methods = useForm({
-    resolver: zodResolver(askAmirhosseinAnswerSchema),
   });
 
   const isAnswered = useMemo(
@@ -40,12 +41,6 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
       data?.askAmirhossein.answers && data?.askAmirhossein.answers.length > 0,
     [data?.askAmirhossein.answers]
   );
-
-  const handleSubmitAskAmirhosseinAnswer: SubmitHandler<
-    z.infer<typeof askAmirhosseinAnswerSchema>
-  > = ({}) => {
-    console.log('submitted...');
-  };
 
   return (
     <>
@@ -75,9 +70,9 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
                 }`}
               >
                 {isAnswered ? (
-                  <span>جوابشو هنوز نگرفته ☹️</span>
-                ) : (
                   <span>جوابشو گرفته 🙂</span>
+                ) : (
+                  <span>جوابشو هنوز نگرفته ☹️</span>
                 )}
               </div>
 
@@ -93,28 +88,21 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
             </div>
           </div>
 
-          <div className="shadow-mild-shadow rounded-lg px-12 py-6 leading-[2.3] text-text-black">
-            {data?.askAmirhossein.description}
-          </div>
-        </div>
+          <div className="shadow-mild-shadow rounded-lg px-12 py-6">
+            <div className="prose min-w-full leading-[2.3] text-text-black">
+              <MarkDown markdown={data?.askAmirhossein.description ?? ''} />
+            </div>
 
-        {isAnswered && (
-          <div className="space-y-10">
-            {data?.askAmirhossein.answers?.map((answer) => (
-              <div
-                key={answer.id}
-                className="shadow-mild-spread px-12 py-4 leading-[2.3] rounded-xl"
-              ></div>
-            ))}
+            <div className="mt-6 flex justify-end">
+              <AppLink text="جوابشو بده" href="#answer-form" />
+            </div>
           </div>
-        )}
 
-        <div>
-          <FormProvider {...methods}>
-            <form
-              onSubmit={methods.handleSubmit(handleSubmitAskAmirhosseinAnswer)}
-            ></form>
-          </FormProvider>
+          {isAnswered && (
+            <Answers answers={data?.askAmirhossein.answers ?? []} />
+          )}
+
+          <SendAnswerForm questionId={questionId} />
         </div>
       </Loadable>
     </>
