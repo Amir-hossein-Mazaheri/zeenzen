@@ -3,6 +3,8 @@ import { Types } from '@zeenzen/common';
 
 export type ID = string | number;
 
+export type ArrayType<T> = T extends (infer Item)[] ? Item : T;
+
 export type UserActionMenuItem = {
   title: string;
   link?: string;
