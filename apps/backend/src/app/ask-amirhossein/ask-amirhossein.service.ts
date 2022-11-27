@@ -168,7 +168,7 @@ export class AskAmirhosseinService {
   // 6. return the saved ask amirhossein record
   async answer(
     id: number,
-    { answer }: AnswerAskAmirhosseinInput,
+    { answer, fullName }: AnswerAskAmirhosseinInput,
     user: RequestUser
   ) {
     const askAmirhossein = await this.validateAskAmirhossein(id)();
@@ -189,6 +189,7 @@ export class AskAmirhosseinService {
           create: [
             {
               answer: purifiedTurndown(answer), //supports html
+              fullName,
               whoAnswered: {
                 connect: {
                   id: user.sub,

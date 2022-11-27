@@ -8,6 +8,10 @@ export class AskAmirhosseinAnswer {
   @Field(() => ID, { description: 'answer id.' })
   id: number;
 
+  // added this field because firstname and lastname are optional in user model
+  @Field(() => String, { description: 'full name of who answered.' })
+  fullName: string;
+
   @Field(() => String, { description: 'answer body.' })
   answer: string;
 

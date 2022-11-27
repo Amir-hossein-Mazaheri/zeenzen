@@ -7,6 +7,10 @@ export class AnswerAskAmirhosseinInput {
   @IsNotEmpty()
   id: number;
 
+  @Field(() => String, { description: 'full name of who is answering.' })
+  @IsNotEmpty()
+  fullName: string;
+
   @Field(() => String, {
     description: 'answer to the question which is sent via email.',
   })
