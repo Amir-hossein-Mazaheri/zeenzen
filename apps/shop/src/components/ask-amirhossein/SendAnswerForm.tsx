@@ -11,6 +11,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   AppButton,
+  AppInput,
   AppLink,
   Conditional,
   FalseCondition,
@@ -25,6 +26,7 @@ import getFormErrorMessages from '../../utils/getFormErrorMessages';
 import useUser from '../../hooks/useUser';
 import useToast from '../../hooks/useToast';
 import getErrorMessages from '../../utils/getErrorMessages';
+import useUserFullName from '../../hooks/useUserFullName';
 
 const TextEditor = dynamic(() => import('../../../src/common/TextEditor'), {
   ssr: false,
@@ -40,6 +42,10 @@ interface SendAnswerFormProps {
 }
 
 const answerSchema = z.object({
+  fullName: z
+    .string()
+    .min(1, { message: getFormErrorMessages().required })
+    .min(3, { message: getFormErrorMessages().min('نام و نام خانوادگی', 3) }),
   description: z
     .string({
       required_error: getFormErrorMessages().required,
@@ -49,6 +55,7 @@ const answerSchema = z.object({
 
 const SendAnswerForm: React.FC<SendAnswerFormProps> = ({ questionId }) => {
   const { isAuthenticated, loading } = useUser();
+  const userFullName = useUserFullName();
 
   const methods = useForm({
     resolver: zodResolver(answerSchema),
@@ -61,10 +68,11 @@ const SendAnswerForm: React.FC<SendAnswerFormProps> = ({ questionId }) => {
 
   const handleSubmitAskAmirhosseinAnswer: SubmitHandler<
     z.infer<typeof answerSchema>
-  > = async ({ description }) => {
+  > = async ({ fullName, description }) => {
     try {
       await answerAskAmirhosseinMutation.mutateAsync({
         answerAskAmirhosseinInput: {
+          fullName,
           id: questionId,
           answer: description,
         },
@@ -112,13 +120,21 @@ const SendAnswerForm: React.FC<SendAnswerFormProps> = ({ questionId }) => {
                   handleSubmitAskAmirhosseinAnswer
                 )}
               >
-                <Controller
-                  name="description"
-                  control={methods.control}
-                  render={({ field }) => (
-                    <TextEditor onChange={field.onChange} />
-                  )}
+                <AppInput
+                  label="نام و نام خانوادگی"
+                  name="fullName"
+                  defaultValue={userFullName}
                 />
+
+                <div className="mt-7">
+                  <Controller
+                    name="description"
+                    control={methods.control}
+                    render={({ field }) => (
+                      <TextEditor onChange={field.onChange} />
+                    )}
+                  />
+                </div>
 
                 {methods.formState.errors?.description && (
                   <p className="mt-5 text-red-500 font-medium">
@@ -131,7 +147,7 @@ const SendAnswerForm: React.FC<SendAnswerFormProps> = ({ questionId }) => {
                     type="submit"
                     loading={answerAskAmirhosseinMutation.isLoading}
                   >
-                    <span>ارسال پاسخ</span>
+                    <span>جوابتو بفرس</span>
                   </AppButton>
                 </div>
               </form>
