@@ -99,7 +99,10 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
           </div>
 
           {isAnswered && (
-            <Answers answers={data?.askAmirhossein.answers ?? []} />
+            <Answers
+              answers={data?.askAmirhossein.answers ?? []}
+              questionId={Number(data?.askAmirhossein.id)}
+            />
           )}
 
           <SendAnswerForm questionId={questionId} />
