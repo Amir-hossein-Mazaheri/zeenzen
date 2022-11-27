@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import * as moment from 'moment';
 import { PrismaService } from '@zeenzen/database';
+import { Prisma } from '@prisma/client';
 
 import { CreateAskAmirhosseinInput } from './dto/create-ask-amirhossein.input';
 import { UpdateAskAmirhosseinInput } from './dto/update-ask-amirhossein.input';
@@ -22,7 +23,6 @@ import { UserService } from '../user/user.service';
 import { getMailOptions } from '../utils/getMailOptions';
 import { sendEmail } from '../utils/sendEmail';
 import { toCamelCase } from '../utils/toCamelCase';
-import { Prisma } from '@prisma/client';
 import { purifiedTurndown } from '../utils/purifiedTurndown';
 
 const ASK_AMIRHOSSEINS_PER_PAGE = 15;
@@ -212,6 +212,23 @@ export class AskAmirhosseinService {
     });
 
     // return askAmirhossein;
+  }
+
+  async likeAnswer(id: number, user: RequestUser) {
+    return await this.prismaService.askAmirhosseinAnswer.update({
+      where: {
+        id,
+      },
+      data: {
+        likedUsers: {
+          connect: [
+            {
+              id: user.sub,
+            },
+          ],
+        },
+      },
+    });
   }
 
   async findAll(page?: number) {

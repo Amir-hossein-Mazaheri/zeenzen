@@ -11,6 +11,7 @@ import { RequestUser, UserRole } from '../types';
 import { Roles } from '../user/decorators/roles.decorator';
 import { GetUser } from '../user/decorators/user.decorator';
 import { PaginatedAskAmirhosseins } from './entities/paginated-ask-amirhosseins.entity';
+import { AskAmirhosseinAnswer } from './entities/ask-amirhossein-answer.entity';
 
 @Resolver(() => AskAmirhossein)
 export class AskAmirhosseinResolver {
@@ -37,6 +38,18 @@ export class AskAmirhosseinResolver {
       answerAskAmirhosseinInput,
       user
     );
+  }
+
+  @Mutation(() => AskAmirhosseinAnswer, {
+    description:
+      'give ability to like someone answer and result in increment likesCount of ask amirhossein.',
+  })
+  likeAskAmirhosseinAnswer(
+    @Args('id', { type: () => Int })
+    id: number,
+    @GetUser() user: RequestUser
+  ) {
+    return this.askAmirhosseinService.likeAnswer(id, user);
   }
 
   @Query(() => PaginatedAskAmirhosseins, { name: 'paginatedAskAmirhosseins' })
