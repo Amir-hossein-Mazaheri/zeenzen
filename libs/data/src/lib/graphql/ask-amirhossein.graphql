@@ -46,14 +46,13 @@ query AskAmirhossein($askAmirhosseinInput: FindOneAskAmirhosseinInput!) {
 
     answers {
       id
+      fullName
       answer
       createdAt
       likesCount
 
       whoAnswered {
         id
-        firstname
-        lastname
         role
 
         avatar {
