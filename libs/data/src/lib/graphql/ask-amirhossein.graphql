@@ -12,6 +12,12 @@ mutation AnswerAskAmirhossein($answerAskAmirhosseinInput: AnswerAskAmirhosseinIn
   }
 }
 
+mutation LikeAskAmirhosseinAnswer($answerId: Int!) {
+  likeAskAmirhosseinAnswer(id: $answerId) {
+    id
+  }
+}
+
 query AskAmirhosseins($page: Int) {
   paginatedAskAmirhosseins(page: $page) {
     page
