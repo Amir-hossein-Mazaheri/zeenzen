@@ -79,6 +79,16 @@ export class AskAmirhosseinService {
         },
         include: {
           answers: {
+            orderBy: [
+              {
+                likedUsers: {
+                  _count: 'desc',
+                },
+              },
+              {
+                createdAt: 'desc',
+              },
+            ],
             include: {
               whoAnswered: {
                 include: {
