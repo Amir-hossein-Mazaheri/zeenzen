@@ -58,7 +58,7 @@ specifiers:
   '@types/express-session': ^1.17.5
   '@types/jest': 28.1.1
   '@types/jsdom': ^20.0.1
-  '@types/lodash': ^4.14.187
+  '@types/lodash': ^4.14.190
   '@types/multer': ^1.4.7
   '@types/node': 18.7.18
   '@types/nodemailer': ^6.4.6
@@ -189,8 +189,6 @@ dependencies:
   '@sentry/tracing': 7.21.1
   '@tanstack/react-query': 4.16.1_react-dom@18.2.0+react@18.2.0
   '@tanstack/react-query-devtools': 4.16.1_6014357d15567f10b5aecb8b08bb3a86
-  '@types/lodash': 4.14.190
-  '@types/nodemailer': 6.4.6
   apollo-server-core: 3.11.1_graphql@16.6.0
   apollo-server-express: 3.11.1_express@4.18.2+graphql@16.6.0
   argon2: 0.30.2
@@ -284,8 +282,10 @@ devDependencies:
   '@types/express-session': 1.17.5
   '@types/jest': 28.1.1
   '@types/jsdom': 20.0.1
+  '@types/lodash': 4.14.190
   '@types/multer': 1.4.7
   '@types/node': 18.7.18
+  '@types/nodemailer': 6.4.6
   '@types/nprogress': 0.2.0
   '@types/passport': 1.0.11
   '@types/passport-jwt': 3.0.7
@@ -6344,7 +6344,7 @@ packages:
 
   /@types/lodash/4.14.190:
     resolution: {integrity: sha512-5iJ3FBJBvQHQ8sFhEhJfjUP+G+LalhavTkYyrAYqz5MEJG+erSv0k9KJLb6q7++17Lafk1scaTIFXcMJlwK8Mw==}
-    dev: false
+    dev: true
 
   /@types/long/4.0.2:
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
@@ -6388,7 +6388,7 @@ packages:
     resolution: {integrity: sha512-pD6fL5GQtUKvD2WnPmg5bC2e8kWCAPDwMPmHe/ohQbW+Dy0EcHgZ2oCSuPlWNqk74LS5BVMig1SymQbFMPPK3w==}
     dependencies:
       '@types/node': 18.7.18
-    dev: false
+    dev: true
 
   /@types/nprogress/0.2.0:
     resolution: {integrity: sha512-1cYJrqq9GezNFPsWTZpFut/d4CjpZqA0vhqDUPFWYKF1oIyBz5qnoYMzR+0C/T96t3ebLAC1SSnwrVOm5/j74A==}
