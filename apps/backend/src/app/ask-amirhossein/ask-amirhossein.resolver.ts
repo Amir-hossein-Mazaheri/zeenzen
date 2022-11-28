@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { AskAmirhosseinService } from './ask-amirhossein.service';
 import { AskAmirhossein } from './entities/ask-amirhossein.entity';
@@ -40,6 +40,7 @@ export class AskAmirhosseinResolver {
     );
   }
 
+  @Roles(UserRole.CUSTOMER)
   @Mutation(() => AskAmirhosseinAnswer, {
     description:
       'give ability to like someone answer and result in increment likesCount of ask amirhossein.',
