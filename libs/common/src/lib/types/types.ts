@@ -22,6 +22,11 @@ export type SelectItem = {
   value: string | number;
 };
 
+export type Crumb = {
+  text: string;
+  href: string;
+};
+
 export type SelectOnChange = (value: SelectItem['value']) => void;
 
 export type AlertColor = 'success' | 'error' | 'warn' | 'info';
