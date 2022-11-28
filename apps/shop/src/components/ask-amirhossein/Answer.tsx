@@ -29,18 +29,14 @@ interface AnswerProps {
 }
 
 const Answer: React.FC<AnswerProps> = ({ answer, questionId }) => {
-  const { refetch: refetchAskAmirhossein, isRefetching } =
-    useAskAmirhosseinQuery(
-      graphqlClient,
-      {
-        askAmirhosseinInput: {
-          id: questionId,
-        },
+  const { refetch: refetchAskAmirhossein, status } = useAskAmirhosseinQuery(
+    graphqlClient,
+    {
+      askAmirhosseinInput: {
+        id: questionId,
       },
-      {
-        enabled: false,
-      }
-    );
+    }
+  );
 
   const likeAskAmirhosseinAnswerMutation =
     useLikeAskAmirhosseinAnswerMutation(graphqlClient);

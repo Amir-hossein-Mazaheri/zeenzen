@@ -101,7 +101,7 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
           {isAnswered && (
             <Answers
               answers={data?.askAmirhossein.answers ?? []}
-              questionId={Number(data?.askAmirhossein.id)}
+              questionId={questionId}
             />
           )}
 
