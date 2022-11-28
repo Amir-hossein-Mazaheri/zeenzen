@@ -105,6 +105,8 @@ export class AskAmirhosseinService {
         },
       });
 
+      console.log('single ask amirhossein: ', whereOptions, askAmirhossein);
+
       if (!askAmirhossein) {
         throw new NotFoundException('Invalid ask amirhossein id.');
       }
@@ -214,20 +216,71 @@ export class AskAmirhosseinService {
     // return askAmirhossein;
   }
 
-  async likeAnswer(id: number, user: RequestUser) {
-    return await this.prismaService.askAmirhosseinAnswer.update({
+  async removeLike(
+    id: number,
+    user: RequestUser,
+    transaction: Prisma.TransactionClient
+  ) {
+    return await transaction.askAmirhosseinAnswer.update({
       where: {
         id,
       },
       data: {
         likedUsers: {
-          connect: [
-            {
-              id: user.sub,
-            },
-          ],
+          disconnect: {
+            id: user.sub,
+          },
         },
       },
+    });
+  }
+
+  async likeAnswer(id: number, user: RequestUser) {
+    return await this.prismaService.$transaction(async (tx) => {
+      const lU = await tx.askAmirhosseinAnswer.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          whoAnswered: true,
+        },
+      });
+
+      console.log('liked user: ', lU);
+
+      if (lU.whoAnswered.id === user.sub) {
+        throw new BadRequestException("You can't like your own answer.");
+      }
+
+      const likedUser = await tx.askAmirhosseinAnswer.findFirst({
+        where: {
+          id,
+          likedUsers: {
+            some: {
+              id: user.sub,
+            },
+          },
+        },
+      });
+
+      if (likedUser) {
+        return await this.removeLike(id, user, tx);
+      }
+
+      return await tx.askAmirhosseinAnswer.update({
+        where: {
+          id,
+        },
+        data: {
+          likedUsers: {
+            connect: [
+              {
+                id: user.sub,
+              },
+            ],
+          },
+        },
+      });
     });
   }
 
@@ -283,9 +336,7 @@ export class AskAmirhosseinService {
     findOneAskAmirhosseinInput: FindOneAskAmirhosseinInput,
     user: RequestUser
   ) {
-    return await this.validateAskAmirhossein(id)(
-      await this.getWhereOptions(findOneAskAmirhosseinInput?.email, user)
-    );
+    return await this.validateAskAmirhossein(id)();
   }
 
   async updateAnswer(
