@@ -22,12 +22,14 @@ const AskAmirhosseinQuestion: React.FC<AskAmirhosseinQuestionProps> = ({
 }) => {
   const isAnswered = useMemo(() => answers && answers.length > 0, [answers]);
 
+  console.log('AskAmirhosseinQuestion title: ', title);
+
   return (
     <div className="px-10 pt-8 pb-5 rounded-xl border border-gray-200 relative">
       <div className="flex items-center justify-between absolute px-8 top-0 right-0 left-0 -translate-y-1/2">
         <h3 className="flex items-center gap-1 leading-[0] bg-white p-3 text-lg font-semibold text-green-500">
           <FontAwesomeIcon icon={faCircleQuestion} className="aspect-square" />
-
+          <span>{title}</span>
         </h3>
 
         <div className="flex gap-3 items-center">
