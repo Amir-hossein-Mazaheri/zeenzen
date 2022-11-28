@@ -15,6 +15,7 @@ import {
   graphqlClient,
   Loadable,
   MarkDown,
+  useBreadcrumbs,
 } from '@zeenzen/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -24,9 +25,15 @@ import ShopLayout from '../../../src/layouts/ShopLayout';
 import addToTitle from '../../../src/utils/addToTitle';
 import SendAnswerForm from '../../../src/components/ask-amirhossein/SendAnswerForm';
 import Answers from '../../../src/components/ask-amirhossein/Answers';
+import { Breadcrumbs } from '../../../../../libs/common/src/lib/components/Breadcrumbs';
+
+const keyResolvers = new Map();
+keyResolvers.set('questionId', 'سوال');
 
 const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
-  const { query, isFallback } = useRouter();
+  const { query, isFallback, asPath, pathname } = useRouter();
+
+  const crumbs = useBreadcrumbs(asPath, pathname, keyResolvers);
 
   const questionId = useMemo(() => Number(query.questionId) ?? 1, [query]);
 
@@ -50,6 +57,8 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
 
       <Loadable isLoading={isFallback}>
         <div className="w-[95%] mx-auto">
+          <Breadcrumbs crumbs={crumbs} />
+
           <h1 className="font-extrabold text-5xl mb-9 text-title-black">
             {data?.askAmirhossein.title}
           </h1>

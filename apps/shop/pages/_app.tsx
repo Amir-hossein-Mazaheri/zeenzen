@@ -1,7 +1,7 @@
+import { ReactElement, ReactNode, useState } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { ReactElement, ReactNode, useState } from 'react';
 import {
   Hydrate,
   QueryClient,
@@ -15,6 +15,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import '../src/styles/globals.css';
 import '../src/styles/nprogress.css';
 import useAddPageLoading from '../src/hooks/useAddPageLoading';
+import { BreadcrumbProvider } from '@zeenzen/common';
 
 config.autoAddCss = false;
 
@@ -27,6 +28,10 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
+const pageTranslator = {
+  'ask-amirhossein': 'از امیرحسین بپرس',
+};
+
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useAddPageLoading();
 
@@ -35,7 +40,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            cacheTime: 1000 * 60 * 1,
+            cacheTime: 1000 * 60,
           },
         },
       })
@@ -50,11 +55,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       </Head>
 
       <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          {getLayout(<Component {...pageProps} />)}
+        <BreadcrumbProvider translator={pageTranslator}>
+          <Hydrate state={pageProps.dehydratedState}>
+            {getLayout(<Component {...pageProps} />)}
 
-          <ReactQueryDevtools initialIsOpen={false} />
-        </Hydrate>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </Hydrate>
+        </BreadcrumbProvider>
       </QueryClientProvider>
     </>
   );
