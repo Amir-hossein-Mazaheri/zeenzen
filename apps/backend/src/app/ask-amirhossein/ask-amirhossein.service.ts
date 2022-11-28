@@ -298,6 +298,9 @@ export class AskAmirhosseinService {
       orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        answers: true,
+      },
     });
 
     const totalPages = Math.ceil(count / ASK_AMIRHOSSEINS_PER_PAGE);
