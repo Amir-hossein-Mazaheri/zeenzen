@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { m as motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 
 interface AnimationLayoutProps {
@@ -30,8 +30,9 @@ const AnimationLayout: React.FC<AnimationLayoutProps> = ({
         opacity: 0,
       }}
       transition={{
-        ease: 'linear',
-        duration: 0.3,
+        ease: 'easeInOut',
+        duration: 0.6,
+        bounce: 0.5,
       }}
     >
       {children}
