@@ -15,6 +15,7 @@ import {
   graphqlClient,
   Loadable,
   MarkDown,
+  Breadcrumbs,
   useBreadcrumbs,
 } from '@zeenzen/common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,7 +26,6 @@ import ShopLayout from '../../../src/layouts/ShopLayout';
 import addToTitle from '../../../src/utils/addToTitle';
 import SendAnswerForm from '../../../src/components/ask-amirhossein/SendAnswerForm';
 import Answers from '../../../src/components/ask-amirhossein/Answers';
-import { Breadcrumbs } from '../../../../../libs/common/src/lib/components/Breadcrumbs';
 
 const keyResolvers = new Map();
 keyResolvers.set('questionId', 'سوال');
