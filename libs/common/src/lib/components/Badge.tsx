@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { animated, useSpring } from 'react-spring';
 
 interface BadgeProps {
   text: string;
@@ -21,11 +20,6 @@ export const Badge: React.FC<BadgeProps> = ({
   px = 'px-2',
 }) => {
   const [close, setClose] = useState(false);
-  const animationProps = useSpring({
-    opacity: close ? 0 : 1,
-    scale: close ? 0 : 1,
-    position: close ? 'absolute' : 'static',
-  });
 
   const handleClose = useCallback(
     (event: any) => {
@@ -39,10 +33,7 @@ export const Badge: React.FC<BadgeProps> = ({
   );
 
   return (
-    <animated.div
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      style={animationProps}
+    <div
       className={`${
         rounded ? 'rounded-full' : 'rounded-lg'
       } w-fit ${px} py-1 bg-light-blue/50 flex items-center justify-between gap-3 text-text-black ${className}`}
@@ -54,11 +45,10 @@ export const Badge: React.FC<BadgeProps> = ({
           onClick={handleClose}
           className="flex items-center justify-center cursor-pointer rounded-full bg-white p-1 h-6 w-6"
         >
-          {/* <ClearIcon fontSize="inherit" /> */}
           <FontAwesomeIcon icon={faXmark} />
         </div>
       )}
-    </animated.div>
+    </div>
   );
 };
 

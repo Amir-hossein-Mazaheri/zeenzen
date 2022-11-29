@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-regular-svg-icons';
-import { animated, useSpring } from 'react-spring';
-import useMeasure from 'react-use-measure';
 
 import AppButton from './AppButton';
 
 interface ListProps {
   title: string;
   duration: number;
-  onChange?: (height: number) => void;
+  onChange?: () => void;
   children?: React.ReactNode;
 }
 
@@ -20,22 +18,10 @@ export const List: React.FC<ListProps> = ({
   onChange,
   children,
 }) => {
-  const [ref, { height }] = useMeasure();
-  const [autoHeight, setAutoHeight] = useState(0);
-  const animationProps = useSpring({ height: autoHeight });
-
-  const handleClick = () => {
-    setAutoHeight((currHeight) => (currHeight === 0 ? height : 0));
-
-    if (onChange) {
-      onChange(autoHeight);
-    }
-  };
-
   return (
     <div className="rounded-lg border border-light-gray px-5 overflow-hidden">
       <div
-        onClick={handleClick}
+        onClick={onChange}
         className="flex items-center justify-between py-2 cursor-pointer"
       >
         <div className="flex gap-1 items-center">
@@ -68,11 +54,9 @@ export const List: React.FC<ListProps> = ({
         </div>
       </div>
 
-      <animated.div style={{ ...animationProps, overflow: 'hidden' }}>
-        <div className="py-8" ref={ref}>
-          {children}
-        </div>
-      </animated.div>
+      <div>
+        <div className="py-8">{children}</div>
+      </div>
     </div>
   );
 };
