@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ShopLayout from '../../src/layouts/ShopLayout';
-import { NextPageWithLayout } from '../_app';
+import ShopLayout from '../../../src/layouts/ShopLayout';
+import { NextPageWithLayout } from '../../_app';
 
 const SingleStackOverflowQuestion: NextPageWithLayout = () => {
   return <div>SingleStackOverflowQuestion</div>;
