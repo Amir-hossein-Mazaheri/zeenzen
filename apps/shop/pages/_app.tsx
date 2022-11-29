@@ -8,14 +8,15 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { AnimatePresence } from 'framer-motion';
 import { config } from '@fortawesome/fontawesome-svg-core';
+import { BreadcrumbProvider } from '@zeenzen/common';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import '../src/styles/globals.css';
 import '../src/styles/nprogress.css';
 import useAddPageLoading from '../src/hooks/useAddPageLoading';
-import { BreadcrumbProvider } from '@zeenzen/common';
 
 config.autoAddCss = false;
 
@@ -57,7 +58,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <QueryClientProvider client={queryClient}>
         <BreadcrumbProvider translator={pageTranslator}>
           <Hydrate state={pageProps.dehydratedState}>
-            {getLayout(<Component {...pageProps} />)}
+            <AnimatePresence initial={false} mode="popLayout">
+              {getLayout(<Component {...pageProps} />)}
+            </AnimatePresence>
 
             <ReactQueryDevtools initialIsOpen={false} />
           </Hydrate>
