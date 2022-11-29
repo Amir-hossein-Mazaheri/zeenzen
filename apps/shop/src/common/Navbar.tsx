@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -15,6 +15,7 @@ import useCart from '../hooks/useCart';
 import useRemoveCartItem from '../hooks/useRemoveCartItem';
 import useCartStore from '../store/useCartStore';
 import { LINKS } from '../constants/links';
+import parseUrl from '../utils/parseUrl';
 
 interface NavbarProps {
   className?: string;
@@ -51,13 +52,18 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const { isAuthenticated, user } = useUser();
   const { items, type, id: cartId, refetchCart, isFetching } = useCart();
 
-  const { route } = useRouter();
+  const { asPath } = useRouter();
 
   const removeCartItem = useRemoveCartItem({
     cartId,
     refetchCart,
     type,
   });
+
+  const isLinkActive = useCallback(
+    (link: string) => link === '/' + parseUrl(asPath)[0],
+    [asPath]
+  );
 
   const loadCartItems = useCartStore((state) => state.loadCartItems);
 
@@ -71,7 +77,10 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
       <nav className="flex justify-between items-center font-black text-lg py-3 px-8 bg-white shadow-spread-shadow rounded-full">
         <ul className="flex gap-12">
           {pages.map(({ title, link }) => (
-            <li className={link === route ? 'text-light-blue' : ''} key={title}>
+            <li
+              className={isLinkActive(link) ? 'text-light-blue' : ''}
+              key={title}
+            >
               <Link href={link}>{title}</Link>
             </li>
           ))}
