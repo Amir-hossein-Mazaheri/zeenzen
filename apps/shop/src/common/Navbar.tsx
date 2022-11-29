@@ -7,6 +7,7 @@ import {
   Conditional,
   TrueCondition,
   FalseCondition,
+  parseUrl,
 } from '@zeenzen/common';
 
 import useUser from '../hooks/useUser';
@@ -15,7 +16,6 @@ import useCart from '../hooks/useCart';
 import useRemoveCartItem from '../hooks/useRemoveCartItem';
 import useCartStore from '../store/useCartStore';
 import { LINKS } from '../constants/links';
-import parseUrl from '../utils/parseUrl';
 
 interface NavbarProps {
   className?: string;
