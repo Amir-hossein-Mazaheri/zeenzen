@@ -5,13 +5,15 @@ import ShopLayout from './ShopLayout';
 
 interface UserDashboardLayoutProps {
   children: ReactNode;
+  withAnimation?: boolean;
 }
 
 const UserDashboardLayout: React.FC<UserDashboardLayoutProps> = ({
   children,
+  withAnimation = true,
 }) => {
   return (
-    <ShopLayout>
+    <ShopLayout withAnimation={withAnimation}>
       <div className="flex justify-between items-start">
         <Sidebar />
         <div className="basis-9/12 rounded-xl bg-white shadow-spread-shadow px-8 py-5">
