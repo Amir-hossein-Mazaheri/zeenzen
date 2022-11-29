@@ -1,6 +1,7 @@
 import React from 'react';
 import { Instructor as InstructorBoxProps } from '@zeenzen/data';
 import { ShadowBox, Avatar, AppLink } from '@zeenzen/common';
+import { LINKS } from '../../constants/links';
 
 const InstructorBox: React.FC<InstructorBoxProps> = ({
   id,
@@ -30,7 +31,7 @@ const InstructorBox: React.FC<InstructorBoxProps> = ({
 
         <AppLink
           className="mt-6"
-          href={`/instructors/${id}`}
+          href={LINKS.INSTRUCTORS.SINGLE_INSTRUCTOR(id)}
           text="مشاهده درباره من"
           size="sm"
         />

@@ -3,6 +3,7 @@ import { useAskAmirhosseinsQuery } from '@zeenzen/data';
 import { AppButton, graphqlClient, Loadable } from '@zeenzen/common';
 
 import AskAmirhosseinQuestion from '../../common/AskAmirhosseinQuestion';
+import { LINKS } from '../../constants/links';
 
 const AskAmirhosseinRecentQuestions = () => {
   const {
@@ -30,7 +31,12 @@ const AskAmirhosseinRecentQuestions = () => {
         </div>
 
         <div className="flex justify-center mt-8">
-          <AppButton link href="/ask-amirhossein/questions" outline rounded>
+          <AppButton
+            link
+            href={LINKS.ASK_AMIRHOSSEIN.QUESTIONS.INDEX}
+            outline
+            rounded
+          >
             <span>مشاهده تمامی سوالات</span>
           </AppButton>
         </div>

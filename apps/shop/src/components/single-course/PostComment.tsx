@@ -17,6 +17,7 @@ import useToast from '../../hooks/useToast';
 import useUser from '../../hooks/useUser';
 import CommentForm, { commentSchema } from './CommentForm';
 import useCommentStore from '../../store/useCommentStore';
+import { LINKS } from '../../constants/links';
 
 interface PostCommentProps {
   courseId: string;
@@ -81,7 +82,7 @@ const PostComment: React.FC<PostCommentProps> = ({ courseId }) => {
             <p className="text-center font-medium text-lg">
               <span>برای ارسال دیدگاه باید </span>
               <span>
-                <AppLink href="/signin" text="وارد" />{' '}
+                <AppLink href={LINKS.SIGN_IN} text="وارد" />{' '}
               </span>
               <span>شوید.</span>
             </p>

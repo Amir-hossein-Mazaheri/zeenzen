@@ -27,6 +27,7 @@ import useUser from '../../hooks/useUser';
 import useToast from '../../hooks/useToast';
 import getErrorMessages from '../../utils/getErrorMessages';
 import useUserFullName from '../../hooks/useUserFullName';
+import { LINKS } from '../../constants/links';
 
 const TextEditor = dynamic(() => import('../../../src/common/TextEditor'), {
   ssr: false,
@@ -108,7 +109,7 @@ const SendAnswerForm: React.FC<SendAnswerFormProps> = ({ questionId }) => {
             <p className="text-center font-medium text-xl">
               <span>برای ارسال پاسخ باید</span>{' '}
               <span>
-                <AppLink text="وارد" href="/signin" />
+                <AppLink text="وارد" href={LINKS.SIGN_IN} />
               </span>{' '}
               <span>شوید</span>
             </p>

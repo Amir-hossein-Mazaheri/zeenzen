@@ -26,6 +26,7 @@ import useToast from '../src/hooks/useToast';
 import addToTitle from '../src/utils/addToTitle';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getFormErrorMessages from '../src/utils/getFormErrorMessages';
+import { LINKS } from '../src/constants/links';
 
 const signInSchema = z.object({
   email: z
@@ -74,7 +75,7 @@ const SignInPage: NextPageWithLayout = () => {
         icon: 'success',
       });
 
-      router.replace('/');
+      router.replace(LINKS.INDEX);
     } catch (err: any) {
       console.log(err.response);
 
@@ -131,11 +132,11 @@ const SignInPage: NextPageWithLayout = () => {
                 <div className="mt-7 flex items-center justify-between text-sm">
                   <AppLink
                     text="حساب کاربری ندارید؟ ثبت نام کنید"
-                    href="/signup"
+                    href={LINKS.SIGN_UP}
                   />
                   <AppLink
                     text="رمزت رو فراموش کردی؟"
-                    href="/forgot-password"
+                    href={LINKS.FORGOT_PASSWORD}
                   />
                 </div>
 

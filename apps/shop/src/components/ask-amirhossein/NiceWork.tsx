@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { AppButton } from '@zeenzen/common';
 
 import problemIllustration from '../../assets/images/ask-amirhossein/problem-illustration.svg';
+import { LINKS } from '../../constants/links';
 
 const AskAmirhosseinNiceWork = () => {
   return (
@@ -27,7 +28,7 @@ const AskAmirhosseinNiceWork = () => {
       </p>
 
       <div className="flex justify-end mt-5">
-        <AppButton link href="/stack-overflow" rounded>
+        <AppButton link href={LINKS.STACK_OVERFLOW.INDEX} rounded>
           <span>سوالات ترجمه شده StackOverflow</span>
         </AppButton>
       </div>

@@ -7,6 +7,7 @@ import NotFoundIllustration from '../src/assets/images/404.svg';
 import ShopLayout from '../src/layouts/ShopLayout';
 import { NextPageWithLayout } from './_app';
 import addToTitle from '../src/utils/addToTitle';
+import { LINKS } from '../src/constants/links';
 
 const NotFoundPage: NextPageWithLayout = () => {
   return (
@@ -29,7 +30,11 @@ const NotFoundPage: NextPageWithLayout = () => {
               متاسفیم!، صفحه مورد نظر وجود ندارد.
             </h1>
 
-            <AppLink href="/" text="بازگشت به صفحه اصلی" className="mt-5" />
+            <AppLink
+              href={LINKS.INDEX}
+              text="بازگشت به صفحه اصلی"
+              className="mt-5"
+            />
           </div>
         </div>
       </div>

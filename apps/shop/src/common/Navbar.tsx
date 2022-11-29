@@ -14,6 +14,7 @@ import ProfileMenu from '../components/user/ProfileMenu';
 import useCart from '../hooks/useCart';
 import useRemoveCartItem from '../hooks/useRemoveCartItem';
 import useCartStore from '../store/useCartStore';
+import { LINKS } from '../constants/links';
 
 interface NavbarProps {
   className?: string;
@@ -22,27 +23,27 @@ interface NavbarProps {
 const pages = [
   {
     title: 'خانه',
-    link: '/',
+    link: LINKS.INDEX,
   },
   {
     title: 'فروشگاه',
-    link: '/shop',
+    link: LINKS.SHOP.INDEX,
   },
   {
     title: 'درباره من',
-    link: '/about-me',
+    link: LINKS.ABOUT_ME,
   },
   {
     title: 'راه های ارتباطی',
-    link: '/contact-us',
+    link: LINKS.CONTACT_US,
   },
   {
     title: 'از امیرحسین بپرس',
-    link: '/ask-amirhossein',
+    link: LINKS.ASK_AMIRHOSSEIN.INDEX,
   },
   {
     title: 'سوالات ترجمه شده StackOverflow',
-    link: '/stack-overflow',
+    link: LINKS.STACK_OVERFLOW.INDEX,
   },
 ];
 
@@ -97,10 +98,10 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
             </TrueCondition>
             <FalseCondition>
               <li className="text-lg">
-                <Link href="/signin">ورود</Link>
+                <Link href={LINKS.SIGN_IN}>ورود</Link>
               </li>
               <li>
-                <AppButton link rounded href="/signup">
+                <AppButton link rounded href={LINKS.SIGN_UP}>
                   ثبت نام
                 </AppButton>
               </li>

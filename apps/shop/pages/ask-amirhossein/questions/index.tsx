@@ -7,6 +7,7 @@ import { Alert, AppButton, graphqlClient, Pagination } from '@zeenzen/common';
 import { NextPageWithLayout } from '../../_app';
 import ShopLayout from '../../../src/layouts/ShopLayout';
 import AskAmirhosseinQuestion from '../../../src/common/AskAmirhosseinQuestion';
+import { LINKS } from 'apps/shop/src/constants/links';
 
 const AskAmirhosseinQuestionsPage: NextPageWithLayout = () => {
   const [page, setPage] = useState(1);
@@ -28,7 +29,12 @@ const AskAmirhosseinQuestionsPage: NextPageWithLayout = () => {
           تمامی سوالاتی که شما پرسیده اید
         </h1>
 
-        <AppButton link href="/ask-amirhossein/#question-form" rounded outline>
+        <AppButton
+          link
+          href={`${LINKS.ASK_AMIRHOSSEIN}/#question-form`}
+          rounded
+          outline
+        >
           <span>سوال بپرس 🤔</span>
         </AppButton>
       </div>

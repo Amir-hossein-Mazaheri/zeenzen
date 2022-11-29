@@ -3,6 +3,7 @@ import { AskAmirhossein, AskAmirhosseinAnswer } from '@zeenzen/data';
 import { AppLink, getJalaliDate } from '@zeenzen/common';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { LINKS } from '../constants/links';
 
 interface AskAmirhosseinQuestionProps
   extends Pick<
@@ -56,7 +57,7 @@ const AskAmirhosseinQuestion: React.FC<AskAmirhosseinQuestionProps> = ({
       <div className="flex justify-end mt-4">
         <AppLink
           text="مشاهده سوال و پاسخ"
-          href={`/ask-amirhossein/questions/${id}`}
+          href={LINKS.ASK_AMIRHOSSEIN.QUESTIONS.SINGLE_QUESTION(id)}
         />
       </div>
     </div>

@@ -39,6 +39,7 @@ import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getPasswordRegex from '../src/utils/getPasswordRegex';
 import useUserStore from '../src/store/useUserStore';
 import getFormErrorMessages from '../src/utils/getFormErrorMessages';
+import { LINKS } from '../src/constants/links';
 
 const Countdown = dynamic(() => import('react-countdown'));
 
@@ -150,7 +151,7 @@ const SignUpPage: NextPageWithLayout = () => {
         description: 'شما با موفقیت ثبت نام کرده اید و می توانید وارد شوید.',
       }).fire();
 
-      router.replace('/signin');
+      router.replace(LINKS.SIGN_IN);
     } catch (err: any) {
       console.log(err.response);
 
@@ -256,7 +257,7 @@ const SignUpPage: NextPageWithLayout = () => {
                 </div>
 
                 <div className="mt-7 flex items-center justify-end text-sm">
-                  <AppLink text="حساب دارید؟ وارد شوید" href="/signin" />
+                  <AppLink text="حساب دارید؟ وارد شوید" href={LINKS.SIGN_IN} />
                 </div>
 
                 <div className="mt-8 flex justify-end">
