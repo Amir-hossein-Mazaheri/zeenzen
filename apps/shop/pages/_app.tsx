@@ -8,7 +8,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, LazyMotion, domAnimation } from 'framer-motion';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { BreadcrumbProvider } from '@zeenzen/common';
 import '@fortawesome/fontawesome-svg-core/styles.css';
@@ -58,9 +58,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <QueryClientProvider client={queryClient}>
         <BreadcrumbProvider translator={pageTranslator}>
           <Hydrate state={pageProps.dehydratedState}>
-            <AnimatePresence initial={false} mode="popLayout">
-              {getLayout(<Component {...pageProps} />)}
-            </AnimatePresence>
+            <LazyMotion features={domAnimation} strict>
+              <AnimatePresence initial={false} mode="popLayout">
+                {getLayout(<Component {...pageProps} />)}
+              </AnimatePresence>
+            </LazyMotion>
 
             <ReactQueryDevtools initialIsOpen={false} />
           </Hydrate>
