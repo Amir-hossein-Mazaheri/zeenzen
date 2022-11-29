@@ -27,6 +27,8 @@ export type Crumb = {
   href: string;
 };
 
+export type ObjectKey = string | number | symbol;
+
 export type SelectOnChange = (value: SelectItem['value']) => void;
 
 export type AlertColor = 'success' | 'error' | 'warn' | 'info';
