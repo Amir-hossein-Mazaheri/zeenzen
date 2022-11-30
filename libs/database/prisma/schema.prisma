@@ -42,9 +42,8 @@ model StackOverflow {
   id              Int                   @id @default(autoincrement())
   title           String                @db.VarChar(500)
   description     String
-  // when crawler gather stack overflow it should not be published
-  // and after translation by an admin it gets published
   isPublished     Boolean               @default(false) @map("is_published")
+  tags            String[]              @db.VarChar(255)
   answers         StackOverflowAnswer[]
   whoTranslatedId Int?                  @map("who_translated_id")
   whoTranslated   User?                 @relation(fields: [whoTranslatedId], references: [id])
