@@ -38,6 +38,29 @@ model AskAmirhosseinAnswer {
   @@map("ask_amirhossein_answer")
 }
 
+model StackOverflow {
+  id              Int                   @id @default(autoincrement())
+  title           String                @db.VarChar(500)
+  description     String
+  // when crawler gather stack overflow it should not be published
+  // and after translation by an admin it gets published
+  isPublished     Boolean               @default(false) @map("is_published")
+  answers         StackOverflowAnswer[]
+  whoTranslatedId Int?                  @map("who_translated_id")
+  whoTranslated   User?                 @relation(fields: [whoTranslatedId], references: [id])
+
+  @@map("stack_overflow_question")
+}
+
+model StackOverflowAnswer {
+  id          Int            @id @default(autoincrement())
+  translation String
+  questionId  Int?           @map("question_id")
+  questions   StackOverflow? @relation(fields: [questionId], references: [id])
+
+  @@map("stack_overflow_answer")
+}
+
 model Avatar {
   id           String   @id @default(uuid())
   name         String   @db.VarChar(255)
@@ -427,6 +450,7 @@ model User {
   askAmirhosseinAnswers      AskAmirhosseinAnswer[] @relation("whoAnswered")
   askAmirhosseinAsks         AskAmirhossein[]
   likedAskAmirhosseinAnswers AskAmirhosseinAnswer[]
+  stackOverflowTranslations  StackOverflow[]
 
   @@map("user")
 }
