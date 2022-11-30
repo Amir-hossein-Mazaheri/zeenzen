@@ -8,9 +8,12 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ScheduleModule } from '@nestjs/schedule/dist';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import * as Joi from 'joi';
 
+import { GraphqlThrottlerGuard } from './throttler.guard';
 import { UserModule } from './user/user.module';
 import configuration from './config/configuration';
 import { InstructorModule } from './instructor/instructor.module';
@@ -119,6 +122,19 @@ import { EmailSubscriptionModule } from './email-subscription/email-subscription
         },
       }),
     }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        ttl: 60,
+        limit: 10,
+        storage: new ThrottlerStorageRedisService({
+          port: +config.get('REDIS_PORT'),
+          host: config.get('REDIS_HOST'),
+          password: config.get('REDIS_PASSWORD'),
+        }),
+      }),
+    }),
     ScheduleModule.forRoot(),
     UserModule,
     InstructorModule,
@@ -151,6 +167,10 @@ import { EmailSubscriptionModule } from './email-subscription/email-subscription
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: GraphqlThrottlerGuard,
     },
   ],
 })
