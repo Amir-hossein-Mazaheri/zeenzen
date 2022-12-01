@@ -60,6 +60,37 @@ model StackOverflowAnswer {
   @@map("stack_overflow_answer")
 }
 
+model QuestionHub {
+  id                  String                @id @default(uuid())
+  QuestionHubQuestion QuestionHubQuestion[]
+  course              Course?
+
+  @@map("question_hub")
+}
+
+model QuestionHubQuestion {
+  id          Int                 @id @default(autoincrement())
+  title       String              @db.VarChar(500)
+  description String
+  createdAt   DateTime            @default(now()) @map("created_aut")
+  answers     QuestionHubAnswer[]
+  hubId       String              @map("hub_id")
+  hub         QuestionHub         @relation(fields: [hubId], references: [id])
+
+  @@map("question_hub_question")
+}
+
+model QuestionHubAnswer {
+  id            Int                  @id @default(autoincrement())
+  createdAt     DateTime             @default(now())
+  questionId    Int?                 @map("question_id")
+  question      QuestionHubQuestion? @relation(fields: [questionId], references: [id])
+  whoAnsweredId Int                  @map("who_answered_id")
+  whoAnswered   User                 @relation(fields: [whoAnsweredId], references: [id])
+
+  @@map("question_hub_answer")
+}
+
 model Avatar {
   id           String   @id @default(uuid())
   name         String   @db.VarChar(255)
@@ -169,6 +200,8 @@ model Course {
   questions                  Question[]
   sections                   Section[]
   users                      User[]
+  questionHub                QuestionHub      @relation(fields: [questionHubId], references: [id])
+  questionHubId              String           @unique @map("question_hub_id")
 
   @@map("course")
 }
@@ -445,11 +478,12 @@ model User {
   ticketMessages             TicketMessage[]
   licenses                   License[]
   reports                    Report[]
-  Question                   Question[]
+  quesestion                 Question[]
   askAmirhosseinAnswers      AskAmirhosseinAnswer[] @relation("whoAnswered")
   askAmirhosseinAsks         AskAmirhossein[]
   likedAskAmirhosseinAnswers AskAmirhosseinAnswer[]
   stackOverflowTranslations  StackOverflow[]
+  questionHubAnswer          QuestionHubAnswer[]
 
   @@map("user")
 }
