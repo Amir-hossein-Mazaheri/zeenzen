@@ -8,9 +8,9 @@ interface PortalProps {
   as?: string;
 }
 
-const parent = document.body;
-
-const Portal: React.FC<PortalProps> = ({
+//! Note: this component should not be ssr
+// ! and should not be used for important content
+export const Portal: React.FC<PortalProps> = ({
   id,
   className,
   children,
@@ -29,6 +29,8 @@ const Portal: React.FC<PortalProps> = ({
   }, [as, className, id]);
 
   useEffect(() => {
+    const parent = document.body;
+
     parent.appendChild(portalContainer);
 
     return () => {
