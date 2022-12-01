@@ -2,6 +2,7 @@ import { ReactElement, ReactNode, useState } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 import {
   Hydrate,
   QueryClient,
@@ -18,6 +19,10 @@ import '../src/styles/globals.css';
 import '../src/styles/nprogress.css';
 import useAddPageLoading from '../src/hooks/useAddPageLoading';
 
+const OnlineStatus = dynamic(() => import('../src/common/OnlineStatus'), {
+  ssr: false,
+});
+
 config.autoAddCss = false;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -27,10 +32,6 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
-};
-
-const pageTranslator = {
-  'ask-amirhossein': 'از امیرحسین بپرس',
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -56,11 +57,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       </Head>
 
       <QueryClientProvider client={queryClient}>
-        <BreadcrumbProvider translator={pageTranslator}>
+        <BreadcrumbProvider>
           <Hydrate state={pageProps.dehydratedState}>
-            <LazyMotion features={domAnimation} strict>
-              <AnimatePresence initial={false} mode="popLayout">
+            <LazyMotion features={domAnimation}>
+              <AnimatePresence initial={false} mode="sync">
                 {getLayout(<Component {...pageProps} />)}
+
+                <OnlineStatus />
               </AnimatePresence>
             </LazyMotion>
 
