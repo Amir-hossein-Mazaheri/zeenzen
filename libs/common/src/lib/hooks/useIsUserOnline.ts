@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { promiseWithTimeout } from '../utils';
 
@@ -11,7 +11,7 @@ export function useIsUserOnline({
   timeout,
   pollingInterval,
 }: UseIsUserOnlineOptions = {}) {
-  const { abort, signal } = new AbortController();
+  const controller = useMemo(() => new AbortController(), []);
 
   const [isUserOnline, setIsUserOnline] = useState(true);
 
@@ -21,20 +21,19 @@ export function useIsUserOnline({
     try {
       await promiseWithTimeout(
         timeout ?? 3000,
-        // TODO: fix /ping.txt into a real endpoint
         fetch('/api/test', {
           method: 'GET',
-          signal,
+          signal: controller.signal,
         })
       );
 
       return true;
     } catch (err) {
-      abort();
+      controller.abort();
     }
 
     return false;
-  }, [abort, signal, timeout]);
+  }, [controller, timeout]);
 
   useEffect(() => {
     window.addEventListener('offline', () => setIsUserOnline(false));
