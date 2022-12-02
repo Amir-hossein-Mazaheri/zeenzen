@@ -84,4 +84,13 @@ export class QuestionHubResolver {
   findAllUserRelated(@GetUser() user: RequestUser) {
     return this.questionHubService.findAllUserRelated(user);
   }
+
+  @Roles(UserRole.INSTRUCTOR)
+  @Query(() => [QuestionHub], {
+    name: 'questionHubs',
+    description: 'returns all questions hubs.',
+  })
+  findAll() {
+    return this.questionHubService.findAll();
+  }
 }

@@ -191,4 +191,8 @@ export class QuestionHubService {
       },
     });
   }
+
+  async findAll() {
+    return await this.prismaService.questionHub.findMany();
+  }
 }
