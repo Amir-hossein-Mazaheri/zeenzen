@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
+import { User } from '../../user/entities/user.entity';
 import { QuestionHub } from './question-hub.entity';
 
 @ObjectType()
@@ -18,4 +19,7 @@ export class QuestionHubQuestion {
 
   @Field(() => QuestionHub)
   hub: QuestionHub;
+
+  @Field(() => User, { description: 'who asked the question.' })
+  whoAsked: User;
 }
