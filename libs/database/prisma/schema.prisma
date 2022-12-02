@@ -76,6 +76,8 @@ model QuestionHubQuestion {
   answers     QuestionHubAnswer[]
   hubId       String              @map("hub_id")
   hub         QuestionHub         @relation(fields: [hubId], references: [id])
+  whoAskedId  Int                 @map("who_asked_id")
+  whoAsked    User                @relation(fields: [whoAskedId], references: [id])
 
   @@map("question_hub_question")
 }
@@ -484,7 +486,8 @@ model User {
   askAmirhosseinAsks         AskAmirhossein[]
   likedAskAmirhosseinAnswers AskAmirhosseinAnswer[]
   stackOverflowTranslations  StackOverflow[]
-  questionHubAnswer          QuestionHubAnswer[]
+  questionHubAnswers         QuestionHubAnswer[]
+  questionHubQuestions       QuestionHubQuestion[]
 
   @@map("user")
 }
