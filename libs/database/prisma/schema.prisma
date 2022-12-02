@@ -72,7 +72,7 @@ model QuestionHubQuestion {
   id          Int                 @id @default(autoincrement())
   title       String              @db.VarChar(500)
   description String
-  createdAt   DateTime            @default(now()) @map("created_aut")
+  createdAt   DateTime            @default(now()) @map("created_at")
   answers     QuestionHubAnswer[]
   hubId       String              @map("hub_id")
   hub         QuestionHub         @relation(fields: [hubId], references: [id])
