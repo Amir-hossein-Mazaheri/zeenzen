@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { GetUser } from '../user/decorators/user.decorator';
 import { CreateQuestionHubQuestionInput } from './dto/create-question-hub-question.input';
@@ -104,5 +104,16 @@ export class QuestionHubResolver {
     @GetUser() user: RequestUser
   ) {
     return this.questionHubService.findOne(id, user);
+  }
+
+  @Query(() => QuestionHubQuestion, {
+    name: 'questionHubQuestion',
+    description: 'returns one question hub question.',
+  })
+  findOneQuestionHubQuestion(
+    @Args('id', { type: () => Int }) id: number,
+    user: RequestUser
+  ) {
+    return this.questionHubService.findOneQuestionHubQuestion(id, user);
   }
 }

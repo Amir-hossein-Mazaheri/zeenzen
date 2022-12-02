@@ -14,7 +14,7 @@ export class QuestionHubService {
   constructor(private readonly prismaService: PrismaService) {}
 
   validateQuestionHub(id: string) {
-    return async (userId?: number) => {
+    return async (userId?: number, includeQuestions?: boolean) => {
       const questionHubWhereOptions: Prisma.QuestionHubWhereInput = { id };
 
       if (userId) {
@@ -29,6 +29,9 @@ export class QuestionHubService {
 
       const questionHub = await this.prismaService.questionHub.findFirst({
         where: questionHubWhereOptions,
+        include: {
+          questions: includeQuestions,
+        },
       });
 
       if (!questionHub) {
@@ -40,33 +43,49 @@ export class QuestionHubService {
   }
 
   validateQuestionHubQuestion(id: number) {
-    return async (whoAskedId?: number) => {
-      const questionHubQuestionWhereOptions: { [k: string]: unknown } = { id };
+    return (whoAskedId?: number) =>
+      async (userId?: number, includeAnswers?: boolean) => {
+        const questionHubQuestionWhereOptions: Prisma.QuestionHubQuestionWhereInput =
+          { id };
 
-      if (whoAskedId) {
-        questionHubQuestionWhereOptions.whoAsked = {
-          id: whoAskedId,
-        };
-      }
+        // this checks whether whoAsked can edit question hub question
+        if (whoAskedId) {
+          questionHubQuestionWhereOptions.whoAsked = {
+            id: whoAskedId,
+          };
+        }
 
-      const questionHubQuestion =
-        await this.prismaService.questionHubQuestion.findFirst({
-          where: questionHubQuestionWhereOptions,
-          include: {
-            answers: {
-              include: {
-                whoAnswered: true,
+        // this checks whether user can see the question hub question or not
+        if (userId) {
+          questionHubQuestionWhereOptions.hub = {
+            course: {
+              users: {
+                some: {
+                  id: userId,
+                },
               },
             },
-          },
-        });
+          };
+        }
 
-      if (!questionHubQuestion) {
-        throw new NotFoundException('Invalid question hub question id.');
-      }
+        const questionHubQuestion =
+          await this.prismaService.questionHubQuestion.findFirst({
+            where: questionHubQuestionWhereOptions,
+            include: {
+              answers: {
+                include: {
+                  whoAnswered: includeAnswers,
+                },
+              },
+            },
+          });
 
-      return questionHubQuestion;
-    };
+        if (!questionHubQuestion) {
+          throw new NotFoundException('Invalid question hub question id.');
+        }
+
+        return questionHubQuestion;
+      };
   }
 
   validateQuestionHubAnswer(id: number) {
@@ -121,7 +140,7 @@ export class QuestionHubService {
     { questionId, answer }: AnswerQuestionHubQuestionInput,
     user: RequestUser
   ) {
-    await this.validateQuestionHubQuestion(questionId)();
+    await this.validateQuestionHubQuestion(questionId)()();
 
     return await this.prismaService.questionHubAnswer.create({
       data: {
@@ -164,7 +183,7 @@ export class QuestionHubService {
     { title, description }: UpdateQuestionHubQuestionInput,
     user: RequestUser
   ) {
-    await this.validateQuestionHubQuestion(id)(user.sub);
+    await this.validateQuestionHubQuestion(id)(user.sub)();
 
     // TODO: add notification when someone updates question hub question
     return await this.prismaService.questionHubQuestion.update({
@@ -197,6 +216,10 @@ export class QuestionHubService {
   }
 
   async findOne(id: string, user: RequestUser) {
-    return await this.validateQuestionHub(id)(user.sub);
+    return await this.validateQuestionHub(id)(user.sub, true);
+  }
+
+  async findOneQuestionHubQuestion(id: number, user: RequestUser) {
+    return await this.validateQuestionHubQuestion(id)()(user.sub, true);
   }
 }
