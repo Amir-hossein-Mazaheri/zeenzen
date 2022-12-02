@@ -6,6 +6,7 @@ import { RequestUser } from '../types';
 import { CreateQuestionHubQuestionInput } from './dto/create-question-hub-question.input';
 import { AnswerQuestionHubQuestionInput } from './dto/answer-question-hub-question.input';
 import { purifiedTurndown } from '../utils/purifiedTurndown';
+import { UpdateQuestionHubAnswerInput } from './dto/update-question-hub-answer.input';
 
 @Injectable()
 export class QuestionHubService {
@@ -59,6 +60,30 @@ export class QuestionHubService {
     return questionHubQuestion;
   }
 
+  validateQuestionHubAnswer(id: number) {
+    return async (whoAnsweredId: number) => {
+      const questionHubAnswerWhereOptions: Prisma.QuestionHubAnswerWhereInput =
+        { id };
+
+      if (whoAnsweredId) {
+        questionHubAnswerWhereOptions.whoAnswered = {
+          id: whoAnsweredId,
+        };
+      }
+
+      const questionHubAnswer =
+        await this.prismaService.questionHubAnswer.findFirst({
+          where: questionHubAnswerWhereOptions,
+        });
+
+      if (!questionHubAnswer) {
+        throw new NotFoundException('Invalid question hub answer id.');
+      }
+
+      return questionHubAnswer;
+    };
+  }
+
   async createQuestion(
     { hubId, title, description }: CreateQuestionHubQuestionInput,
     user: RequestUser
@@ -104,6 +129,23 @@ export class QuestionHubService {
             id: questionId,
           },
         },
+      },
+    });
+  }
+
+  async updateAnswer(
+    id: number,
+    { answer }: UpdateQuestionHubAnswerInput,
+    user: RequestUser
+  ) {
+    await this.validateQuestionHubAnswer(id)(user.sub);
+
+    return await this.prismaService.questionHubAnswer.update({
+      where: {
+        id,
+      },
+      data: {
+        answer: purifiedTurndown(answer),
       },
     });
   }

@@ -9,6 +9,7 @@ import { QuestionHubQuestion } from './entities/question-hub-question.entity';
 import { Roles } from '../user/decorators/roles.decorator';
 import { AnswerQuestionHubQuestionInput } from './dto/answer-question-hub-question.input';
 import { QuestionHubAnswer } from './entities/question-hub-answer.entity';
+import { UpdateQuestionHubAnswerInput } from './dto/update-question-hub-answer.input';
 
 @Resolver(() => QuestionHub)
 export class QuestionHubResolver {
@@ -40,6 +41,20 @@ export class QuestionHubResolver {
   ) {
     return this.questionHubService.answerQuestion(
       answerQuestionHubQuestionInput,
+      user
+    );
+  }
+
+  @Roles(UserRole.INSTRUCTOR)
+  @Mutation(() => QuestionHubAnswer)
+  updateQuestionHubAnswer(
+    @Args('updateQuestionHubAnswerInput')
+    updateQuestionHubAnswerInput: UpdateQuestionHubAnswerInput,
+    @GetUser() user: RequestUser
+  ) {
+    return this.questionHubService.updateAnswer(
+      updateQuestionHubAnswerInput.id,
+      updateQuestionHubAnswerInput,
       user
     );
   }
