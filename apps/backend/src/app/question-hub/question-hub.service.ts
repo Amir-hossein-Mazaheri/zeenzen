@@ -5,6 +5,7 @@ import { PrismaService } from '@zeenzen/database';
 import { RequestUser } from '../types';
 import { CreateQuestionHubQuestionInput } from './dto/create-question-hub-question.input';
 import { AnswerQuestionHubQuestionInput } from './dto/answer-question-hub-question.input';
+import { purifiedTurndown } from '../utils/purifiedTurndown';
 
 @Injectable()
 export class QuestionHubService {
@@ -67,7 +68,7 @@ export class QuestionHubService {
     return await this.prismaService.questionHubQuestion.create({
       data: {
         title,
-        description,
+        description: purifiedTurndown(description),
 
         hub: {
           connect: hub,
@@ -90,7 +91,7 @@ export class QuestionHubService {
 
     return await this.prismaService.questionHubAnswer.create({
       data: {
-        answer,
+        answer: purifiedTurndown(answer),
 
         whoAnswered: {
           connect: {
