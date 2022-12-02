@@ -280,6 +280,10 @@ export class CourseService {
         progress,
         spotPlayerCourseId,
 
+        questionHub: {
+          create: {},
+        },
+
         categories: {
           connect: await tx.category.findMany({
             where: {
