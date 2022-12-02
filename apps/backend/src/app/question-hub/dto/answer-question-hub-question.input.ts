@@ -1,7 +1,7 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-@ObjectType()
+@InputType()
 export class AnswerQuestionHubQuestionInput {
   @Field(() => Int, { description: 'parent question hub question.' })
   @IsNotEmpty()

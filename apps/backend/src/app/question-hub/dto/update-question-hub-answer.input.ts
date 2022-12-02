@@ -1,8 +1,8 @@
-import { Field, Int, ObjectType, PickType } from '@nestjs/graphql';
+import { Field, InputType, Int, PickType } from '@nestjs/graphql';
 
 import { AnswerQuestionHubQuestionInput } from './answer-question-hub-question.input';
 
-@ObjectType()
+@InputType()
 export class UpdateQuestionHubAnswerInput extends PickType(
   AnswerQuestionHubQuestionInput,
   ['answer']
