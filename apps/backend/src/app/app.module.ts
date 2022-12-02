@@ -42,6 +42,7 @@ import { LicenseModule } from './license/license.module';
 import { AskAmirhosseinModule } from './ask-amirhossein/ask-amirhossein.module';
 import { ReportModule } from './report/report.module';
 import { EmailSubscriptionModule } from './email-subscription/email-subscription.module';
+import { QuestionHubModule } from './question-hub/question-hub.module';
 
 @Module({
   imports: [
@@ -162,6 +163,7 @@ import { EmailSubscriptionModule } from './email-subscription/email-subscription
     AskAmirhosseinModule,
     ReportModule,
     EmailSubscriptionModule,
+    QuestionHubModule,
   ],
   providers: [
     {
