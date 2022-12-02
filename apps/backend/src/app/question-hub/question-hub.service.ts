@@ -7,6 +7,7 @@ import { CreateQuestionHubQuestionInput } from './dto/create-question-hub-questi
 import { AnswerQuestionHubQuestionInput } from './dto/answer-question-hub-question.input';
 import { purifiedTurndown } from '../utils/purifiedTurndown';
 import { UpdateQuestionHubAnswerInput } from './dto/update-question-hub-answer.input';
+import { UpdateQuestionHubQuestionInput } from './dto/update-question-hub-question.input';
 
 @Injectable()
 export class QuestionHubService {
@@ -38,30 +39,38 @@ export class QuestionHubService {
     };
   }
 
-  async validateQuestionHubQuestion(id: number) {
-    const questionHubQuestion =
-      await this.prismaService.questionHubQuestion.findUnique({
-        where: {
-          id,
-        },
-        include: {
-          answers: {
-            include: {
-              whoAnswered: true,
+  validateQuestionHubQuestion(id: number) {
+    return async (whoAskedId?: number) => {
+      const questionHubQuestionWhereOptions: { [k: string]: unknown } = { id };
+
+      if (whoAskedId) {
+        questionHubQuestionWhereOptions.whoAsked = {
+          id: whoAskedId,
+        };
+      }
+
+      const questionHubQuestion =
+        await this.prismaService.questionHubQuestion.findFirst({
+          where: questionHubQuestionWhereOptions,
+          include: {
+            answers: {
+              include: {
+                whoAnswered: true,
+              },
             },
           },
-        },
-      });
+        });
 
-    if (!questionHubQuestion) {
-      throw new NotFoundException('Invalid question hub question id.');
-    }
+      if (!questionHubQuestion) {
+        throw new NotFoundException('Invalid question hub question id.');
+      }
 
-    return questionHubQuestion;
+      return questionHubQuestion;
+    };
   }
 
   validateQuestionHubAnswer(id: number) {
-    return async (whoAnsweredId: number) => {
+    return async (whoAnsweredId?: number) => {
       const questionHubAnswerWhereOptions: Prisma.QuestionHubAnswerWhereInput =
         { id };
 
@@ -112,7 +121,7 @@ export class QuestionHubService {
     { questionId, answer }: AnswerQuestionHubQuestionInput,
     user: RequestUser
   ) {
-    await this.validateQuestionHubQuestion(questionId);
+    await this.validateQuestionHubQuestion(questionId)();
 
     return await this.prismaService.questionHubAnswer.create({
       data: {
@@ -146,6 +155,39 @@ export class QuestionHubService {
       },
       data: {
         answer: purifiedTurndown(answer),
+      },
+    });
+  }
+
+  async updateQuestion(
+    id: number,
+    { title, description }: UpdateQuestionHubQuestionInput,
+    user: RequestUser
+  ) {
+    await this.validateQuestionHubQuestion(id)(user.sub);
+
+    // TODO: add notification when someone updates question hub question
+    return await this.prismaService.questionHubQuestion.update({
+      where: {
+        id,
+      },
+      data: {
+        title,
+        description: purifiedTurndown(description),
+      },
+    });
+  }
+
+  async findAllUserRelated(user: RequestUser) {
+    return await this.prismaService.questionHub.findMany({
+      where: {
+        course: {
+          users: {
+            some: {
+              id: user.sub,
+            },
+          },
+        },
       },
     });
   }

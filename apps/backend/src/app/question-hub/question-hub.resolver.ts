@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { GetUser } from '../user/decorators/user.decorator';
 import { CreateQuestionHubQuestionInput } from './dto/create-question-hub-question.input';
@@ -10,12 +10,13 @@ import { Roles } from '../user/decorators/roles.decorator';
 import { AnswerQuestionHubQuestionInput } from './dto/answer-question-hub-question.input';
 import { QuestionHubAnswer } from './entities/question-hub-answer.entity';
 import { UpdateQuestionHubAnswerInput } from './dto/update-question-hub-answer.input';
+import { UpdateQuestionHubQuestionInput } from './dto/update-question-hub-question.input';
 
+@Roles(UserRole.CUSTOMER)
 @Resolver(() => QuestionHub)
 export class QuestionHubResolver {
   constructor(private readonly questionHubService: QuestionHubService) {}
 
-  @Roles(UserRole.CUSTOMER)
   @Mutation(() => QuestionHubQuestion, {
     description: 'create new question in target question hub.',
   })
@@ -46,7 +47,9 @@ export class QuestionHubResolver {
   }
 
   @Roles(UserRole.INSTRUCTOR)
-  @Mutation(() => QuestionHubAnswer)
+  @Mutation(() => QuestionHubAnswer, {
+    description: 'updates question hub answer body.',
+  })
   updateQuestionHubAnswer(
     @Args('updateQuestionHubAnswerInput')
     updateQuestionHubAnswerInput: UpdateQuestionHubAnswerInput,
@@ -57,5 +60,28 @@ export class QuestionHubResolver {
       updateQuestionHubAnswerInput,
       user
     );
+  }
+
+  @Mutation(() => QuestionHubQuestion, {
+    description: 'updates question hub question body.',
+  })
+  updateQuestionHubQuestion(
+    @Args('updateQuestionHubQuestionInput')
+    updateQuestionHubQuestionInput: UpdateQuestionHubQuestionInput,
+    @GetUser() user: RequestUser
+  ) {
+    return this.questionHubService.updateQuestion(
+      updateQuestionHubQuestionInput.id,
+      updateQuestionHubQuestionInput,
+      user
+    );
+  }
+
+  @Query(() => [QuestionHub], {
+    name: 'questionHubsRelated',
+    description: 'returns all user related question hubs.',
+  })
+  findAllUserRelated(@GetUser() user: RequestUser) {
+    return this.questionHubService.findAllUserRelated(user);
   }
 }
