@@ -7,6 +7,8 @@ import {
   faChalkboardUser,
   faStar,
   faRightFromBracket,
+  faCreditCard,
+  faCircleQuestion,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { UserActionMenuItem } from '../../types';
@@ -24,9 +26,19 @@ export const userActions: UserActionMenuItem[] = [
     icon: <FontAwesomeIcon icon={faUsers} />,
   },
   {
+    title: 'سفارش های من',
+    link: '/orders',
+    icon: <FontAwesomeIcon icon={faCreditCard} />,
+  },
+  {
     title: 'دوره های من',
     link: '/courses',
     icon: <FontAwesomeIcon icon={faChalkboardUser} />,
+  },
+  {
+    title: 'سوالات من',
+    link: '/questions',
+    icon: <FontAwesomeIcon icon={faCircleQuestion} />,
   },
   {
     title: 'امتیاز های من',
@@ -54,7 +66,7 @@ const Sidebar = () => {
   return (
     <div className="basis-1/5 shadow-spread-shadow pr-7 pl-12 py-6 rounded-xl">
       <nav>
-        <ul className="space-y-8 font-medium">
+        <ul className="space-y-10 font-medium">
           {userActions.map(({ title, link, icon }) => (
             <li
               className={link && link === router.route ? 'text-red-500' : ''}
