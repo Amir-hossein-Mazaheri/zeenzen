@@ -195,4 +195,8 @@ export class QuestionHubService {
   async findAll() {
     return await this.prismaService.questionHub.findMany();
   }
+
+  async findOne(id: string, user: RequestUser) {
+    return await this.validateQuestionHub(id)(user.sub);
+  }
 }

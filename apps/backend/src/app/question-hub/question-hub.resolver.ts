@@ -11,6 +11,7 @@ import { AnswerQuestionHubQuestionInput } from './dto/answer-question-hub-questi
 import { QuestionHubAnswer } from './entities/question-hub-answer.entity';
 import { UpdateQuestionHubAnswerInput } from './dto/update-question-hub-answer.input';
 import { UpdateQuestionHubQuestionInput } from './dto/update-question-hub-question.input';
+import { FindOneQuestionHubInput } from './dto/find-one-question-hub.input';
 
 @Roles(UserRole.CUSTOMER)
 @Resolver(() => QuestionHub)
@@ -92,5 +93,16 @@ export class QuestionHubResolver {
   })
   findAll() {
     return this.questionHubService.findAll();
+  }
+
+  @Query(() => QuestionHub, {
+    name: 'questionHub',
+    description: 'returns one question hub.',
+  })
+  findOne(
+    @Args('findOneQuestionHubInput') { id }: FindOneQuestionHubInput,
+    @GetUser() user: RequestUser
+  ) {
+    return this.questionHubService.findOne(id, user);
   }
 }
