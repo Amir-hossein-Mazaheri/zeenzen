@@ -5,7 +5,7 @@ import { UserRole } from '@zeenzen/data';
 import Avatar from './Avatar';
 import { getJalaliDate } from '../utils';
 import Badge from './Badge';
-import { userRoleTranslator } from '../hooks';
+import { userRoleTranslator } from '../utils';
 import AppLink from './AppLink';
 
 // as const to extract values for union type
