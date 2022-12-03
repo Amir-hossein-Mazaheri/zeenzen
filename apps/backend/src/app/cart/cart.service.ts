@@ -285,8 +285,8 @@ export class CartService {
 
     return {
       ...cart,
-      totalPrice,
-      totalPriceWithDiscount,
+      totalPrice: totalPrice ?? '0.00',
+      totalPriceWithDiscount: totalPriceWithDiscount ?? '0.00',
     };
   }
 
