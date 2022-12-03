@@ -113,7 +113,7 @@ export class QuestionHubService {
   }
 
   async createQuestion(
-    { hubId, title, description }: CreateQuestionHubQuestionInput,
+    { hubId, title, description, fullName }: CreateQuestionHubQuestionInput,
     user: RequestUser
   ) {
     const hub = await this.validateQuestionHub(hubId)(user.sub);
@@ -122,6 +122,7 @@ export class QuestionHubService {
       data: {
         title,
         description: purifiedTurndown(description),
+        fullName,
 
         hub: {
           connect: hub,

@@ -17,4 +17,9 @@ export class CreateQuestionHubQuestionInput {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @Field(() => String, { description: 'full name of who is asking question.' })
+  @IsNotEmpty()
+  @IsString()
+  fullName: string;
 }
