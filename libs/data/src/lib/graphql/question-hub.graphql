@@ -3,6 +3,11 @@ query QuestionHubQuestionsUserRelated {
     id
     title
     description
+    fullName
     createdAt
+
+    answers {
+      id
+    }
   }
 }
