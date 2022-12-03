@@ -30,6 +30,7 @@ export const tabAnimation: Variants = {
   hide: {
     opacity: 0,
     scale: 0,
+    transformOrigin: 'top',
     transition: {
       type: 'spring',
       bounce: 0.2,
@@ -39,6 +40,7 @@ export const tabAnimation: Variants = {
   show: {
     opacity: 1,
     scale: 1,
+    transformOrigin: 'top',
     transition: {
       type: 'spring',
       bounce: 0.3,
