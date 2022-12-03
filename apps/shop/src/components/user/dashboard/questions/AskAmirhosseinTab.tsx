@@ -25,14 +25,21 @@ const AskAmirhosseinTab = () => {
       </Alert>
 
       <Loadable isLoading={isLoading} fragment>
-        <div className="space-y-12">
-          {data?.askAmirhosseinsRelated.map((askAmirhossein) => (
-            <AskAmirhosseinQuestion
-              key={askAmirhossein.id}
-              {...askAmirhossein}
-            />
-          ))}
-        </div>
+        {data?.askAmirhosseinsRelated.length &&
+        data.askAmirhosseinsRelated.length > 0 ? (
+          <div className="space-y-12">
+            {data?.askAmirhosseinsRelated.map((askAmirhossein) => (
+              <AskAmirhosseinQuestion
+                key={askAmirhossein.id}
+                {...askAmirhossein}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-xl font-bold text-text-black">
+            متاسفانه سوالی وجود ندارد ☹️
+          </p>
+        )}
       </Loadable>
     </Tab.Panel>
   );
