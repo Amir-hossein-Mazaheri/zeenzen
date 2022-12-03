@@ -1,10 +1,10 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 @InputType()
 export class FindOneQuestionHubInput {
-  @Field(() => String, { description: 'target question hub.' })
+  @Field(() => Int, { description: 'target question hub.' })
   @IsNotEmpty()
-  @IsUUID()
-  id: string;
+  @IsNumber()
+  id: number;
 }
