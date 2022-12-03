@@ -1,0 +1,8 @@
+query QuestionHubQuestionsUserRelated {
+  questionHubQuestionsRelated {
+    id
+    title
+    description
+    createdAt
+  }
+}
