@@ -222,4 +222,14 @@ export class QuestionHubService {
   async findOneQuestionHubQuestion(id: number, user: RequestUser) {
     return await this.validateQuestionHubQuestion(id)()(user.sub, true);
   }
+
+  async findAllQuestionsHubQuestionsUserRelated(user: RequestUser) {
+    return await this.prismaService.questionHubQuestion.findMany({
+      where: {
+        whoAsked: {
+          id: user.sub,
+        },
+      },
+    });
+  }
 }

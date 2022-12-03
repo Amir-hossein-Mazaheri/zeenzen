@@ -116,4 +116,14 @@ export class QuestionHubResolver {
   ) {
     return this.questionHubService.findOneQuestionHubQuestion(id, user);
   }
+
+  @Query(() => [QuestionHubQuestion], {
+    name: 'questionHubQuestionsRelated',
+    description: 'returns all user related questions.',
+  })
+  findAllQuestionsHubQuestionsUserRelated(@GetUser() user: RequestUser) {
+    return this.questionHubService.findAllQuestionsHubQuestionsUserRelated(
+      user
+    );
+  }
 }
