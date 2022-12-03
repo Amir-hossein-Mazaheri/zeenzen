@@ -70,6 +70,7 @@ model QuestionHub {
 
 model QuestionHubQuestion {
   id          Int                 @id @default(autoincrement())
+  fullName    String              @db.VarChar(255)
   title       String              @db.VarChar(500)
   description String
   createdAt   DateTime            @default(now()) @map("created_at")
