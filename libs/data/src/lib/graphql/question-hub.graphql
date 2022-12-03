@@ -21,3 +21,17 @@ query QuestionHubQuestionsUserRelated {
     }
   }
 }
+
+query SingleQuestionHub($questionHubInput: FindOneQuestionHubInput!) {
+  questionHub(findOneQuestionHubInput: $questionHubInput) {
+    id
+
+    questions {
+      id
+      title
+      createdAt
+      description
+      fullName
+    }
+  }
+}
