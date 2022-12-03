@@ -14,32 +14,27 @@ export default function useLogout(options?: UseLogoutOptions) {
   const { refetch: refetchUser } = useUser(false);
 
   const logoutMutation = useLogoutMutation(graphqlClient, {
-    retry: options?.retry || 3,
-    retryDelay: options?.retryDelay || 500,
+    retry: options?.retry ?? 3,
+    retryDelay: options?.retryDelay ?? 500,
   });
 
   const toast = useToast();
 
-  return useCallback(() => {
-    logoutMutation.mutate(
-      {},
-      {
-        onSuccess() {
-          toast({}).fire({
-            title: 'با موفقیت خارج شدید',
-            icon: 'success',
-          });
-        },
-        onError() {
-          toast({}).fire({
-            title: 'مشکلی در خروج شما از پیش آمده است مجددا تلاش کنید',
-            icon: 'error',
-          });
-        },
-        onSettled() {
-          refetchUser();
-        },
-      }
-    );
+  return useCallback(async () => {
+    try {
+      await logoutMutation.mutateAsync({});
+
+      await refetchUser();
+
+      toast().fire({
+        title: 'با موفقیت خارج شدید',
+        icon: 'success',
+      });
+    } catch (err) {
+      toast().fire({
+        title: 'مشکلی در خروج شما از پیش آمده است مجددا تلاش کنید',
+        icon: 'error',
+      });
+    }
   }, [logoutMutation, refetchUser, toast]);
 }
