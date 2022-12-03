@@ -14,7 +14,6 @@ const AskAmirhosseinTab = () => {
   return (
     <Tab.Panel
       as={motion.div}
-      key="ask-amirhossein-user-dash"
       initial="hide"
       animate="show"
       exit="hide"
