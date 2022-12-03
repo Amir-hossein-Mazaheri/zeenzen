@@ -1,7 +1,9 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
+import { m as motion } from 'framer-motion';
 
 import Sidebar from '../components/user-dashboard/Sidebar';
 import ShopLayout from './ShopLayout';
+import AnimationLayout from './AnimationLayout';
 
 interface UserDashboardLayoutProps {
   children: ReactNode;
@@ -12,13 +14,29 @@ const UserDashboardLayout: React.FC<UserDashboardLayoutProps> = ({
   children,
   withAnimation = true,
 }) => {
+  // const child = useMemo(
+  //   () => (
+  //     <div className="basis-9/12 rounded-xl bg-white shadow-spread-shadow px-8 py-5">
+  //       {children}
+  //     </div>
+  //   ),
+  //   [children]
+  // );
+
+  const className = useMemo(
+    () => 'basis-9/12 rounded-xl bg-white shadow-spread-shadow px-8 py-5',
+    []
+  );
+
   return (
-    <ShopLayout withAnimation={withAnimation}>
+    <ShopLayout withAnimation={false}>
       <div className="flex justify-between items-start">
         <Sidebar />
-        <div className="basis-9/12 rounded-xl bg-white shadow-spread-shadow px-8 py-5">
-          {children}
-        </div>
+        {withAnimation ? (
+          <AnimationLayout className={className}>{children}</AnimationLayout>
+        ) : (
+          <div className={className}>{children}</div>
+        )}
       </div>
     </ShopLayout>
   );
