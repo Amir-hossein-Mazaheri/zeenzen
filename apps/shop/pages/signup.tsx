@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import dayjs from 'dayjs';
 import { SubmitHandler, useForm, FormProvider } from 'react-hook-form';
+import Countdown from 'react-countdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -41,7 +42,7 @@ import useUserStore from '../src/store/useUserStore';
 import getFormErrorMessages from '../src/utils/getFormErrorMessages';
 import { LINKS } from '../src/constants/links';
 
-const Countdown = dynamic(() => import('react-countdown'));
+// const Countdown = dynamic(() => import('react-countdown'));
 
 const signUpSchema = z.object({
   email: z
@@ -164,7 +165,7 @@ const SignUpPage: NextPageWithLayout = () => {
     }
   };
 
-  const handleCountDownComplete = async () => {
+  const handleCountDownComplete = () => {
     setShowCodeForm(false);
 
     signUpFailed();
@@ -174,7 +175,7 @@ const SignUpPage: NextPageWithLayout = () => {
       icon: 'error',
     });
 
-    await removeEmailValidationMutation.mutateAsync({
+    removeEmailValidationMutation.mutate({
       removePreSignUpInput: {
         email,
       },
@@ -204,12 +205,14 @@ const SignUpPage: NextPageWithLayout = () => {
               <div className="flex items-center gap-1">
                 {/* <WatchLaterIcon fontSize="medium" /> */}
                 <FontAwesomeIcon icon={faStopwatch} size="lg" />
+                {/* {import('react-countdown').then((Countdown) => ( */}
                 <Countdown
                   date={expiresAt}
                   zeroPadDays={0}
                   zeroPadTime={1}
                   onComplete={handleCountDownComplete}
                 />
+                {/* ))} */}
               </div>
               <p>انقضای کد تایید</p>
             </div>
