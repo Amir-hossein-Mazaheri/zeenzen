@@ -1,3 +1,13 @@
+query QuestionHubsUserRelated {
+  questionHubsRelated {
+    id
+
+    course {
+      title
+    }
+  }
+}
+
 query QuestionHubQuestionsUserRelated {
   questionHubQuestionsRelated {
     id
