@@ -6,7 +6,9 @@ mutation CreateAskAmirhossein(
   }
 }
 
-mutation AnswerAskAmirhossein($answerAskAmirhosseinInput: AnswerAskAmirhosseinInput!) {
+mutation AnswerAskAmirhossein(
+  $answerAskAmirhosseinInput: AnswerAskAmirhosseinInput!
+) {
   answerAskAmirhossein(answerAskAmirhosseinInput: $answerAskAmirhosseinInput) {
     id
   }
@@ -66,6 +68,22 @@ query AskAmirhossein($askAmirhosseinInput: FindOneAskAmirhosseinInput!) {
           fullPath
         }
       }
+    }
+  }
+}
+
+query AskAmirhosseinsUserRelated {
+  askAmirhosseinsRelated {
+    id
+    fullName
+    title
+    description
+    createdAt
+
+    answers {
+      id
+      createdAt
+      answer
     }
   }
 }
