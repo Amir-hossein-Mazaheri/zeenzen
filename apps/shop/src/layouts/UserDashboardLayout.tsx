@@ -14,15 +14,6 @@ const UserDashboardLayout: React.FC<UserDashboardLayoutProps> = ({
   children,
   withAnimation = true,
 }) => {
-  // const child = useMemo(
-  //   () => (
-  //     <div className="basis-9/12 rounded-xl bg-white shadow-spread-shadow px-8 py-5">
-  //       {children}
-  //     </div>
-  //   ),
-  //   [children]
-  // );
-
   const className = useMemo(
     () => 'basis-9/12 rounded-xl bg-white shadow-spread-shadow px-8 py-5',
     []
