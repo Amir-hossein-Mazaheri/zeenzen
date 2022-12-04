@@ -4,8 +4,8 @@ import { useQuestionHubsUserRelatedQuery } from '@zeenzen/data';
 import { v4 } from 'uuid';
 
 import { NextPageWithLayout } from '../_app';
-import useProtectedRoute from 'apps/shop/src/hooks/useProtectedRoute';
-import ShopLayout from 'apps/shop/src/layouts/ShopLayout';
+import useProtectedRoute from '../../src/hooks/useProtectedRoute';
+import ShopLayout from '../../src/layouts/ShopLayout';
 
 const dummyData = [v4(), v4(), v4(), v4(), v4(), v4()].map((id) => ({
   id,
@@ -30,9 +30,8 @@ const QuestionHubPage: NextPageWithLayout = () => {
 
   return (
     <Loadable isLoading={isLoading}>
-      {true ||
-      (data?.questionHubsRelated.length &&
-        data.questionHubsRelated.length > 0) ? (
+      {data?.questionHubsRelated?.length &&
+      data?.questionHubsRelated?.length > 0 ? (
         <>
           <h1 className="font-extrabold text-3xl text-title-black mb-7">
             هاب های مختص شما 🙂

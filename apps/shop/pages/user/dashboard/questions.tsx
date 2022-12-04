@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import { Tab } from '@headlessui/react';
 
 import { NextPageWithLayout } from '../../_app';
-import UserDashboardLayout from 'apps/shop/src/layouts/UserDashboardLayout';
+import UserDashboardLayout from '../../../src/layouts/UserDashboardLayout';
 import { AnimatePresence, Variants } from 'framer-motion';
 
 const AskAmirhosseinTab = dynamic(
