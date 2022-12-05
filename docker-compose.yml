@@ -28,7 +28,7 @@ services:
     environment:
       REDIS_PASSWORD:
     ports:
-      - 6379:6379
+      - "6379:6379"
   postgres:
     image: postgres:13-bullseye
     restart: always
@@ -37,7 +37,7 @@ services:
       POSTGRES_USER:
       POSTGRES_PASSWORD:
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 
