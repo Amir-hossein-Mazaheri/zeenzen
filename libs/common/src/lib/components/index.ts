@@ -29,3 +29,4 @@ export * from './Breadcrumbs';
 export * from './BreadcrumbProvider';
 export * from './Portal';
 export * from './HamburgerMenu';
+export * from './Drawer';
