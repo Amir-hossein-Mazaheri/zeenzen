@@ -27,6 +27,7 @@ import addToTitle from '../src/utils/addToTitle';
 import useSkipForUsers from '../src/hooks/useSkipForUsers';
 import getFormErrorMessages from '../src/utils/getFormErrorMessages';
 import { LINKS } from '../src/constants/links';
+import getErrorMessages from '../src/utils/getErrorMessages';
 
 const signInSchema = z.object({
   email: z
@@ -43,7 +44,7 @@ const SignInPage: NextPageWithLayout = () => {
 
   const [alertsParent] = useAutoAnimate<HTMLDivElement>();
 
-  const mutation = useSignInMutation(graphqlClient);
+  const signInMutation = useSignInMutation(graphqlClient);
 
   const methods = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -64,23 +65,22 @@ const SignInPage: NextPageWithLayout = () => {
     data
   ) => {
     try {
-      const { signIn } = await mutation.mutateAsync({
+      console.log('is logging in: ', data);
+      await signInMutation.mutateAsync({
         signInInput: data,
       });
-
-      console.log('logged in.', signIn);
 
       toast({}).fire({
         title: 'شما با موفقیت وارد شدید.',
         icon: 'success',
       });
 
-      router.replace(LINKS.INDEX);
+      router.replace('/');
     } catch (err: any) {
-      console.log(err.response);
+      console.log('sign in error: ', err);
 
-      const errors = err?.response?.errors?.map((err: any) => ({
-        text: err.message,
+      const errors: AlertMessage[] = getErrorMessages(err).map((message) => ({
+        text: message,
         type: 'error',
       }));
 
@@ -106,7 +106,7 @@ const SignInPage: NextPageWithLayout = () => {
 
       <div className="flex justify-between items-center">
         <div className="basis-5/12 rounded-xl px-6 py-6 shadow-spread-shadow">
-          <Loadable isLoading={mutation.isLoading}>
+          <Loadable isLoading={signInMutation.isLoading}>
             <FormProvider {...methods}>
               <form
                 className="w-full"
