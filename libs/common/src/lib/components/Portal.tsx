@@ -6,6 +6,7 @@ interface PortalProps {
   className?: string;
   children: React.ReactNode;
   as?: string;
+  prepend?: boolean;
 }
 
 //! Note: this component should not be ssr
@@ -15,6 +16,7 @@ export const Portal: React.FC<PortalProps> = ({
   className,
   children,
   as = 'div',
+  prepend = false,
 }) => {
   const portalContainer = useMemo(() => {
     const container = document.createElement(as);
@@ -31,12 +33,16 @@ export const Portal: React.FC<PortalProps> = ({
   useEffect(() => {
     const parent = document.body;
 
-    parent.appendChild(portalContainer);
+    if (prepend) {
+      parent.prepend(portalContainer);
+    } else {
+      parent.appendChild(portalContainer);
+    }
 
     return () => {
       parent.removeChild(portalContainer);
     };
-  }, [portalContainer]);
+  }, [portalContainer, prepend]);
 
   return createPortal(children, portalContainer);
 };
