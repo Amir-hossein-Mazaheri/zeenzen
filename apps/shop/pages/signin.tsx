@@ -65,7 +65,6 @@ const SignInPage: NextPageWithLayout = () => {
     data
   ) => {
     try {
-      console.log('is logging in: ', data);
       await signInMutation.mutateAsync({
         signInInput: data,
       });
@@ -75,8 +74,8 @@ const SignInPage: NextPageWithLayout = () => {
         icon: 'success',
       });
 
-      router.replace('/');
-    } catch (err: any) {
+      router.replace(LINKS.INDEX);
+    } catch (err) {
       console.log('sign in error: ', err);
 
       const errors: AlertMessage[] = getErrorMessages(err).map((message) => ({
@@ -89,7 +88,7 @@ const SignInPage: NextPageWithLayout = () => {
   };
 
   return (
-    <div className="w-[75%]">
+    <div className="md:w-[75%] w-[95%]">
       <Head>
         <title>{addToTitle('ورود')}</title>
       </Head>
@@ -104,8 +103,8 @@ const SignInPage: NextPageWithLayout = () => {
         />
       </div>
 
-      <div className="flex justify-between items-center">
-        <div className="basis-5/12 rounded-xl px-6 py-6 shadow-spread-shadow">
+      <div className="flex justify-between items-center flex-wrap">
+        <div className="md:basis-5/12 basis-full rounded-xl md:px-6 md:py-6 px-4 py-5 shadow-spread-shadow">
           <Loadable isLoading={signInMutation.isLoading}>
             <FormProvider {...methods}>
               <form
@@ -129,7 +128,7 @@ const SignInPage: NextPageWithLayout = () => {
                   />
                 </div>
 
-                <div className="mt-7 flex items-center justify-between text-sm">
+                <div className="mt-7 flex items-center justify-between md:text-sm text-[0.8rem]">
                   <AppLink
                     text="حساب کاربری ندارید؟ ثبت نام کنید"
                     href={LINKS.SIGN_UP}
@@ -150,7 +149,7 @@ const SignInPage: NextPageWithLayout = () => {
           </Loadable>
         </div>
 
-        <div className="basis-6/12 flex items-center justify-center">
+        <div className="md:basis-6/12 hidden md:flex items-center justify-center">
           <Image
             alt="ایراستریشن صفحه ثبت نام"
             src={signInIllustration}
