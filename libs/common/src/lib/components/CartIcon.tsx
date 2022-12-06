@@ -28,7 +28,7 @@ export const CartIcon: React.FC<CartIconProps> = ({
         <>
           <Popover.Button className="outline-none">
             <div
-              className={`rounded-full w-10 h-10 relative flex items-center justify-center ${
+              className={`rounded-full md:w-10 md:h-10 w-8 h-8 relative flex items-center justify-center ${
                 open ? 'bg-gray-300' : 'bg-light-blue'
               }`}
             >
@@ -45,7 +45,7 @@ export const CartIcon: React.FC<CartIconProps> = ({
               >
                 <FontAwesomeIcon
                   icon={faCartShopping}
-                  className="w-6 h-6 leading-none"
+                  className="md:w-6 md:h-6 w-4 h-4 leading-[0]"
                 />
               </div>
             </div>
