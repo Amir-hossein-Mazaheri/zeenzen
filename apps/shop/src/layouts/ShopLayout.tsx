@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import Navbar from '../common/Navbar';
 import Footer from '../components/landing-page/Footer';
@@ -17,10 +17,12 @@ const ShopLayout: React.FC<ShopLayoutProps> = ({
 }) => {
   return (
     <>
-      <main className={`px-12 ${compact ? '' : 'space-y-20'}`}>
+      <main className={`md:px-12 px-6 ${compact ? '' : 'space-y-20'}`}>
         <Navbar className={compact ? 'mb-20' : ''} />
         {withAnimation ? (
-          <AnimationLayout className={`px-12 ${compact ? '' : 'space-y-20'}`}>
+          <AnimationLayout
+            className={`md:px-12 px-6 ${compact ? '' : 'space-y-20'}`}
+          >
             {children}
           </AnimationLayout>
         ) : (
