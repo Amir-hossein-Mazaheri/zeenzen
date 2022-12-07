@@ -66,7 +66,7 @@ const AskAmirhosseinQuestionForm = () => {
 
   return (
     <div className="mt-24" id="question-form">
-      <h3 className="text-center font-extrabold text-5xl text-light-blue mb-10">
+      <h3 className="text-center font-extrabold md:text-5xl text-3xl text-light-blue md:mb-10 mb-7">
         سوالتو اینجا بپرس 🤔
       </h3>
 
@@ -82,8 +82,8 @@ const AskAmirhosseinQuestionForm = () => {
           />
         )}
 
-        <Loadable isLoading={loading} fragment>
-          <div className="rounded-xl grow bg-white shadow-mild-shadow px-12 py-10">
+        <div className="rounded-xl grow bg-white shadow-mild-shadow md:px-12 md:py-10 px-8 py-6">
+          <Loadable isLoading={loading} fragment center>
             <FormProvider {...methods}>
               <form
                 onSubmit={methods.handleSubmit(handleSubmitAskAmirhossein)}
@@ -138,8 +138,8 @@ const AskAmirhosseinQuestionForm = () => {
                 </div>
               </form>
             </FormProvider>
-          </div>
-        </Loadable>
+          </Loadable>
+        </div>
       </div>
     </div>
   );

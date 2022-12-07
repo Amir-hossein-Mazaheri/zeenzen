@@ -13,11 +13,11 @@ const AskAmirhosseinJoinAndGain = () => {
         className="mx-auto mt-7"
       />
 
-      <h2 className="text-center font-extrabold text-5xl text-light-blue mt-7">
+      <h2 className="text-center font-extrabold md:text-5xl text-3xl text-light-blue md:mt-7">
         تو هم میتونی مشارکت کنی
       </h2>
 
-      <p className="mt-7">
+      <p className="md:mt-7 mt-4">
         هر یک از شما میتونه جواب سوالات بقیه رو بدین 🆒 و امتیاز دریافت کنید و
         با امتیاز های جمع شده دوره ها رو با تخفیف بخرید 🤑، هر یک از سوالات رو
         که جواب بدین بعد از تایید امتیاز دریافت می کنید و هرکسی که جواب شما رو

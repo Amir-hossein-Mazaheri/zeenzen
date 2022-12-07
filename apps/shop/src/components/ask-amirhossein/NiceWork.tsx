@@ -15,11 +15,11 @@ const AskAmirhosseinNiceWork = () => {
         className="mx-auto mt-7"
       />
 
-      <h2 className="text-center font-extrabold text-5xl text-light-blue mt-7">
+      <h2 className="text-center font-extrabold md:text-5xl text-4xl text-light-blue mt-7">
         یه کار جذاب 🥳
       </h2>
 
-      <p className="mt-7">
+      <p className="md:mt-7 mt-4">
         نه تنها در این بخش جواب سوالاتتون رو میدیم بلکه پر تکرار ترین سوالات
         StackOverflow رو در زمینه های JavaScript، React، NodeJs رو به فارسی
         ترجمه کردیم 🔥، که کمکی به توسعه دهندگان ایرانی کرده باشیم البته این

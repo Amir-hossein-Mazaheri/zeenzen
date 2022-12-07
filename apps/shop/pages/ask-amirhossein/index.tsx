@@ -17,11 +17,11 @@ const AskAmirhosseinPage: NextPageWithLayout = () => {
         <title>{addToTitle('از امیرحسین بپرس')}</title>
       </Head>
 
-      <div className="mx-auto w-[95%]">
+      <div className="mx-auto md:w-[95%]">
         <AskAmirhosseinIntro />
 
-        <div className="max-w-7xl mx-auto text-text-black mt-12">
-          <div className="text-xl leading-loose font-medium">
+        <div className="max-w-7xl mx-auto text-text-black md:mt-12 mt-6">
+          <div className="md:text-xl text-center md:text-inherit leading-loose font-medium">
             <p>
               توی این صفحه میتونی هر سوالی که داری رو از من بپرسی 🤩، مهم نیست
               که سوالت چیه فقط بپرسش ولی قبلش بهت توصیه می کنم که بخش سولات رو

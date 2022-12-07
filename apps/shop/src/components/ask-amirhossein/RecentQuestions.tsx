@@ -15,7 +15,7 @@ const AskAmirhosseinRecentQuestions = () => {
   return (
     <Loadable isLoading={isLoading} fragment>
       <div className="mt-24">
-        <h3 className="mb-16 font-bold text-4xl text-center text-light-blue">
+        <h3 className="mb-16 font-bold md:text-4xl text-3xl text-center text-light-blue">
           آخرین سوالات پرسیده شده
         </h3>
 

@@ -10,10 +10,10 @@ const AskAmirhosseinIntro = () => {
         src={questionIllustration}
         width={1000}
         alt="از امیرحسین بپرس"
-        className="max-w-2xl mx-auto"
+        className="max-w-full mx-auto"
       />
 
-      <h1 className="text-center font-extrabold text-7xl text-light-blue">
+      <h1 className="text-center font-extrabold md:text-7xl text-4xl mt-9 md:mt-2 text-light-blue">
         خوش اومدی 👋
       </h1>
     </>
