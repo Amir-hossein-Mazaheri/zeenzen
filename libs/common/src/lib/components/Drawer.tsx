@@ -18,13 +18,13 @@ export const Drawer: React.FC<DrawerProps> = ({
   const getDynamicClassName = useMemo(() => {
     switch (position) {
       case 'top':
-        return 'left-0 right-0 top-0 min-h-[10rem]';
+        return 'left-0 right-0 top-0 min-h-[10rem] -translate-x-full';
       case 'bottom':
-        return 'left-0 right-0 bottom-0 min-h-[10rem]';
+        return 'left-0 right-0 bottom-0 min-h-[10rem] translate-x-full';
       case 'left':
         return 'top-0 bottom-0 left-0 min-w-[10rem] -translate-y-full';
       case 'right':
-        return 'top-0 bottom-0 right-0 min-w-[10rem]';
+        return 'top-0 bottom-0 right-0 min-w-[10rem] translate-y-full';
     }
   }, [position]);
 
