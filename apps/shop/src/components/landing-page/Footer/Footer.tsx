@@ -16,7 +16,7 @@ import muscleEmoji from '../../../assets/images/landing-page/footer/muscle-emoji
 
 const Footer = () => {
   return (
-    <footer className="relative">
+    <footer className="relative md:mt-0 sm:mt-44 mt-56">
       <div className="w-full">
         <Image
           priority
@@ -26,13 +26,14 @@ const Footer = () => {
           className="object-fill"
         />
       </div>
-      <div className="bg-dark-blue relative px-16 pt-12 pb-4">
+
+      <div className="bg-dark-blue relative md:px-16 px-8 md:pt-16 pt-20 pb-4">
         <Newsletter />
 
-        <div className="flex gap-20 items-center text-white">
+        <div className="flex md:flex-row flex-col md:gap-20 gap-12 md:items-center text-white">
           <div>
-            <h3 className="mb-6 text-2xl font-bold">صفحات سایت</h3>
-            <ul className="space-y-5">
+            <h3 className="mb-6 md:text-2xl text-lg font-bold">صفحات سایت</h3>
+            <ul className="flex md:flex-col md:items-start items-center gap-5 text-sm md:text-base">
               <li>خانه</li>
               <li>فروشگاه</li>
               <li>درباره من</li>
@@ -41,16 +42,16 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="mb-6 text-2xl font-bold">دوره های ما</h3>
-            <ul className="space-y-5">
-              <li>دوره پیشرفته جاوااسکریپت</li>
-              <li>دوره مقدماتی ریکت</li>
-              <li>دوره طراحی وب</li>
-              <li>دوره تایپ اسکریپت</li>
+            <h3 className="mb-6 md:text-2xl text-lg font-bold">دوره های ما</h3>
+            <ul className="flex md:flex-col md:items-start items-center justify-between gap-y-5 flex-wrap text-sm md:text-base">
+              <li className="basis-[45.5%]">دوره پیشرفته جاوااسکریپت</li>
+              <li className="basis-[45.5%]">دوره مقدماتی ریکت</li>
+              <li className="basis-[45.5%]">دوره طراحی وب</li>
+              <li className="basis-[45.5%]">دوره تایپ اسکریپت</li>
             </ul>
           </div>
 
-          <div className="mr-auto">
+          <div className="md:mr-auto self-center md:scale-100 scale-90">
             <Image
               src={zeenzenLogo}
               alt="ZeenZen logo"
@@ -60,7 +61,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex text-white items-center justify-center mt-10">
+        <div className="flex md:flex-row flex-col-reverse gap-8 text-white items-center justify-center mt-10">
           <div className="flex gap-2 items-start justify-center grow">
             <p>ساخته شده با</p>
             <p>
