@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
@@ -41,8 +40,7 @@ import getPasswordRegex from '../src/utils/getPasswordRegex';
 import useUserStore from '../src/store/useUserStore';
 import getFormErrorMessages from '../src/utils/getFormErrorMessages';
 import { LINKS } from '../src/constants/links';
-
-// const Countdown = dynamic(() => import('react-countdown'));
+import getErrorMessages from '../src/utils/getErrorMessages';
 
 const signUpSchema = z.object({
   email: z
@@ -124,10 +122,8 @@ const SignUpPage: NextPageWithLayout = () => {
       setShowCodeForm(true);
 
       setExpiresAt(() => dayjs(expiresAt).toDate());
-    } catch (err: any) {
-      console.log(err.response);
-
-      const errors = err.response.errors.map((err: any) => ({
+    } catch (err) {
+      const errors = err.response.errors.map((err) => ({
         text: err.message,
         type: 'error',
       }));
@@ -153,11 +149,9 @@ const SignUpPage: NextPageWithLayout = () => {
       }).fire();
 
       router.replace(LINKS.SIGN_IN);
-    } catch (err: any) {
-      console.log(err.response);
-
-      const errors = err.response.errors.map((err: any) => ({
-        text: err.message,
+    } catch (err) {
+      const errors = getErrorMessages(err).map<AlertMessage>((message) => ({
+        text: message,
         type: 'error',
       }));
 
@@ -183,7 +177,7 @@ const SignUpPage: NextPageWithLayout = () => {
   };
 
   return (
-    <div className="w-[75%]">
+    <div className="md:w-[75%] w-[95%]">
       <Head>
         <title>{addToTitle('ثبت نام')}</title>
       </Head>
@@ -199,20 +193,18 @@ const SignUpPage: NextPageWithLayout = () => {
       </div>
 
       <div className="flex flex-row-reverse justify-between items-center">
-        <div className="relative basis-5/12 rounded-xl px-6 py-6 shadow-spread-shadow">
+        <div className="relative basis-full md:basis-5/12 rounded-xl px-6 py-6 shadow-spread-shadow">
           {showCodeForm && (
             <div className="absolute flex flex-col justify-center gap-3 font-bold items-center left-0 bottom-full mb-5 bg-white shadow-mild-shadow px-12 py-5 rounded-xl">
               <div className="flex items-center gap-1">
-                {/* <WatchLaterIcon fontSize="medium" /> */}
                 <FontAwesomeIcon icon={faStopwatch} size="lg" />
-                {/* {import('react-countdown').then((Countdown) => ( */}
+
                 <Countdown
                   date={expiresAt}
                   zeroPadDays={0}
                   zeroPadTime={1}
                   onComplete={handleCountDownComplete}
                 />
-                {/* ))} */}
               </div>
               <p>انقضای کد تایید</p>
             </div>
@@ -249,7 +241,7 @@ const SignUpPage: NextPageWithLayout = () => {
                       {digits.map((digit) => (
                         <input
                           key={digit.ref.toString()}
-                          className="w-16 h-16 text-center bg-gray-200 rounded-xl"
+                          className="md:w-16 md:h-16 w-12 h-12 text-center bg-gray-200 rounded-xl"
                           inputMode="decimal"
                           autoFocus
                           {...digit}
@@ -273,7 +265,7 @@ const SignUpPage: NextPageWithLayout = () => {
           </Loadable>
         </div>
 
-        <div className="basis-6/12 flex items-center justify-center">
+        <div className="basis-6/12 hidden md:flex items-center justify-center">
           <Image
             alt="ایراستریشن صفحه ثبت نام"
             src={signUpIllustration}
