@@ -14,7 +14,7 @@ const CenterLayout: React.FC<CenterLayoutProps> = ({
 }) => {
   return (
     <div className="w-full h-screen flex flex-col">
-      <div className="px-12 mt-4">
+      <div className="md:px-12 px-6 md:mt-4 mt-5">
         <Navbar />
       </div>
 
