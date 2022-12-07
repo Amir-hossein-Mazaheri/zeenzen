@@ -61,7 +61,7 @@ export const Accordion: React.FC<AccordionProps> = ({
             onClick={() => handleClose(id)}
             className={`${
               isOpen ? 'bg-light-blue/10 text-light-blue' : 'bg-white'
-            } font-semibold shadow-mild-shadow shadow-gray-200/40 flex w-full items-center justify-between rounded-xl px-7 py-5 transition-all duration-300`}
+            } font-semibold shadow-mild-shadow shadow-gray-200/40 flex w-full items-center justify-between rounded-xl md:px-7 md:py-5 py-4 px-5 text-sm md:text-base transition-all duration-300`}
           >
             <span>{title}</span>
 
@@ -77,7 +77,10 @@ export const Accordion: React.FC<AccordionProps> = ({
             leaveFrom="transform scale-100 opacity-100"
             leaveTo="transform scale-95 opacity-0"
           >
-            <Disclosure.Panel className="px-8 py-4" static>
+            <Disclosure.Panel
+              className="md:px-8 md:py-4 px-6 py-3 text-sm md:text-base leading-loose"
+              static
+            >
               {content}
             </Disclosure.Panel>
           </Transition>
