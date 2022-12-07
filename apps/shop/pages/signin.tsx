@@ -78,7 +78,7 @@ const SignInPage: NextPageWithLayout = () => {
     } catch (err) {
       console.log('sign in error: ', err);
 
-      const errors: AlertMessage[] = getErrorMessages(err).map((message) => ({
+      const errors = getErrorMessages(err).map<AlertMessage>((message) => ({
         text: message,
         type: 'error',
       }));
