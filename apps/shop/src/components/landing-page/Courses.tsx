@@ -12,12 +12,12 @@ const Courses: React.FC<CoursesProps> = ({ courses }) => {
       <UnderlinedTitle
         center
         element="h1"
-        size="text-6xl"
+        size="text-5xl md:text-6xl"
         title="دوره های آموزشی ما"
-        className="mt-16"
+        className="mt-16 text-center md:text-inherit"
       />
 
-      <div className="grid grid-cols-3 gap-10 mt-20">
+      <div className="grid lg:grid-cols-3 grid-cols-1 sm:grid-cols-2 gap-10 mt-20">
         {courses.map((course) => (
           <ProductCard key={course.id} {...course} />
         ))}

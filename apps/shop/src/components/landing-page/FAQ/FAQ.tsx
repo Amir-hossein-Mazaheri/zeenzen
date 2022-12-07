@@ -18,12 +18,11 @@ const FAQ = () => {
       <UnderlinedTitle
         center
         element="h1"
-        size="text-6xl"
+        size="md:text-6xl text-5xl"
         title="سوالات متداول"
-        className="mt-12"
+        className="mt-12 text-center md:text-inherit"
       />
 
-      {/* <AccordionContainer items={accordionItems} /> */}
       <Accordion items={accordionItems} className="mt-10" />
     </div>
   );

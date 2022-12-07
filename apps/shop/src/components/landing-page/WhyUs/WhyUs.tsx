@@ -39,9 +39,14 @@ const reasons = [
 const WhyUs = () => {
   return (
     <div>
-      <UnderlinedTitle center element="h1" size="text-6xl" title="چرا ما؟" />
+      <UnderlinedTitle
+        center
+        element="h1"
+        size="text-6xl md:text-5xl"
+        title="چرا ما؟"
+      />
 
-      <div className="flex justify-between mt-16">
+      <div className="flex md:flex-row gap-12 md:gap-0 flex-col justify-between md:mt-16 mt-12">
         {reasons.map(({ img, title, description }) => (
           <Reason key={img} img={img} title={title} description={description} />
         ))}
