@@ -21,8 +21,8 @@ const AskAmirhosseinPage: NextPageWithLayout = () => {
         <AskAmirhosseinIntro />
 
         <div className="max-w-7xl mx-auto text-text-black md:mt-12 mt-6">
-          <div className="md:text-xl text-center md:text-inherit leading-loose font-medium">
-            <p>
+          <div className="md:text-xl text-center md:text-right font-medium">
+            <p className="leading-loose">
               توی این صفحه میتونی هر سوالی که داری رو از من بپرسی 🤩، مهم نیست
               که سوالت چیه فقط بپرسش ولی قبلش بهت توصیه می کنم که بخش سولات رو
               که پایین همین صفحه هست رو ببینی ممکنه سوال تو رو کس دیگه ای پرسیده

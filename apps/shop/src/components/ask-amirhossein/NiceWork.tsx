@@ -19,7 +19,7 @@ const AskAmirhosseinNiceWork = () => {
         یه کار جذاب 🥳
       </h2>
 
-      <p className="md:mt-7 mt-4">
+      <p className="md:mt-7 mt-4 leading-loose">
         نه تنها در این بخش جواب سوالاتتون رو میدیم بلکه پر تکرار ترین سوالات
         StackOverflow رو در زمینه های JavaScript، React، NodeJs رو به فارسی
         ترجمه کردیم 🔥، که کمکی به توسعه دهندگان ایرانی کرده باشیم البته این
