@@ -1,5 +1,5 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsString, Max } from 'class-validator';
+import { IsByteLength, IsEmail, IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class CreateAskAmirhosseinInput {
@@ -7,16 +7,14 @@ export class CreateAskAmirhosseinInput {
     description: 'create ask amirhossein question title.',
   })
   @IsNotEmpty()
-  @IsString()
-  @Max(255)
+  @IsByteLength(1, 255)
   title: string;
 
   @Field(() => String, {
     description: 'create ask amirhossein question description.',
   })
   @IsNotEmpty()
-  @IsString()
-  @Max(1000)
+  @IsByteLength(1, 1000)
   description: string;
 
   @Field(() => String, {

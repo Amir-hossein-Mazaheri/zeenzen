@@ -17,8 +17,14 @@ import getFormErrorMessages from '../../utils/getFormErrorMessages';
 const askAmirhosseinSchema = z.object({
   fullName: z.string().min(1, { message: getFormErrorMessages().required }),
   email: z.string().email({ message: getFormErrorMessages().email }),
-  title: z.string().min(1, { message: getFormErrorMessages().required }),
-  description: z.string().min(1, { message: getFormErrorMessages().required }),
+  title: z
+    .string()
+    .min(1, { message: getFormErrorMessages().required })
+    .max(255),
+  description: z
+    .string()
+    .min(1, { message: getFormErrorMessages().required })
+    .max(1000),
 });
 
 const AskAmirhosseinQuestionForm = () => {
