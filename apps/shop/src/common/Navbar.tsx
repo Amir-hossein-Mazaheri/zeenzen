@@ -106,10 +106,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
         </ul>
       </Drawer>
 
-      <div
-        style={{ margin: 0 }}
-        className={`sticky top-4 w-full text-text-black z-40 ${className}`}
-      >
+      <div className={`sticky top-4 w-full text-text-black z-40 ${className}`}>
         <nav className="flex justify-between items-center font-black md:text-lg md:py-3 md:px-8 py-2 px-5 bg-white shadow-spread-shadow rounded-full">
           <ul className="md:flex gap-12 hidden">
             {pages.map(({ title, link }) => (

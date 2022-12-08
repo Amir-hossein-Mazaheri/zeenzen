@@ -17,8 +17,8 @@ const ShopLayout: React.FC<ShopLayoutProps> = ({
 }) => {
   return (
     <>
-      <main className={`md:px-12 px-6 ${compact ? '' : 'space-y-20'}`}>
-        <Navbar className={compact ? 'mb-20' : ''} />
+      <main className="md:px-12 px-6">
+        <Navbar className={!compact ? 'mb-20' : ''} />
         {withAnimation ? (
           <AnimationLayout
             className={`md:px-12 px-6 ${compact ? '' : 'space-y-20'}`}
