@@ -82,7 +82,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
     <>
       <Drawer
         show={showMobileMenu}
-        className="max-w-[70vw] z-50 px-4 pb-5 pt-8 text-[0.7rem]"
+        className="max-w-[70vw] z-50 px-4 pb-5 pt-8 text-[0.7rem] md:hidden"
       >
         <div
           onClick={() => setShowMobileMenu(false)}
@@ -106,7 +106,10 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
         </ul>
       </Drawer>
 
-      <div className={`sticky top-4 w-full text-text-black z-40 ${className}`}>
+      <div
+        style={{ margin: 0 }}
+        className={`sticky top-4 w-full text-text-black z-40 ${className}`}
+      >
         <nav className="flex justify-between items-center font-black md:text-lg md:py-3 md:px-8 py-2 px-5 bg-white shadow-spread-shadow rounded-full">
           <ul className="md:flex gap-12 hidden">
             {pages.map(({ title, link }) => (
