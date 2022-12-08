@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from 'react';
+import { ReactElement, ReactNode, useState, useLayoutEffect } from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -18,6 +18,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import '../src/styles/globals.css';
 import '../src/styles/nprogress.css';
 import useAddPageLoading from '../src/hooks/useAddPageLoading';
+import useCartStore from '../src/store/useCartStore';
 
 const OnlineStatus = dynamic(() => import('../src/common/OnlineStatus'), {
   ssr: false,
@@ -47,6 +48,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         },
       })
   );
+
+  const loadCartItems = useCartStore((state) => state.loadCartItems);
+
+  // loads cart items from localStorage
+  useLayoutEffect(() => {
+    loadCartItems();
+  }, [loadCartItems]);
 
   const getLayout = Component.getLayout ?? ((page) => page);
 

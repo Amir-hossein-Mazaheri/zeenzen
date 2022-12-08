@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
@@ -16,7 +16,6 @@ import useUser from '../hooks/useUser';
 import ProfileMenu from '../components/user/ProfileMenu';
 import useCart from '../hooks/useCart';
 import useRemoveCartItem from '../hooks/useRemoveCartItem';
-import useCartStore from '../store/useCartStore';
 import { LINKS } from '../constants/links';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
@@ -70,13 +69,6 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
     (link: string) => link === '/' + parseUrl(asPath)[0],
     [asPath]
   );
-
-  const loadCartItems = useCartStore((state) => state.loadCartItems);
-
-  // loads cart items from localStorage
-  useEffect(() => {
-    loadCartItems();
-  }, [loadCartItems]);
 
   return (
     <>
