@@ -8,3 +8,4 @@ export * from './userRoleTranslator';
 export * from './flattenObject';
 export * from './parseUrl';
 export * from './promiseWithTimeout';
+export * from './isServer';
