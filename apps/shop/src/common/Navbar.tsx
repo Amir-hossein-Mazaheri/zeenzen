@@ -66,7 +66,11 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
   });
 
   const isLinkActive = useCallback(
-    (link: string) => link === '/' + parseUrl(asPath)[0],
+    (link: string) => {
+      const parsedUrl = parseUrl(asPath);
+
+      return link === (parsedUrl[0] ? '/' + parsedUrl[0] : '/');
+    },
     [asPath]
   );
 
