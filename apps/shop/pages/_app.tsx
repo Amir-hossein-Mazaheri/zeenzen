@@ -1,4 +1,9 @@
-import { ReactElement, ReactNode, useState, useLayoutEffect } from 'react';
+import React, {
+  ReactElement,
+  ReactNode,
+  useState,
+  useLayoutEffect,
+} from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -11,7 +16,7 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AnimatePresence, LazyMotion, domAnimation } from 'framer-motion';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { BreadcrumbProvider } from '@zeenzen/common';
+import { BreadcrumbProvider, isServer } from '@zeenzen/common';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -34,6 +39,10 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
+
+if (isServer()) {
+  React.useLayoutEffect = () => ({});
+}
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useAddPageLoading();
