@@ -27,48 +27,73 @@ const useFilterStore = create(
       ...initialState,
 
       pushCategoryToFilters: (element) => {
-        set((filters) => {
-          const categories = new Set(filters.categories);
+        set(
+          (filters) => {
+            const categories = new Set(filters.categories);
 
-          categories.add({ id: uuidV4(), ...element });
+            categories.add({ id: uuidV4(), ...element });
 
-          filters.categories = [...categories];
-        });
+            filters.categories = [...categories];
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'filter/pushCategoryToFilters'
+        );
       },
 
       pushLevelToFilters: (element) => {
-        set((filters) => {
-          const levels = new Set(filters.levels);
+        set(
+          (filters) => {
+            const levels = new Set(filters.levels);
 
-          levels.add({ id: uuidV4(), ...element });
+            levels.add({ id: uuidV4(), ...element });
 
-          filters.levels = [...levels];
-        });
+            filters.levels = [...levels];
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'filter/pushLevelToFilters'
+        );
       },
 
       popFromFilters: (element) => {
-        set((filters) => {
-          if (element.type === 'category') {
-            filters.categories = filters.categories.filter(
-              (category) => category.id !== element.id
-            );
-          } else {
-            filters.levels = filters.levels.filter(
-              (level) => level.id !== element.id
-            );
-          }
-        });
+        set(
+          (filters) => {
+            if (element.type === 'category') {
+              filters.categories = filters.categories.filter(
+                (category) => category.id !== element.id
+              );
+            } else {
+              filters.levels = filters.levels.filter(
+                (level) => level.id !== element.id
+              );
+            }
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'filter/popFromFilters'
+        );
       },
 
       clearAllFilters: () => {
-        set((filters) => {
-          filters.categories = [];
-          filters.levels = [];
-        });
+        set(
+          (filters) => {
+            filters.categories = [];
+            filters.levels = [];
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'filter/clearAllFilters'
+        );
       },
     })),
     {
       name: 'filters',
+      anonymousActionType: 'filter',
       enabled: !isProd(),
     }
   )

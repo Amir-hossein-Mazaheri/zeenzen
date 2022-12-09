@@ -25,28 +25,47 @@ const useUserStore = create(
       ...initialState,
 
       preSignUp: ({ email, password }) => {
-        set((user) => {
-          user.email = email;
-          user.password = password;
-        });
+        set(
+          (user) => {
+            user.email = email;
+            user.password = password;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'user/preSignUp'
+        );
       },
 
       signUp: (email) => {
-        set((user) => {
-          user.email = email;
-          user.password = '';
-        });
+        set(
+          (user) => {
+            user.email = email;
+            user.password = '';
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'user/signUp'
+        );
       },
 
       signUpFailed: () => {
-        set((user) => {
-          user.email = '';
-          user.password = '';
-        });
+        set(
+          (user) => {
+            user.email = '';
+            user.password = '';
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'user/signUpFailed'
+        );
       },
     })),
     {
       name: 'user',
+      anonymousActionType: 'user',
       enabled: !isProd(),
     }
   )

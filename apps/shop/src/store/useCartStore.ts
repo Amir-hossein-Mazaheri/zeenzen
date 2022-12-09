@@ -1,7 +1,7 @@
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
-import { isProd, Types } from '@zeenzen/common';
+import { isProd, isServer, Types } from '@zeenzen/common';
 
 import persistCart from '../utils/persistCart';
 
@@ -38,39 +38,57 @@ const useCartStore = create(
       },
 
       addCartItem: (item) => {
-        set((cart) => {
-          for (const item of cart.items) {
-            if (item.id === item.id) {
-              return;
+        set(
+          (cart) => {
+            for (const item of cart.items) {
+              if (item.id === item.id) {
+                return;
+              }
             }
-          }
 
-          cart.items.push(item);
+            cart.items.push(item);
 
-          persistCart(cart.items);
-        });
+            persistCart(cart.items);
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'cart/addCartItem'
+        );
       },
 
       removeCartItem: (courseId: Types.CartItem['id']) => {
-        set((cart) => {
-          cart.items = cart.items.filter((item) => item.id !== courseId);
+        set(
+          (cart) => {
+            cart.items = cart.items.filter((item) => item.id !== courseId);
 
-          persistCart(cart.items);
-        });
+            persistCart(cart.items);
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'cart/removeCartItem'
+        );
       },
 
       emptyCart: () => {
-        set((cart) => {
-          cart.items = [];
+        set(
+          (cart) => {
+            cart.items = [];
 
-          persistCart(cart.items);
-        });
+            persistCart(cart.items);
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'cart/emptyCart'
+        );
       },
     })),
     {
       name: 'cart',
       anonymousActionType: 'cart',
-      enabled: !isProd(),
+      enabled: !isProd() || isServer(),
     }
   )
 );

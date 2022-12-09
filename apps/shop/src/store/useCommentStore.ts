@@ -31,43 +31,74 @@ const useCommentStore = create(
       ...initialState,
 
       closeReplyCommentModal: () => {
-        set((comment) => {
-          comment.isReplyCommentModalOpen = false;
-        });
+        set(
+          (comment) => {
+            comment.isReplyCommentModalOpen = false;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'comment/closeCommentReply'
+        );
       },
 
       openReplyCommentModal: (parentCommentId) => {
-        set((comment) => {
-          comment.isReplyCommentModalOpen = true;
-          comment.parentCommentId = parentCommentId;
-        });
+        set(
+          (comment) => {
+            comment.isReplyCommentModalOpen = true;
+            comment.parentCommentId = parentCommentId;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'comment/openReplyCommentModal'
+        );
       },
 
       setCommentContent: (content) => {
-        set((comment) => {
-          comment.commentContent = content;
-        });
+        set(
+          (comment) => {
+            comment.commentContent = content;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'comment/setCommentContent'
+        );
       },
 
       setReplyContent: (content) => {
-        set((comment) => {
-          comment.replyContent = content;
-        });
+        set(
+          (comment) => {
+            comment.replyContent = content;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'comment/setReplyContent'
+        );
       },
 
       replyComment: (succeeded) => {
-        set((comment) => {
-          comment.isReplyCommentModalOpen = false;
-          comment.parentCommentId = '';
+        set(
+          (comment) => {
+            comment.isReplyCommentModalOpen = false;
+            comment.parentCommentId = '';
 
-          if (succeeded) {
-            comment.replyContent = '';
-          }
-        });
+            if (succeeded) {
+              comment.replyContent = '';
+            }
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'comment/replyComment'
+        );
       },
     })),
     {
       name: 'comment',
+      anonymousActionType: 'comment',
       enabled: !isProd(),
     }
   )

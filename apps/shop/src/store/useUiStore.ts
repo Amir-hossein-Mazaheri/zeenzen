@@ -1,7 +1,7 @@
 import create from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { devtools } from 'zustand/middleware';
-import { isProd } from '@zeenzen/common';
+import { isProd, isServer } from '@zeenzen/common';
 
 interface InitialState {
   isPageLoading: boolean;
@@ -36,32 +36,57 @@ const useUiStore = create(
       ...initialState,
 
       setShopSidebarTitle: (title) => {
-        set((ui) => {
-          ui.sidebar.title = title;
-        });
+        set(
+          (ui) => {
+            ui.sidebar.title = title;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'ui/setShopSidebarTitle'
+        );
       },
 
       setShopSidebarDescription: (description) => {
-        set((ui) => {
-          ui.sidebar.description = description;
-        });
+        set(
+          (ui) => {
+            ui.sidebar.description = description;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'ui/setShopSidebarDescription'
+        );
       },
 
       resetShopSidebar: () => {
-        set((ui) => {
-          ui.sidebar = initialState.sidebar;
-        });
+        set(
+          (ui) => {
+            ui.sidebar = initialState.sidebar;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'ui/resetShopSidebar'
+        );
       },
 
       setPageLoading: (state) => {
-        set((ui) => {
-          ui.isPageLoading = state;
-        });
+        set(
+          (ui) => {
+            ui.isPageLoading = state;
+          },
+          false,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          'ui/setPageLoading'
+        );
       },
     })),
     {
       name: 'ui',
-      enabled: !isProd(),
+      anonymousActionType: 'ui',
+      enabled: !isProd() || isServer(),
     }
   )
 );
