@@ -4,8 +4,8 @@ import { Tab } from '@headlessui/react';
 import { useQuestionHubQuestionsUserRelatedQuery } from '@zeenzen/data';
 import { graphqlClient, Loadable } from '@zeenzen/common';
 
-import { tabAnimation } from 'apps/shop/pages/user/dashboard/questions';
-import AskAmirhosseinQuestion from 'apps/shop/src/common/AskAmirhosseinQuestion';
+import { tabAnimation } from '../../../../../pages/user/dashboard/questions';
+import AskAmirhosseinQuestion from '../../../../../src/common/AskAmirhosseinQuestion';
 
 const QuestionHubTab = () => {
   const { data, isLoading, error } =
@@ -25,6 +25,8 @@ const QuestionHubTab = () => {
         data?.questionHubQuestionsRelated.length > 0 ? (
           <div className="space-y-12">
             {data?.questionHubQuestionsRelated.map((questionHubQuestion) => (
+              // TODO: fix this type issue
+              // @ts-ignore
               <AskAmirhosseinQuestion
                 key={questionHubQuestion.id}
                 {...questionHubQuestion}
