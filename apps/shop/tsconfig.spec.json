@@ -2,12 +2,22 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
-    "types": ["jest", "node"],
-    "jsx": "react"
+    "module": "ESNext",
+    "types": [
+      "jest",
+      "node",
+      "dom",
+    ],
+    "jsx": "react",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ]
   },
   "include": [
     "jest.config.ts",
+    "jest.setup.ts",
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/*.test.tsx",
