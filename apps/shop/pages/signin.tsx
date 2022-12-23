@@ -151,10 +151,10 @@ const SignInPage: NextPageWithLayout = () => {
 
         <div className="md:basis-6/12 hidden md:flex items-center justify-center">
           <Image
-            alt="ایراستریشن صفحه ثبت نام"
             src={signInIllustration}
             width={609}
             height={459}
+            alt="sign-in-illustration"
           />
         </div>
       </div>
