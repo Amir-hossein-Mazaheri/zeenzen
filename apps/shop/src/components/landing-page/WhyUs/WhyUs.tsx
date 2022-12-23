@@ -10,26 +10,31 @@ import satisfaction from '../../../assets/images/landing-page/why-us/Star_Flat.s
 
 const reasons = [
   {
+    id: 1,
     img: projectBased,
     title: 'آموزش پروژه محور',
     description: 'پروژه های کاربردی و عمیق کننده',
   },
   {
+    id: 2,
     img: highQuality,
     title: 'کیفیت آموزشی بالا',
     description: `کیفیت تصویر و صوتی بالا به همراه آموزش مفهومی`,
   },
   {
+    id: 3,
     img: fairPrice,
     title: 'قیمت مناسب',
     description: 'قیمت متناسب با اقتصاد فعلی ایران',
   },
   {
+    id: 4,
     img: newTeachingMethod,
     title: 'متد آموزشی متفاوت',
     description: 'استفاده از شیوه آموزشی برای بهره وری بیشتر',
   },
   {
+    id: 5,
     img: satisfaction,
     title: 'رضایتمندی',
     description: 'رضایتمندی اکثر دانشجویان دوره ها',
@@ -47,8 +52,8 @@ const WhyUs = () => {
       />
 
       <div className="flex md:flex-row gap-12 md:gap-0 flex-col justify-between md:mt-16 mt-12">
-        {reasons.map(({ img, title, description }) => (
-          <Reason key={img} img={img} title={title} description={description} />
+        {reasons.map(({ id, img, title, description }) => (
+          <Reason key={id} img={img} title={title} description={description} />
         ))}
       </div>
     </div>
