@@ -66,8 +66,11 @@ export const AppInput: React.FC<AppInputProps> = ({
       </div>
 
       {errors[name] && (
-        <div className="text-red-500 mr-3 mt-3 text-sm font-semibold">
-          {errors[name]?.message?.toString()}
+        <div
+          data-testid="form-error-message"
+          className="text-red-500 mr-3 mt-3 text-sm font-semibold"
+        >
+          <span>{errors[name]?.message?.toString()}</span>
         </div>
       )}
     </div>
