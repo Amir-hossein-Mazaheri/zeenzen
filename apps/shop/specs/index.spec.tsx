@@ -57,8 +57,6 @@ describe('Home Page', () => {
       name: 'سوالات متداول',
     });
 
-    screen.debug();
-
     expect(faqHeader).toBeInTheDocument();
   });
 });
