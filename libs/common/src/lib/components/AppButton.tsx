@@ -51,7 +51,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
     () =>
       `${outline ? outlineStyle : defaultStyle} ${
         disabled || loading ? 'pointer-events-none' : 'cursor-pointer'
-      } outline-none px-8 py-2 text-base ${
+      } outline-none md:px-8 px-6 py-2 md:text-base text-sm ${
         rounded ? 'rounded-full' : 'rounded-[8.73529px]'
       } ${loading ? 'flex justify-center items-center' : ''} ${className}`,
     [className, defaultStyle, disabled, loading, outline, outlineStyle, rounded]
