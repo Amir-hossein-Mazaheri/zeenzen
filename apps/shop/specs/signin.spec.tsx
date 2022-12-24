@@ -46,7 +46,7 @@ describe('Sign In Page', () => {
 
     const formErrors = screen.queryAllByTestId('form-error-message');
 
-    expect(formErrors.length).toBe(0);
+    expect(formErrors).toHaveLength(0);
   });
 
   it('Should throw error if email is not correctly filled', async () => {
