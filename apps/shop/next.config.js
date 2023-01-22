@@ -1,7 +1,6 @@
 //@ts-check
 
 const { withNx } = require('@nrwl/next/plugins/with-nx');
-const withPlugins = require('next-compose-plugins');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
@@ -18,11 +17,15 @@ const nextConfig = {
   swcMinify: true,
   reactStrictMode: true,
   images: {
-    domains: ['localhost'],
+    remotePatterns: [
+      process.env.NODE_ENV === 'production'
+        ? { hostname: 'zeenzen.ir', port: '80', protocol: 'https' }
+        : { hostname: 'localhost', port: '4000', protocol: 'http' },
+    ],
   },
   poweredByHeader: true,
   trailingSlash: true,
+  output: 'standalone',
 };
 
-// module.exports = withPlugins([withNx], nextConfig);
 module.exports = withNx(withBundleAnalyzer(nextConfig));
