@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "postinstall": "cd libs/database && prisma generate && cd ../..",
+    "prisma:generate": "cd libs/database && prisma generate && cd ../..",
     "pnx": "pnpm nx",
     "start": "nx serve",
     "start:all": "nx run-many --target=serve",
