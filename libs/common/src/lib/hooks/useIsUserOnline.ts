@@ -21,7 +21,7 @@ export function useIsUserOnline({
     try {
       await promiseWithTimeout(
         timeout ?? 3000,
-        fetch('/api/test', {
+        fetch('/api/test-connection', {
           method: 'GET',
           signal: controller.signal,
         })
