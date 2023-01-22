@@ -3,6 +3,7 @@ import { useMeQuery } from '@zeenzen/data';
 import { graphqlClient } from '@zeenzen/common';
 
 import useRedirect from './useRedirect';
+import getQueryRetryFn from '../utils/getQueryRetryFn';
 
 /**
  *
@@ -22,8 +23,8 @@ export default function useUser(enabled = true) {
     {},
     {
       staleTime: 1000 * 60 * 5, // 5minutes
-      retry: 4,
       enabled,
+      retry: getQueryRetryFn(4),
     }
   );
 
