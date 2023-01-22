@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, Avatar } from '@prisma/client';
 import { PrismaService } from '@zeenzen/database';
 
@@ -14,7 +9,6 @@ import { LogsService } from '../logs/logs.service';
 import { RequestUser, CourseImagesFiles, TFile } from '../types';
 import { UserService } from '../user/user.service';
 import getUploadsPath from '../utils/getUploadsPath';
-import { getUrl } from '../utils/getUrl';
 
 export const COURSES_UPLOAD_DIR = 'courses';
 
@@ -25,10 +19,7 @@ let IS_CONFIRMED = false;
 @Injectable()
 export class UploadsService {
   constructor(
-    // private readonly dataSource: DataSource,
     private readonly userService: UserService,
-    private readonly courseService: CourseService,
-    private readonly logsService: LogsService,
     private readonly prismaService: PrismaService
   ) {}
 
@@ -37,10 +28,6 @@ export class UploadsService {
     user: RequestUser,
     transaction: Prisma.TransactionClient
   ) {
-    // const avatar = await queryRunner.manager.findOne(Avatar, {
-    //   where: { id, user: { id: user.sub } },
-    // });
-
     const avatar = await transaction.avatar.findFirst({
       where: {
         id,
@@ -56,10 +43,6 @@ export class UploadsService {
   }
 
   async validateCourseImage(id: string, transaction: Prisma.TransactionClient) {
-    // const courseImage = await queryRunner.manager.findOneBy(CourseImage, {
-    //   id,
-    // });
-
     const courseImage = await transaction.courseImage.findUnique({
       where: { id },
     });
@@ -95,18 +78,12 @@ export class UploadsService {
     return true;
   }
 
-  getUploadResponse(
-    originalname: string,
-    filename: string,
-    path: string,
-    absolutePath: string
-  ) {
+  getUploadResponse(originalname: string, filename: string, path: string) {
     return {
       message: `File ${originalname} uploaded successfully`,
       name: originalname,
       savedName: filename,
       path,
-      absolutePath,
     };
   }
 
@@ -135,28 +112,26 @@ export class UploadsService {
       }
 
       const courseImagePath = `/uploads/${COURSES_UPLOAD_DIR}/${courseImage.filename}`;
-      const courseImageAbsolutePath = getUrl(req) + courseImagePath;
 
       const courseCoverPath = `/uploads/${COURSES_UPLOAD_DIR}/${courseCover.filename}`;
-      const courseCoverAbsolutePath = getUrl(req) + courseCoverPath;
 
       await tx.courseImage.upsert({
         create: {
-          image: courseImageAbsolutePath,
+          image: courseImagePath,
           course: {
             connect: course,
           },
-          coverImage: courseCoverAbsolutePath,
+          coverImage: courseCoverPath,
         },
         update: {
-          image: courseImageAbsolutePath,
+          image: courseImagePath,
           course: {
             connect: course,
           },
-          coverImage: courseCoverAbsolutePath,
+          coverImage: courseCoverPath,
         },
         where: {
-          id: course.image.id,
+          id: course.image?.id,
         },
       });
 
@@ -164,14 +139,12 @@ export class UploadsService {
         courseImage: this.getUploadResponse(
           courseImage.originalname,
           courseImage.filename,
-          courseImagePath,
-          courseImageAbsolutePath
+          courseImagePath
         ),
         courseCover: this.getUploadResponse(
           courseCover.originalname,
           courseCover.filename,
-          courseCoverPath,
-          courseCoverAbsolutePath
+          courseCoverPath
         ),
       };
     });
@@ -198,10 +171,9 @@ export class UploadsService {
       }
 
       const path = `/uploads/${USERS_AVATAR_UPLOAD_DIR}/${filename}`;
-      const absolutePath = getUrl(req) + path;
 
       const upsertData: Prisma.AvatarCreateArgs['data'] = {
-        fullPath: absolutePath,
+        fullPath: path,
         originalName: originalname,
         name: filename,
 
@@ -234,7 +206,7 @@ export class UploadsService {
       }
 
       return {
-        ...this.getUploadResponse(originalname, filename, path, absolutePath),
+        ...this.getUploadResponse(originalname, filename, path),
         avatarId: avatar.id,
       };
     });
