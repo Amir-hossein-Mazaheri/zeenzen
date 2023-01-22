@@ -2,9 +2,7 @@ import { join } from 'path';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import GraphQLJSON from 'graphql-type-json';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { ScheduleModule } from '@nestjs/schedule/dist';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -69,26 +67,6 @@ import { QuestionHubModule } from './question-hub/question-hub.module';
         EMAIL_PORT: Joi.number().required(),
       }).required(),
     }),
-    // TypeOrmModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: (config: ConfigService) => {
-    //     const isDev = config.get('NODE_ENV') === 'development';
-
-    //     return {
-    //       type: 'postgres',
-    //       host: config.get('DATABASE_HOST', 'localhost'),
-    //       port: +config.get<number>('DATABASE_PORT', 5432),
-    //       username: config.get('DATABASE_USERNAME'),
-    //       password: config.get('DATABASE_PASSWORD'),
-    //       database: config.get('DATABASE', 'myshop'),
-    //       synchronize: isDev,
-    //       useUTC: true,
-    //       autoLoadEntities: true,
-    //       namingStrategy: new SnakeNamingStrategy(),
-    //     };
-    //   },
-    // }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -128,7 +106,7 @@ import { QuestionHubModule } from './question-hub/question-hub.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         ttl: 60,
-        limit: 10,
+        limit: 20,
         storage: new ThrottlerStorageRedisService({
           port: +config.get('REDIS_PORT'),
           host: config.get('REDIS_HOST'),
