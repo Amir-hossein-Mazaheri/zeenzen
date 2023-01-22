@@ -9,7 +9,7 @@ import useUser from '../../hooks/useUser';
 import useCommentStore from '../../store/useCommentStore';
 
 interface CommentsProps {
-  courseId: string;
+  courseId: number;
 }
 
 const Comments: React.FC<CommentsProps> = ({ courseId }) => {

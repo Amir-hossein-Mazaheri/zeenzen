@@ -29,7 +29,7 @@ const SingleCoursePage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>{addToTitle(courseData?.course.title || '')}</title>
+        <title>{addToTitle(courseData?.course.title ?? '')}</title>
       </Head>
 
       <Loadable
@@ -38,10 +38,10 @@ const SingleCoursePage: NextPageWithLayout = () => {
         skeleton={<SingleCourseSkeleton />}
       >
         <Hero
-          image={courseData?.course?.image?.image || ''}
-          coverImage={courseData?.course?.image?.coverImage || ''}
-          title={courseData?.course.title || ''}
-          shortDescription={courseData?.course.shortDescription || ''}
+          image={courseData?.course?.image?.image ?? ''}
+          coverImage={courseData?.course?.image?.coverImage ?? ''}
+          title={courseData?.course.title ?? ''}
+          shortDescription={courseData?.course.shortDescription ?? ''}
         />
 
         <div className="mt-28 flex items-start gap-12 justify-between">
@@ -53,11 +53,11 @@ const SingleCoursePage: NextPageWithLayout = () => {
                 <ContentTab
                   title={tabs[0]}
                   content={courseData?.course.description || ''}
-                  courseId={courseData?.course.id || ''}
+                  courseId={courseData?.course.id ?? 0}
                 />
                 <PreRequirementsTab
                   title={tabs[1]}
-                  courseId={courseData?.course.id || ''}
+                  courseId={courseData?.course.id ?? 0}
                   description={
                     courseData?.course.preRequirementsDescription || ''
                   }
@@ -67,7 +67,7 @@ const SingleCoursePage: NextPageWithLayout = () => {
           </div>
           <div className="basis-1/4">
             <Sidebar
-              id={query?.courseId?.toString() || ''}
+              id={Number(query?.courseId) ?? 0}
               hoursCount={courseData?.course.hoursCount || 0}
               lecturesCount={courseData?.course.lecturesCount || 0}
               level={courseData?.course.level || CourseLevel.Elementary}
@@ -114,6 +114,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   } catch (err) {
+    console.log('single course error: ', err);
+
     return {
       notFound: true,
     };

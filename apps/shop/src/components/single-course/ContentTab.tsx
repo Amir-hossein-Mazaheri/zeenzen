@@ -7,7 +7,7 @@ import Comments from './Comments';
 interface ContentTabProps {
   title: string;
   content: string; // should be markdown(MD)
-  courseId: string;
+  courseId: number;
 }
 
 const ContentTab: React.FC<ContentTabProps> = ({

@@ -13,7 +13,7 @@ mutation ReplyComment($replyCommentInput: ReplyCommentInput!) {
   }
 }
 
-query Comments($courseId: ID!) {
+query Comments($courseId: Int!) {
   comments(courseId: $courseId) {
     id
     content

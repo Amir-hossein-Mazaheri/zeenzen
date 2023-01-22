@@ -16,7 +16,7 @@ import PreRequirement from './PreRequirement';
 
 interface PreRequirementsTabProps {
   title: string;
-  courseId: string;
+  courseId: number;
   description?: string;
 }
 

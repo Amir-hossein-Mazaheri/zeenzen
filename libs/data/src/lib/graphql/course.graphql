@@ -22,17 +22,17 @@ query Course($courseId: Int!) {
 
     instructors {
       id
-      user {
-        firstname
-        lastname
-      }
+
       expertises {
         id
         label
         level
         isPrimary
       }
+
       user {
+        firstname
+        lastname
         avatar {
           id
           fullPath

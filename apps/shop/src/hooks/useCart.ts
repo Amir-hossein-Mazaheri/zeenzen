@@ -3,6 +3,7 @@ import { graphqlClient, Types } from '@zeenzen/common';
 
 import useUser from './useUser';
 import useCartStore from '../store/useCartStore';
+import getQueryRetryFn from '../utils/getQueryRetryFn';
 
 export enum CartType {
   LOCAL,
@@ -16,15 +17,21 @@ export default function useCart() {
     data,
     isLoading,
     isFetching,
-    error,
     refetch: refetchCart,
-  } = useCartQuery(graphqlClient, {
-    cartId: user?.cart.id || '',
-  });
+  } = useCartQuery(
+    graphqlClient,
+    {
+      cartId: user?.cart.id || '',
+    },
+    {
+      enabled: isAuthenticated,
+      retry: getQueryRetryFn(),
+    }
+  );
+
+  console.log('cart server data: ', data);
 
   const cartItems = useCartStore((state) => state.items);
-
-  console.log('cart errors: ', error);
 
   if (isAuthenticated) {
     return {
@@ -33,8 +40,8 @@ export default function useCart() {
       isLoading,
       isFetching,
       refetchCart,
-      totalPrice: data?.cart.totalPrice || 0,
-      totalPriceWithDiscount: data?.cart.totalPriceWithDiscount || 0,
+      totalPrice: data?.cart.totalPrice ?? 0,
+      totalPriceWithDiscount: data?.cart.totalPriceWithDiscount ?? 0,
       items: data?.cart.cartItems?.map<Types.CartItem>(
         ({
           unitPriceWithDiscount,

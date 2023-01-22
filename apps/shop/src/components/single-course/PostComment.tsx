@@ -20,7 +20,7 @@ import useCommentStore from '../../store/useCommentStore';
 import { LINKS } from '../../constants/links';
 
 interface PostCommentProps {
-  courseId: string;
+  courseId: number;
 }
 
 const PostComment: React.FC<PostCommentProps> = ({ courseId }) => {

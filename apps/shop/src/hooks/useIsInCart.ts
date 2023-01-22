@@ -1,6 +1,6 @@
 import useCart from './useCart';
 
-export default function useIsInCart(courseId: string) {
+export default function useIsInCart(courseId: number) {
   const { items, ...rest } = useCart();
 
   return {

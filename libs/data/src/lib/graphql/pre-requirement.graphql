@@ -1,4 +1,4 @@
-query PreRequirements($courseId: ID!) {
+query PreRequirements($courseId: Int!) {
   preRequirements(id: $courseId) {
     id
     label

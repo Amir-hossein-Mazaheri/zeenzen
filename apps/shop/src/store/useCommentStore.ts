@@ -5,14 +5,14 @@ import { isProd } from '@zeenzen/common';
 
 interface InitialState {
   isReplyCommentModalOpen: boolean;
-  parentCommentId: string;
+  parentCommentId: number;
   commentContent: string;
   replyContent: string;
 }
 
 interface CommentStore extends InitialState {
   closeReplyCommentModal: () => void;
-  openReplyCommentModal: (parentCommentId: string) => void;
+  openReplyCommentModal: (parentCommentId: number) => void;
   setCommentContent: (content: string) => void;
   setReplyContent: (content: string) => void;
   replyComment: (succeeded: boolean) => void;
@@ -20,7 +20,7 @@ interface CommentStore extends InitialState {
 
 const initialState: InitialState = {
   isReplyCommentModalOpen: false,
-  parentCommentId: '',
+  parentCommentId: 0,
   commentContent: '',
   replyContent: '',
 };
@@ -83,7 +83,7 @@ const useCommentStore = create(
         set(
           (comment) => {
             comment.isReplyCommentModalOpen = false;
-            comment.parentCommentId = '';
+            comment.parentCommentId = 0;
 
             if (succeeded) {
               comment.replyContent = '';

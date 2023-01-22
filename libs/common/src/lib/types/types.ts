@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export type CartItem = {
-  id: string;
+  id: number;
   title: string;
   thumbnail: string;
   instructors: string[];
