@@ -1,10 +1,10 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 import { User } from '../../user/entities/user.entity';
 
 @ObjectType()
 export class Avatar {
-  @Field(() => ID, { description: 'avatar id which is uuid.' })
+  @Field(() => String, { description: 'avatar id which is uuid.' })
   id: string;
 
   @Field(() => String, { description: 'avatar saved file name.' })

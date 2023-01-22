@@ -1,9 +1,9 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class SendTicketMessageInput {
-  @Field(() => ID)
+  @Field(() => Int)
   @IsNotEmpty()
   ticketId: number;
 

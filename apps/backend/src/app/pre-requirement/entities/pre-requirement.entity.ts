@@ -1,11 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { Course } from '../../course/entities/course.entity';
 import { PreRequirementLevel } from '../../types';
 
 @ObjectType()
 export class PreRequirement {
-  @Field(() => ID, { description: 'pre requirement id.' })
+  @Field(() => Int, { description: 'pre requirement id.' })
   id: number;
 
   @Field(() => String, { description: 'pre requirement label/title.' })

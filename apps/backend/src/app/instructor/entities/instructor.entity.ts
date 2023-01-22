@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { Course } from '../../course/entities/course.entity';
 import { Expertise } from '../../expertise/entities/expertise.entity';
@@ -7,7 +7,7 @@ import { User } from '../../user/entities/user.entity';
 
 @ObjectType()
 export class Instructor {
-  @Field(() => ID, { description: 'instructor id.' })
+  @Field(() => Int, { description: 'instructor id.' })
   id: number;
 
   @Field(() => String, { description: 'a short description about instructor.' })

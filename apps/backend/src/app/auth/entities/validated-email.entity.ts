@@ -1,8 +1,8 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class ValidatedEmail {
-  @Field(() => ID, { description: 'validated email id.' })
+  @Field(() => Int, { description: 'validated email id.' })
   id: number;
 
   @Field(() => String, { description: 'validated email.' })

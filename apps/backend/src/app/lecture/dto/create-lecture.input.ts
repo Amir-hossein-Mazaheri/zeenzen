@@ -1,4 +1,4 @@
-import { InputType, Int, Field, ID } from '@nestjs/graphql';
+import { InputType, Int, Field } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
 
 @InputType()
@@ -16,7 +16,9 @@ export class CreateLectureInput {
   @IsPositive()
   duration?: number;
 
-  @Field(() => ID, { description: 'section id that lecture gonna belongs to.' })
+  @Field(() => Int, {
+    description: 'section id that lecture gonna belongs to.',
+  })
   @IsNotEmpty()
   sectionId: number;
 }

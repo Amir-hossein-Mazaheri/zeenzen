@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 
 import { PreRequirementService } from './pre-requirement.service';
 import { PreRequirement } from './entities/pre-requirement.entity';
@@ -27,7 +27,7 @@ export class PreRequirementResolver {
     name: 'preRequirements',
     description: 'returns all pre requirements.',
   })
-  findAll(@Args('id', { type: () => ID }) id: number) {
+  findAll(@Args('id', { type: () => Int }) id: number) {
     return this.preRequirementService.findAll(id);
   }
 

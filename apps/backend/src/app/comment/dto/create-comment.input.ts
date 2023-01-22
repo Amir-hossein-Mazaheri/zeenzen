@@ -1,4 +1,4 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsNotEmpty, IsNumberString } from 'class-validator';
 
 @InputType()
@@ -7,7 +7,7 @@ export class CreateCommentInput {
   @IsNotEmpty()
   content: string;
 
-  @Field(() => ID, { description: 'target course id.' })
+  @Field(() => Int, { description: 'target course id.' })
   @IsNotEmpty()
   @IsNumberString()
   courseId: number;

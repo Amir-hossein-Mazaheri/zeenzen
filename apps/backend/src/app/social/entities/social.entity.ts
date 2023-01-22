@@ -1,11 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { Instructor } from '../../instructor/entities/instructor.entity';
 import { SocialType } from '../../types';
 
 @ObjectType()
 export class Social {
-  @Field(() => ID, { description: 'social id.' })
+  @Field(() => Int, { description: 'social id.' })
   id: number;
 
   @Field(() => SocialType, { description: 'social type which is description.' })

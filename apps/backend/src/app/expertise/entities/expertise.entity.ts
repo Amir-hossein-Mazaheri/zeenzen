@@ -1,11 +1,11 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { Instructor } from '../../instructor/entities/instructor.entity';
 import { ExpertiseLevel } from '../../types';
 
 @ObjectType()
 export class Expertise {
-  @Field(() => ID, { description: 'expertise id.' })
+  @Field(() => Int, { description: 'expertise id.' })
   id: number;
 
   @Field(() => String, { description: 'expertise label/title.' })

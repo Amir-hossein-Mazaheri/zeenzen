@@ -1,4 +1,4 @@
-import { Field, ID, InputType, Int } from '@nestjs/graphql';
+import { Field, Int, InputType } from '@nestjs/graphql';
 
 import { CourseLevel } from '../../types';
 
@@ -16,6 +16,6 @@ export class PaginatedCoursesFilterInput {
   })
   levels: CourseLevel[];
 
-  @Field(() => [ID], { description: 'course category id(s).', nullable: true })
+  @Field(() => [Int], { description: 'course category id(s).', nullable: true })
   categories: number[];
 }

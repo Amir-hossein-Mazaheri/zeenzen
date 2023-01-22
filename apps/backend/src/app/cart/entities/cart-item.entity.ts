@@ -1,11 +1,11 @@
-import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 
 import { Course } from '../../course/entities/course.entity';
 import { Cart } from './cart.entity';
 
 @ObjectType()
 export class CartItem {
-  @Field(() => ID, { description: 'cart item id.' })
+  @Field(() => Int, { description: 'cart item id.' })
   id: number;
 
   @Field(() => String, { description: 'cart item unit price.' })

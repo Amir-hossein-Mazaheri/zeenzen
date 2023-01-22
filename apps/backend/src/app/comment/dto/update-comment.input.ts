@@ -1,4 +1,4 @@
-import { InputType, Field, PickType, ID } from '@nestjs/graphql';
+import { InputType, Field, PickType, Int } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 import { CreateCommentInput } from './create-comment.input';
@@ -7,7 +7,7 @@ import { CreateCommentInput } from './create-comment.input';
 export class UpdateCommentInput extends PickType(CreateCommentInput, [
   'content',
 ]) {
-  @Field(() => ID, { description: 'target comment id.' })
+  @Field(() => Int, { description: 'target comment id.' })
   @IsNotEmpty()
   id: number;
 }

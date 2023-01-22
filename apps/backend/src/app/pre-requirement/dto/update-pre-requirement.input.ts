@@ -1,11 +1,11 @@
-import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
+import { InputType, Field, PartialType, Int } from '@nestjs/graphql';
 
 import { CreatePreRequirementInput } from './create-pre-requirement.input';
 
 @InputType()
 export class UpdatePreRequirementInput extends PartialType(
-  CreatePreRequirementInput,
+  CreatePreRequirementInput
 ) {
-  @Field(() => ID, { description: 'target pre requirement id.' })
+  @Field(() => Int, { description: 'target pre requirement id.' })
   id: number;
 }

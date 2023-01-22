@@ -1,4 +1,4 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, Int, InputType } from '@nestjs/graphql';
 import {
   IsAlpha,
   IsDecimal,
@@ -14,7 +14,7 @@ import { UserRole } from '../../types';
 
 @InputType()
 export class UpdateUserInput {
-  @Field(() => ID, { description: 'target user id.' })
+  @Field(() => Int, { description: 'target user id.' })
   id: number;
 
   @Field(() => String, { nullable: true, description: 'user firstname.' })

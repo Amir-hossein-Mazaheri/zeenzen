@@ -1,4 +1,4 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 import {
   ArrayNotEmpty,
   IsEnum,
@@ -13,7 +13,7 @@ import { CourseLevel } from '../../types';
 
 @InputType()
 export class CreateCourseInput {
-  @Field(() => ID, { description: 'spot player course id.' })
+  @Field(() => String, { description: 'spot player course id.' })
   @IsNotEmpty()
   spotPlayerCourseId: string;
 
@@ -70,22 +70,22 @@ export class CreateCourseInput {
   @Max(100)
   discountPercent?: string;
 
-  @Field(() => [ID], { description: 'list of pre requirements ids.' })
+  @Field(() => [Int], { description: 'list of pre requirements ids.' })
   @IsNotEmpty()
   @ArrayNotEmpty()
   preRequirementsId: number[];
 
-  @Field(() => [ID], { description: 'list of categories ids.' })
+  @Field(() => [Int], { description: 'list of categories ids.' })
   @IsNotEmpty()
   @ArrayNotEmpty()
   categoriesId: number[];
 
-  @Field(() => [ID], { description: 'list of instructors ids.' })
+  @Field(() => [Int], { description: 'list of instructors ids.' })
   @IsNotEmpty()
   @ArrayNotEmpty()
   instructorsId: number[];
 
-  @Field(() => [ID], { description: 'list of sections ids.' })
+  @Field(() => [Int], { description: 'list of sections ids.' })
   @IsNotEmpty()
   @ArrayNotEmpty()
   sectionsId: number[];

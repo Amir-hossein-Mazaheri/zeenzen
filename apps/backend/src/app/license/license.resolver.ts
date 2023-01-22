@@ -1,4 +1,4 @@
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Query, Resolver } from '@nestjs/graphql';
 
 import { UserRole, RequestUser } from '../types';
 import { Roles } from '../user/decorators/roles.decorator';
@@ -24,7 +24,7 @@ export class LicenseResolver {
     description: 'returns one of created licenses.',
   })
   findOne(
-    @Args('id', { type: () => ID }) id: number,
+    @Args('id', { type: () => Int }) id: number,
     @GetUser() user: RequestUser
   ) {
     return this.licenseService.findOne(id, user);

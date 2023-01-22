@@ -1,11 +1,11 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { User } from '../../user/entities/user.entity';
 import { AskAmirhossein } from './ask-amirhossein.entity';
 
 @ObjectType()
 export class AskAmirhosseinAnswer {
-  @Field(() => ID, { description: 'answer id.' })
+  @Field(() => Int, { description: 'answer id.' })
   id: number;
 
   // added this field because firstname and lastname are optional in user model

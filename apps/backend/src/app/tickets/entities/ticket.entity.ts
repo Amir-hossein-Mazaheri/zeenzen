@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 import { TicketTopic, TicketPriority } from '../../types';
 import { User } from '../../user/entities/user.entity';
@@ -6,7 +6,7 @@ import { TicketMessage } from './ticket-message.entity';
 
 @ObjectType()
 export class Ticket {
-  @Field(() => ID, { description: 'ticket id.' })
+  @Field(() => Int, { description: 'ticket id.' })
   id: number;
 
   @Field(() => String, { description: 'ticket title.' })

@@ -1,6 +1,6 @@
 import {
   Args,
-  ID,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -32,7 +32,6 @@ export class InstructorResolver {
 
   @ResolveField('expertises', () => [Expertise])
   getExpertises(@Parent() instructor: Instructor) {
-    console.log(instructor);
     return this.instructorsService.getExpertises(instructor.id);
   }
 
@@ -59,7 +58,7 @@ export class InstructorResolver {
     name: 'instructor',
     description: 'returns a single instructors.',
   })
-  findOne(@Args('id', { type: () => ID }) id: number) {
+  findOne(@Args('id', { type: () => Int }) id: number) {
     return this.instructorsService.findOne(id);
   }
 

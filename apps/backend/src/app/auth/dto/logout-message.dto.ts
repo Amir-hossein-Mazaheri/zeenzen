@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { UserRole } from '../../types';
 
@@ -13,7 +13,7 @@ export class LogoutMessage {
   @Field(() => String, { description: 'tells the status of logging out.' })
   message: string;
 
-  @Field(() => ID, { description: 'logged out user id.' })
+  @Field(() => Int, { description: 'logged out user id.' })
   userId: number;
 
   @Field(() => String, { description: 'logged out user email.' })

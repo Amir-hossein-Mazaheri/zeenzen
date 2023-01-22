@@ -3,9 +3,9 @@ import {
   Query,
   Mutation,
   Args,
-  ID,
   ResolveField,
   Parent,
+  Int,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
@@ -50,7 +50,7 @@ export class CommentResolver {
     name: 'comments',
     description: "returns all course's comments.",
   })
-  findAll(@Args('courseId', { type: () => ID }) courseId: number) {
+  findAll(@Args('courseId', { type: () => Int }) courseId: number) {
     return this.commentService.findAll(courseId);
   }
 
@@ -60,7 +60,7 @@ export class CommentResolver {
     description: "returns a single course's comment.",
   })
   findOne(
-    @Args('id', { type: () => ID }) id: number,
+    @Args('id', { type: () => Int }) id: number,
     @GetUser() user: RequestUser
   ) {
     return this.commentService.findOne(id, user);
@@ -90,7 +90,7 @@ export class CommentResolver {
   @Mutation(() => Comment, {
     description: 'soft deletes a comment(only for admins).',
   })
-  removeComment(@Args('id', { type: () => ID }) id: number) {
+  removeComment(@Args('id', { type: () => Int }) id: number) {
     return this.commentService.remove(id);
   }
 
@@ -98,7 +98,7 @@ export class CommentResolver {
   @Mutation(() => Comment, {
     description: 'restores a soft deleted comment(only for admins).',
   })
-  restoreComment(@Args('id', { type: () => ID }) id: number) {
+  restoreComment(@Args('id', { type: () => Int }) id: number) {
     return this.commentService.restore(id);
   }
 }

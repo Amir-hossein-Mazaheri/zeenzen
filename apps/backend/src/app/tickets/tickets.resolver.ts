@@ -4,7 +4,7 @@ import {
   Mutation,
   Args,
   Subscription,
-  ID,
+  Int,
   Context,
 } from '@nestjs/graphql';
 
@@ -53,7 +53,7 @@ export class TicketsResolver {
 
   @Query(() => Ticket, { name: 'ticket' })
   findOne(
-    @Args('id', { type: () => ID }) id: number,
+    @Args('id', { type: () => Int }) id: number,
     @GetUser() user: RequestUser
   ) {
     return this.ticketsService.findOne(id, user);

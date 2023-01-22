@@ -1,9 +1,9 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, Int, InputType } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class FindAllSectionInput {
-  @Field(() => ID, {
+  @Field(() => Int, {
     description: 'target course id which sections are needed.',
   })
   @IsNotEmpty()

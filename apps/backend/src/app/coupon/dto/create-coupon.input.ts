@@ -1,4 +1,4 @@
-import { InputType, Field, ID, Float } from '@nestjs/graphql';
+import { InputType, Field, Int } from '@nestjs/graphql';
 import {
   IsBoolean,
   IsDate,
@@ -41,7 +41,7 @@ export class CreateCouponInput {
   @IsDate()
   expiresAt: Date;
 
-  @Field(() => [ID], {
+  @Field(() => [Int], {
     nullable: true,
     description: 'courses that coupon has effect on.',
   })

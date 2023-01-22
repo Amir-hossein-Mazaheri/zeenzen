@@ -1,4 +1,4 @@
-import { Field, ID } from '@nestjs/graphql';
+import { Field } from '@nestjs/graphql';
 
 import { PaymentTrack } from './payment-track';
 import { Order } from '../../order/entities/order.entity';
@@ -6,7 +6,7 @@ import { PaymentStatus } from '../../types';
 import { User } from '../../user/entities/user.entity';
 
 export class Payment {
-  @Field(() => ID, { description: 'payment unique id.' })
+  @Field(() => String, { description: 'payment unique id.' })
   id: string;
 
   @Field(() => String, {
