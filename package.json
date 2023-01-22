@@ -52,7 +52,7 @@
     "@nestjs/throttler": "^3.1.0",
     "@nestjs/typeorm": "^9.0.1",
     "@next/bundle-analyzer": "^13.0.2",
-    "@prisma/client": "^4.7.1",
+    "@prisma/client": "^4.9.0",
     "@sentry/nextjs": "^7.20.0",
     "@sentry/node": "^7.20.0",
     "@sentry/tracing": "^7.20.0",
