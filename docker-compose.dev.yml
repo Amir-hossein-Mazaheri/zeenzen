@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+  app-db:
+    image: postgres:13-bullseye
+    restart: always
+    environment:
+      POSTGRES_DB: 'myshop'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: '@mir1990'
+    ports:
+      - '5432:5432'
+    volumes:
+      - app_db_data:/var/lib/postgresql/data
+  upload-db:
+    image: postgres:13-bullseye
+    restart: always
+    environment:
+      POSTGRES_DB: 'upload-layer'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: '@mir1990'
+    ports:
+      - target: 5432
+        published: 8080
+        protocol: tcp
+        mode: host
+    volumes:
+      - upload_db_data:/var/lib/postgresql/data
+
+volumes:
+  app_db_data:
+    driver: local
+  upload_db_data:
+    driver: local
