@@ -1,33 +1,57 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
+import '@testing-library/cypress/add-commands';
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Chainable<Subject> {
-    login(email: string, password: string): void;
+import { UserRole } from '@zeenzen/data';
+
+Cypress.Commands.add('signin', (role) => {
+  cy.visit('/signin');
+
+  let userEmail: string;
+
+  switch (role) {
+    case UserRole.Admin:
+      userEmail = 'admin@test.com';
+      break;
+
+    case UserRole.Customer:
+      userEmail = 'customer@test.com';
+      break;
+
+    case UserRole.Instructor:
+      userEmail = 'instructor@test.com';
+      break;
+
+    default:
+      userEmail = 'user@test.com';
+      break;
   }
-}
-//
-// -- This is a parent command --
-Cypress.Commands.add('login', (email, password) => {
-  console.log('Custom command example: Login', email, password);
+
+  cy.findByPlaceholderText(/ایمیل/i)
+    .should('exist')
+    .type(userEmail)
+    .should('have.value', userEmail);
+
+  cy.findByPlaceholderText(/رمز عبور/i)
+    .should('exist')
+    .type('123456')
+    .should('have.value', '123456');
+
+  cy.findByRole('button', {
+    name: /ورود/i,
+  })
+    .should('exist')
+    .click();
+
+  cy.visit('/');
 });
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('logout', () => {
+  cy.findByRole('img', {
+    name: /user-avatar/i,
+  })
+    .should('exist')
+    .click();
+
+  cy.findByText(/خروج از حساب کاربری/i)
+    .should('exist')
+    .click();
+});

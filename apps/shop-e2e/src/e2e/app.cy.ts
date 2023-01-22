@@ -1,13 +1,36 @@
-import { getGreeting } from '../support/app.po';
+describe('Shop Integration Test', () => {
+  it('Should display correct user firstname and lastname after signin and after updating profile', () => {
+    cy.signin();
 
-describe('frontend', () => {
-  beforeEach(() => cy.visit('/'));
+    cy.findByText(/Test User/i)
+      .should('exist')
+      .click();
 
-  it('should display welcome message', () => {
-    // Custom command example, see `../support/commands.ts` file
-    cy.login('my-email@something.com', 'myPassword');
+    cy.findByRole('menuitem', {
+      name: /پروفایل من/i,
+    })
+      .should('exist')
+      .click();
 
-    // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome frontend');
+    cy.findByLabelText(/نام:/i).should('exist').clear().type('امیرحسین');
+
+    cy.findByLabelText(/نام خانوادگی/i)
+      .should('exist')
+      .clear()
+      .type('مظاهری');
+
+    cy.findByLabelText(/رمز عبور فعلی/i)
+      .should('exist')
+      .type('123456');
+
+    cy.findByRole('button', {
+      name: /اعمال تغییرات/i,
+    }).click();
+
+    cy.reload();
+
+    cy.visit('/');
+
+    cy.findByText(/امیرحسین مظاهری/i).should('exist');
   });
 });
