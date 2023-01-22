@@ -1,6 +1,7 @@
 {
   "name": "zeenzen",
-  "version": "0.0.0",
+  "version": "0.5.0",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -12,12 +13,20 @@
     "build:all:analyze": "cross-env ANALYZE=true nx run-many --target=build",
     "lint": "nx lint",
     "lint:all": "nx run-many --target=lint",
-    "test": "nx test",
-    "test:all": "nx run-many --target=test",
+    "test": "pnpm prepare:db && nx test",
+    "test:shop": "pnpm prepare:db && nx test shop",
+    "test:all": "pnpm prepare:db && nx run-many --target=test",
+    "test:e2e:all": "nx run-many --target=e2e",
+    "start:shop": "nx serve shop",
+    "test:e2e:server": "start-server-and-test start:shop 4000/graphql test:e2e:headed:all",
+    "test:e2e:headed:all": "nx run-many --target=e2e-headed",
     "gql": "graphql-codegen --config codegen.yml",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepare:db": "cd ./libs/database && echo Applying Test Database && prisma migrate deploy && cd ../.."
   },
-  "private": true,
+  "prisma": {
+    "seed": "ts-node ./libs/database/prisma/seed.ts"
+  },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^5.0.3",
     "@formkit/auto-animate": "^1.0.0-beta.3",
@@ -103,6 +112,7 @@
     "regenerator-runtime": "0.13.7",
     "remark-gfm": "^3.0.1",
     "rxjs": "^7.0.0",
+    "start-server-and-test": "^1.15.2",
     "sweetalert2": "^11.6.5",
     "sweetalert2-react-content": "^5.0.7",
     "tslib": "^2.3.0",
@@ -167,12 +177,12 @@
     "@typescript-eslint/parser": "^5.36.1",
     "autoprefixer": "10.4.12",
     "babel-jest": "28.1.1",
-    "cypress": "^10.7.0",
+    "cypress": "^12.2.0",
     "dotenv": "^16.0.3",
     "eslint": "~8.15.0",
     "eslint-config-next": "13.0.0",
     "eslint-config-prettier": "8.1.0",
-    "eslint-plugin-cypress": "^2.10.3",
+    "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jsx-a11y": "6.6.1",
     "eslint-plugin-react": "7.31.8",

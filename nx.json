@@ -39,6 +39,7 @@
     "sharedGlobals": ["{workspaceRoot}/babel.config.json"]
   },
   "defaultProject": "backend",
+
   "generators": {
     "@nrwl/react": {
       "application": {
