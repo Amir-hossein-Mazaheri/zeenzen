@@ -4,7 +4,7 @@ services:
   app:
     depends_on:
       - redis
-      - postgres
+      - app-db
     build: ./
     restart: on-failure
     environment:
@@ -19,28 +19,41 @@ services:
       REDIS_PASSWORD:
       REDIS_HOST:
     ports:
-      - 4000:4000
+      - target: 4000
+        published: 4000
+        protocol: tcp
+        mode: host
+      - target: 3000
+        published: 3000
+        protocol: tcp
+        mode: host
     volumes:
       - ./public/uploads:./uploads
   redis:
-    image: redis:latest
+    image: redis:7.0.8-bullseye
     restart: always
-    environment:
-      REDIS_PASSWORD:
-    ports:
-      - '6379:6379'
-  postgres:
+  app-db:
     image: postgres:13-bullseye
     restart: always
     environment:
       POSTGRES_DB:
       POSTGRES_USER:
       POSTGRES_PASSWORD:
-    ports:
-      - '5432:5432'
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - app_db_data:/var/lib/postgresql/data
+
+  upload-db:
+    image: postgres:13-bullseye
+    restart: always
+    environment:
+      POSTGRES_DB: 'upload-layer'
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: '@mir1990'
+    volumes:
+      - upload_db_data:/var/lib/postgresql/data
 
 volumes:
-  db_data:
+  app_db_data:
+    driver: local
+  upload_db_data:
     driver: local
