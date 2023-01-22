@@ -1,15 +1,62 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaClient } from '@prisma/client';
-import moment = require('moment');
+import * as moment from 'moment';
+import * as argon2 from 'argon2';
 
-const prisma = new PrismaClient();
+const isTest = process.env.NODE_ENV === 'tests';
 
-async function seedDb() {
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: `postgresql://${process.env.DATABASE_USERNAME}:${
+        process.env.DATABASE_PASSWORD
+      }@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${
+        isTest ? process.env.TEST_DATABASE : process.env.DATABASE
+      }?schema=public`,
+    },
+  },
+  errorFormat: 'pretty',
+  log: ['error', 'info', 'query', 'warn'],
+});
+
+export async function seedDb() {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error("Can't seed db in production mode.");
+  }
+
   await prisma.$transaction(async (tx) => {
+    async function clearDb() {
+      const tablenames = await tx.$queryRaw<
+        Array<{ tablename: string }>
+      >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+
+      const tables = tablenames
+        .map(({ tablename }) => tablename)
+        .filter((name) => name !== '_prisma_migrations')
+        .map((name) => `"public"."${name}"`)
+        .join(', ');
+
+      try {
+        await tx.$executeRawUnsafe(`TRUNCATE TABLE ${tables} CASCADE;`);
+      } catch (error) {
+        console.log({ error });
+
+        throw error;
+      }
+    }
+
+    await clearDb();
+
     const customer = await tx.user.create({
       data: {
         email: 'customer@test.com',
-        password: '123456',
+        password: await argon2.hash('123456'),
+        firstname: 'Test',
+        lastname: 'Customer',
+
+        cart: {
+          create: {},
+        },
       },
       include: {
         cart: true,
@@ -19,7 +66,13 @@ async function seedDb() {
     const user = await tx.user.create({
       data: {
         email: 'user@test.com',
-        password: '123456',
+        password: await argon2.hash('123456'),
+        firstname: 'Test',
+        lastname: 'User',
+
+        cart: {
+          create: {},
+        },
       },
       include: {
         cart: true,
@@ -27,10 +80,19 @@ async function seedDb() {
     });
 
     const admin = await tx.user.create({
+      include: {
+        instructor: true,
+      },
       data: {
         email: 'admin@test.com',
-        password: '123456',
+        password: await argon2.hash('123456'),
         role: 'ADMIN',
+        firstname: 'Test',
+        lastname: 'Admin',
+
+        cart: {
+          create: {},
+        },
 
         instructor: {
           create: {
@@ -78,10 +140,19 @@ async function seedDb() {
     });
 
     const instructor = await tx.user.create({
+      include: {
+        instructor: true,
+      },
       data: {
-        email: 'admin@test.com',
-        password: '123456',
+        email: 'instructor@test.com',
+        password: await argon2.hash('123456'),
         role: 'INSTRUCTOR',
+        firstname: 'Test',
+        lastname: 'Instructor',
+
+        cart: {
+          create: {},
+        },
 
         instructor: {
           create: {
@@ -159,7 +230,7 @@ async function seedDb() {
         price: '200000.85',
         progress: 10,
         isDraft: false,
-        hourseCount: 20,
+        hoursCount: 20,
         lecturesCount: 25,
         spotPlayerCourseId: 'some-random-spot-player-course-id',
 
@@ -177,10 +248,10 @@ async function seedDb() {
         instructors: {
           connect: [
             {
-              id: admin.id,
+              id: admin.instructor.id,
             },
             {
-              id: instructor.id,
+              id: instructor.instructor.id,
             },
           ],
         },
@@ -275,7 +346,7 @@ async function seedDb() {
         price: '350000.85',
         progress: 50,
         isDraft: false,
-        hourseCount: 10,
+        hoursCount: 10,
         lecturesCount: 50,
         spotPlayerCourseId: 'some-random-spot-player-course-id',
 
@@ -293,7 +364,7 @@ async function seedDb() {
         instructors: {
           connect: [
             {
-              id: instructor.id,
+              id: instructor.instructor.id,
             },
           ],
         },
@@ -439,6 +510,50 @@ async function seedDb() {
         question: {
           connect: {
             id: askAmirhosseinOne.id,
+          },
+        },
+      },
+    });
+
+    const commentOne = await tx.comment.create({
+      data: {
+        content: 'Comment One',
+        isPublished: true,
+
+        course: {
+          connect: {
+            id: courseTwo.id,
+          },
+        },
+
+        author: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
+
+    const commentTwo = await tx.comment.create({
+      data: {
+        content: 'Comment Two',
+        isPublished: true,
+
+        parent: {
+          connect: {
+            id: commentOne.id,
+          },
+        },
+
+        course: {
+          connect: {
+            id: courseTwo.id,
+          },
+        },
+
+        author: {
+          connect: {
+            id: user.id,
           },
         },
       },
