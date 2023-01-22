@@ -17,7 +17,8 @@
     "paths": {
       "@zeenzen/common": ["libs/common/src/index.ts"],
       "@zeenzen/data": ["libs/data/src/index.ts"],
-      "@zeenzen/database": ["libs/database/src/index.ts"]
+      "@zeenzen/database": ["libs/database/src/index.ts"],
+      "@zeenzen/upload-layer-db": ["libs/upload-layer-db/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
