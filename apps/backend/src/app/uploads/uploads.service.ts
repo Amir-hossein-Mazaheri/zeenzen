@@ -4,21 +4,17 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Avatar } from '@prisma/client';
 import { PrismaService } from '@zeenzen/database';
 
 import { Request } from 'express';
 import * as fs from 'fs/promises';
-import { DataSource, QueryRunner } from 'typeorm';
 import { CourseService } from '../course/course.service';
 import { LogsService } from '../logs/logs.service';
 import { RequestUser, CourseImagesFiles, TFile } from '../types';
 import { UserService } from '../user/user.service';
 import getUploadsPath from '../utils/getUploadsPath';
 import { getUrl } from '../utils/getUrl';
-import { Avatar } from './entities/avatar.entity';
-
-import { CourseImage } from './entities/course-image.entity';
 
 export const COURSES_UPLOAD_DIR = 'courses';
 
@@ -179,72 +175,6 @@ export class UploadsService {
         ),
       };
     });
-
-    // const queryRunner = this.dataSource.createQueryRunner();
-
-    // await queryRunner.connect();
-
-    // await queryRunner.startTransaction();
-
-    // try {
-    //   const course = await this.courseService.validateCourse(courseId)()(
-    //     queryRunner
-    //   );
-
-    //   let currCourseImage: CourseImage;
-
-    //   if (course.image) {
-    //     currCourseImage = await queryRunner.manager.findOneBy(CourseImage, {
-    //       id: course.image.id,
-    //     });
-
-    //     await this.removeCourseImageWithQueryRunner(
-    //       currCourseImage.id,
-    //       queryRunner
-    //     );
-    //   } else {
-    //     currCourseImage = new CourseImage();
-    //   }
-
-    //   const courseImagePath = `/uploads/${COURSES_UPLOAD_DIR}/${courseImage.filename}`;
-    //   const courseImageAbsolutePath = getUrl(req) + courseImagePath;
-
-    //   const courseCoverPath = `/uploads/${COURSES_UPLOAD_DIR}/${courseCover.filename}`;
-    //   const courseCoverAbsolutePath = getUrl(req) + courseCoverPath;
-
-    //   currCourseImage.image = courseImageAbsolutePath;
-    //   currCourseImage.coverImage = courseCoverAbsolutePath;
-    //   currCourseImage.course = course;
-
-    //   await queryRunner.manager.save(currCourseImage);
-
-    //   await queryRunner.commitTransaction();
-
-    //   return {
-    //     courseImage: this.getUploadResponse(
-    //       courseImage.originalname,
-    //       courseImage.filename,
-    //       courseImagePath,
-    //       courseImageAbsolutePath
-    //     ),
-    //     courseCover: this.getUploadResponse(
-    //       courseCover.originalname,
-    //       courseCover.filename,
-    //       courseCoverPath,
-    //       courseCoverAbsolutePath
-    //     ),
-    //   };
-    // } catch (error) {
-    //   await queryRunner.rollbackTransaction();
-
-    //   await this.logsService.logError('', error);
-
-    //   throw new InternalServerErrorException(
-    //     "Something wen't wrong while trying to upload course images."
-    //   );
-    // } finally {
-    //   await queryRunner.release();
-    // }
   }
 
   async uploadUserAvatar(
@@ -257,11 +187,14 @@ export class UploadsService {
       const currUser = await this.userService.validateUser(
         user.sub,
         false,
-        true
+        true,
+        tx
       );
 
+      let previousAvatarFileName: string;
+
       if (currUser.avatar) {
-        await this.transactionalRemoveUserAvatar(currUser.avatar.id, user, tx);
+        previousAvatarFileName = currUser.avatar.name;
       }
 
       const path = `/uploads/${USERS_AVATAR_UPLOAD_DIR}/${filename}`;
@@ -273,66 +206,38 @@ export class UploadsService {
         name: filename,
 
         user: {
-          connect: currUser,
+          connect: {
+            id: currUser.id,
+          },
         },
       };
 
-      const avatar = await tx.avatar.upsert({
-        create: upsertData,
-        update: upsertData,
-        where: {
-          id: currUser.avatar.id,
-        },
-      });
+      let avatar: Avatar;
+
+      if (currUser.avatar) {
+        const { user: _, ...updateData } = upsertData;
+
+        avatar = await tx.avatar.update({
+          data: updateData,
+          where: {
+            id: currUser.avatar.id,
+          },
+        });
+      } else {
+        avatar = await tx.avatar.create({
+          data: upsertData,
+        });
+      }
+
+      if (previousAvatarFileName) {
+        await this.removeUserAvatarFile(previousAvatarFileName);
+      }
 
       return {
         ...this.getUploadResponse(originalname, filename, path, absolutePath),
         avatarId: avatar.id,
       };
     });
-
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-    // try {
-    //   const currUser = await this.userService.validateUser(
-    //     user.sub,
-    //     false,
-    //     true
-    //   );
-    //   let avatar: Avatar;
-    //   console.log(currUser);
-    //   if (currUser.avatar) {
-    //     avatar = await this.validateAvatar(
-    //       currUser.avatar.id,
-    //       user,
-    //       queryRunner
-    //     );
-    //     await this.transactionalRemoveUserAvatar(avatar.id, user, queryRunner);
-    //   } else {
-    //     avatar = new Avatar();
-    //   }
-    //   const path = `/uploads/${USERS_AVATAR_UPLOAD_DIR}/${filename}`;
-    //   const absolutePath = getUrl(req) + path;
-    //   avatar.fullPath = absolutePath;
-    //   avatar.originalName = originalname;
-    //   avatar.name = filename;
-    //   avatar.user = currUser;
-    //   await queryRunner.manager.save(avatar);
-    //   await queryRunner.commitTransaction();
-    //   return {
-    //     ...this.getUploadResponse(originalname, filename, path, absolutePath),
-    //     avatarId: avatar.id,
-    //   };
-    // } catch (error) {
-    //   await queryRunner.rollbackTransaction();
-    //   await this.logsService.logError('uploadUserAvatar', error);
-    //   throw new InternalServerErrorException(
-    //     "Something wen't wrong while trying to upload your avatar."
-    //   );
-    // } finally {
-    //   await queryRunner.release();
-    // }
   }
 
   async transactionalRemoveCourseImage(
@@ -343,8 +248,6 @@ export class UploadsService {
       courseImageId,
       transaction
     );
-
-    // await queryRunner.manager.delete(CourseImage, { id: courseImage.id });
 
     await transaction.courseImage.delete({
       where: {
@@ -374,46 +277,6 @@ export class UploadsService {
         message: 'Course image successfully deleted.',
       };
     });
-
-    // const queryRunner = this.dataSource.createQueryRunner();
-
-    // await queryRunner.connect();
-
-    // await queryRunner.startTransaction();
-
-    // const validation = this.validationConfirmation(id);
-
-    // if (typeof validation === 'object') {
-    //   return validation;
-    // }
-
-    // try {
-    //   await this.transactionalRemoveCourseImage(id, queryRunner);
-
-    //   IS_CONFIRMED = false;
-
-    //   await queryRunner.commitTransaction();
-
-    //   return {
-    //     message: 'Course image successfully deleted.',
-    //   };
-    // } catch (err) {
-    //   await queryRunner.rollbackTransaction();
-
-    //   const code = err?.code;
-
-    //   if (code === 'ENOENT') {
-    //     throw new BadRequestException("File doesn't exists.");
-    //   }
-
-    //   await this.logsService.logError('removeCourseImage', err);
-
-    //   throw new InternalServerErrorException(
-    //     'Something went wrong while trying to delete file.'
-    //   );
-    // } finally {
-    //   await queryRunner.release();
-    // }
   }
 
   async removeUserAvatarFile(filename: string) {
@@ -426,8 +289,6 @@ export class UploadsService {
     transaction: Prisma.TransactionClient
   ) {
     const avatar = await this.validateAvatar(id, user, transaction);
-
-    // await queryRunner.manager.delete(Avatar, { id: avatar.id });
 
     await transaction.avatar.delete({
       where: {
@@ -442,21 +303,5 @@ export class UploadsService {
     await this.prismaService.$transaction(async (tx) => {
       await this.transactionalRemoveUserAvatar(id, user, tx);
     });
-
-    // const queryRunner = this.dataSource.createQueryRunner();
-
-    // await queryRunner.connect();
-
-    // await queryRunner.startTransaction();
-
-    // try {
-    //   await this.transactionalRemoveUserAvatar(id, user, queryRunner);
-
-    //   await queryRunner.commitTransaction();
-    // } catch (err) {
-    //   await queryRunner.rollbackTransaction();
-    // } finally {
-    //   await queryRunner.release();
-    // }
   }
 }

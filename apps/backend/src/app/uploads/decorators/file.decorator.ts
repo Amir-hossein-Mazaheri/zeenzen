@@ -16,21 +16,24 @@ export const File = (
   prefix = '',
   multipleFiles = false,
   uploadFiles: MulterField[] = [], // useful when using multiple files
-  randomizedName = true,
+  randomizedName = true
 ) => {
   const multerConfig: MulterOptions = {
     fileFilter(_, file, cb) {
       const fileType = file.mimetype.split('/').at(-1);
+
       const whiteList = /((jpe?|sv|pn)g)|webp/i;
+
       const isValidType = whiteList.test(fileType);
+
       if (isValidType) {
         cb(null, isValidType);
       } else {
         cb(
           new UnprocessableEntityException(
-            'Unsupported file type. only jpg, jpeg, png, svg, and webp are allowed.',
+            'Unsupported file type. only jpg, jpeg, png, svg, and webp are allowed.'
           ),
-          isValidType,
+          isValidType
         );
       }
     },
@@ -41,11 +44,15 @@ export const File = (
       destination: `./public/uploads/${prefix}`,
       filename(_, file, cb) {
         const [fileName, fileType] = file.originalname.split('.');
+
         let finalFileName = fileName;
+
         if (randomizedName) {
           finalFileName += '-' + genUuid();
         }
+
         finalFileName += '.' + fileType;
+
         cb(null, finalFileName);
       },
     }),

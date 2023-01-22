@@ -20,6 +20,8 @@ const prisma = new PrismaClient({
 });
 
 export async function seedDb() {
+  console.log('running seed');
+
   if (process.env.NODE_ENV === 'production') {
     throw new Error("Can't seed db in production mode.");
   }

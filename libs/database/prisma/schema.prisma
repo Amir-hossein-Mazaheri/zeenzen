@@ -100,7 +100,8 @@ model Avatar {
   originalName String   @map("original_name") @db.VarChar(255)
   fullPath     String   @map("full_path") @db.VarChar(1000)
   createdAt    DateTime @default(now()) @map("created_at")
-  user         User?
+  userId       Int      @unique
+  user         User     @relation(fields: [userId], references: [id])
 
   @@map("avatar")
 }
@@ -463,8 +464,7 @@ model User {
   createdAt                  DateTime               @default(now()) @map("created_at")
   updatedAt                  DateTime               @updatedAt @map("updated_at")
   deletedAt                  DateTime?              @map("deleted_at")
-  avatarId                   String?                @unique @map("avatar_id")
-  avatar                     Avatar?                @relation(fields: [avatarId], references: [id])
+  avatar                     Avatar?
   cartId                     String?                @unique @map("cart_id")
   cart                       Cart?                  @relation(fields: [cartId], references: [id])
   comments                   Comment[]
