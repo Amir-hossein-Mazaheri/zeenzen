@@ -7,14 +7,14 @@ import { tomanSymbol } from '../assets';
 import { makePriceCleaner } from '../utils';
 
 export interface CartItemProps {
-  id: string;
+  id: number;
   title: string;
   instructors: string[];
   price: number | string;
   thumbnail: StaticImageData | string;
   hasDiscount?: boolean;
   priceWithDiscount?: number;
-  onDelete?: (id: string, title: string) => void;
+  onDelete?: (id: number, title: string) => void;
   sm?: boolean;
 }
 
@@ -65,7 +65,6 @@ export const CartItem: React.FC<CartItemProps> = ({
                   {makePriceCleaner(priceWithDiscount)}
                 </p>
                 <div>
-                  {/* <KeyboardBackspaceIcon /> */}
                   <FontAwesomeIcon icon={faArrowRight} />
                 </div>
               </>
@@ -93,7 +92,6 @@ export const CartItem: React.FC<CartItemProps> = ({
             onClick={() => onDelete(id, title)}
             className="flex items-center cursor-pointer justify-center rounded-lg bg-light-red text-white w-8 h-8"
           >
-            {/* <DeleteIcon fontSize="small" /> */}
             <FontAwesomeIcon icon={faTrash} />
           </div>
         )}

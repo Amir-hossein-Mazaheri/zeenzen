@@ -23,7 +23,7 @@ export default function useRemoveCartItem({
 
   const toast = useToast();
 
-  return async (courseId: string, title: string) => {
+  return async (courseId: number, title: string) => {
     const successMessage = () =>
       toast().fire({
         title: `${title} با موفقیت از سبد خرید حذف شد.`,
