@@ -214,8 +214,4 @@ export class AuthService {
       return logoutMessage;
     }
   }
-
-  async getSession() {
-    //
-  }
 }

@@ -3,41 +3,22 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
 import * as moment from 'moment';
 import { Prisma } from '@prisma/client';
 
 import { PrismaService } from '@zeenzen/database';
 import { CreateCouponInput } from './dto/create-coupon.input';
 import { UpdateCouponInput } from './dto/update-coupon.input';
-import { Coupon } from './entities/coupon.entity';
 import { ApplyCouponInput } from './dto/apply-coupon.input';
-import { CartService } from '../cart/cart.service';
-import { Course } from '../course/entities/course.entity';
-import { LogsService } from '../logs/logs.service';
 import { RequestUser } from '../types';
-import { toCamelCase } from '../utils/toCamelCase';
 
 @Injectable()
 export class CouponService {
   private readonly relations = ['course'];
 
-  constructor(
-    // @InjectRepository(Coupon) private couponRepository: Repository<Coupon>,
-    // @InjectRepository(Course) private courseRepository: Repository<Course>,
-    // private dataSource: DataSource,
-    // private cartService: CartService,
-    // private logsService: LogsService,
-    private readonly prismaService: PrismaService
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async validateCoupon(id: number) {
-    // const coupon = await this.couponRepository.findOne({
-    //   where: { id },
-    //   relations: this.relations,
-    // });
-
     const coupon = await this.prismaService.coupon.findUnique({
       where: {
         id,
@@ -70,10 +51,6 @@ export class CouponService {
     percent: Prisma.Decimal,
     maxEffect?: Prisma.Decimal
   ) {
-    // const reducedPrice = price - price * percent;
-
-    // return reducedPrice < maxEffect ? price - maxEffect : reducedPrice;
-
     const actualPercent = percent.div(100);
     const reducedPrice = price.minus(price.mul(actualPercent));
 
@@ -97,30 +74,6 @@ export class CouponService {
       applyToEveryThing,
       coursesId
     );
-
-    // const newCoupon = new Coupon();
-    // newCoupon.description = description;
-    // newCoupon.code = code;
-    // newCoupon.expiresAt = moment.utc(expiresAt).toDate();
-    // newCoupon.percent = percent;
-
-    // if (maxEffect) {
-    //   newCoupon.maxEffect = maxEffect;
-    // }
-
-    // if (coursesId) {
-    //   newCoupon.courses = await this.courseRepository.findBy({
-    //     id: In(coursesId),
-    //   });
-    // }
-
-    // if (applyToEveryThing) {
-    //   newCoupon.applyToEveryThing = applyToEveryThing;
-    // }
-
-    // await this.couponRepository.manager.save(newCoupon);
-
-    // return newCoupon;
 
     return await this.prismaService.$transaction(async (tx) => {
       const createCouponData: Prisma.CouponCreateInput = {
@@ -153,7 +106,6 @@ export class CouponService {
   }
 
   async findAll() {
-    // return await this.couponRepository.find({ relations: this.relations });
     return await this.prismaService.coupon.findMany({
       include: {
         courses: true,
@@ -173,16 +125,6 @@ export class CouponService {
 
     await this.validateCoupon(id);
 
-    // const coupon = await this.dataSource
-    //   .createQueryBuilder()
-    //   .update(Coupon)
-    //   .set(updateCouponInput)
-    //   .where({ id })
-    //   .returning('*')
-    //   .execute();
-
-    // return toCamelCase(coupon);
-
     return await this.prismaService.coupon.update({
       where: {
         id,
@@ -193,15 +135,6 @@ export class CouponService {
 
   async remove(id: number) {
     await this.validateCoupon(id);
-
-    // await this.dataSource
-    //   .createQueryBuilder()
-    //   .delete()
-    //   .from(Coupon)
-    //   .where({ id })
-    //   .execute();
-
-    // return coupon;
 
     return await this.prismaService.coupon.delete({
       where: {
@@ -253,47 +186,6 @@ export class CouponService {
         },
       });
     });
-
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-    // try {
-    //   const coupon = await queryRunner.manager.findOne(Coupon, {
-    //     where: { code: couponCode },
-    //     relations: this.relations,
-    //   });
-    //   const cart = await queryRunner.manager.findOne(Cart, {
-    //     where: { id: cartId, user: { id: user.sub } },
-    //     relations: {
-    //       cartItems: {
-    //         course: true,
-    //       },
-    //     },
-    //   });
-    //   for (const cartItem of cart.cartItems) {
-    //     if (
-    //       coupon.applyToEveryThing ||
-    //       coupon.courses.some((course) => course.id === cartItem.course.id)
-    //     ) {
-    //       cartItem.totalPriceWithDiscount = this.reducePriceByPercent(
-    //         new Decimal(cartItem.totalPrice),
-    //         new Decimal(coupon.percent),
-    //         new Decimal(coupon.maxEffect),
-    //       ).toString();
-    //     }
-    //   }
-    //   await queryRunner.manager.save(cart);
-    //   await queryRunner.commitTransaction();
-    //   return coupon;
-    // } catch (err) {
-    //   await queryRunner.rollbackTransaction();
-    //   await this.logsService.logError('applyCoupon', err);
-    //   throw new InternalServerErrorException(
-    //     'Something went wrong while trying to apply coupon code.',
-    //   );
-    // } finally {
-    //   await queryRunner.release();
-    // }
   }
 
   async misApply(cartId: string, user: RequestUser) {

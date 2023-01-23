@@ -4,8 +4,6 @@ import { PrismaService } from '@zeenzen/database';
 
 import { Request } from 'express';
 import * as fs from 'fs/promises';
-import { CourseService } from '../course/course.service';
-import { LogsService } from '../logs/logs.service';
 import { RequestUser, CourseImagesFiles, TFile } from '../types';
 import { UserService } from '../user/user.service';
 import getUploadsPath from '../utils/getUploadsPath';

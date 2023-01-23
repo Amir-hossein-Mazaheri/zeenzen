@@ -1,37 +1,13 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@zeenzen/database';
-import { DataSource, Repository } from 'typeorm';
 
-import { Section } from '../section/entities/section.entity';
-import { toCamelCase } from '../utils/toCamelCase';
 import { CreateLectureInput } from './dto/create-lecture.input';
 import { UpdateLectureInput } from './dto/update-lecture.input';
-import { Lecture } from './entities/lecture.entity';
 
 @Injectable()
 export class LectureService {
-  constructor(
-    // @InjectRepository(Lecture) private lectureRepository: Repository<Lecture>,
-    // @InjectRepository(Section) private sectionRepository: Repository<Section>,
-    // private dataSource: DataSource,
-    private readonly prismaService: PrismaService
-  ) {}
-
-  // private async validateInstructor(lecture: Lecture, instructorId: number) {
-  //   if (
-  //      !lecture.section.course.instructors.some(
-  //       (instructor) => instructor.id === instructorId
-  //     )
-  //   ) {
-  //     throw new BadRequestException("You can't modify this pre requirement.");
-  //   }
-  // }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async validateLecture(
     id: number,
@@ -39,18 +15,6 @@ export class LectureService {
     instructorId?: number,
     withDeleted = false
   ) {
-    // this level of nesting relation is okay because this query is not get called very often
-    // and its only join when checkInstructor is true
-    // const lecture = await this.lectureRepository.findOne({
-    //   where: { id },
-    //   relations: { section: { course: { instructors: checkInstructor } } },
-    //   withDeleted,
-    // });
-
-    // if (checkInstructor) {
-    //   this.validateInstructor(lecture, instructorId);
-    // }
-
     const whereOptions: Prisma.LectureWhereInput = { id };
 
     if (checkInstructor) {
@@ -81,19 +45,6 @@ export class LectureService {
   }
 
   async create({ label, duration, sectionId }: CreateLectureInput) {
-    // const section = await this.sectionRepository.findOneBy({ id: sectionId });
-
-    // const newLecture = new Lecture();
-    // newLecture.label = label;
-    // newLecture.section = section;
-    // if (duration) {
-    //   newLecture.duration = duration;
-    // }
-
-    // await this.lectureRepository.manager.save(newLecture);
-
-    // return newLecture;
-
     return await this.prismaService.lecture.create({
       data: {
         label,
@@ -108,7 +59,6 @@ export class LectureService {
   }
 
   async findAll() {
-    // return await this.lectureRepository.find();
     return await this.prismaService.lecture.findMany();
   }
 
@@ -123,16 +73,6 @@ export class LectureService {
   ) {
     await this.validateLecture(id, true, instructorId);
 
-    // const lecture = await this.dataSource
-    //   .createQueryBuilder()
-    //   .update()
-    //   .set(updateLectureInput)
-    //   .where({ id })
-    //   .returning('*')
-    //   .execute();
-
-    // return toCamelCase(lecture.raw[0]);
-
     return await this.prismaService.lecture.update({
       where: {
         id,
@@ -144,14 +84,6 @@ export class LectureService {
   async remove(id: number, instructorId: number) {
     await this.validateLecture(id, true, instructorId);
 
-    // await this.lectureRepository
-    //   .createQueryBuilder()
-    //   .softDelete()
-    //   .where({ id })
-    //   .execute();
-
-    // return lecture;
-
     return await this.prismaService.lecture.delete({
       where: {
         id,
@@ -161,13 +93,5 @@ export class LectureService {
 
   async restore(id: number, instructorId: number) {
     const lecture = await this.validateLecture(id, true, instructorId, true);
-
-    // await this.lectureRepository
-    //   .createQueryBuilder()
-    //   .restore()
-    //   .where({ id })
-    //   .execute();
-
-    // return lecture;
   }
 }

@@ -2,27 +2,19 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  ConflictException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
-import * as moment from 'moment';
 import { PrismaService } from '@zeenzen/database';
 import { Prisma } from '@prisma/client';
 
 import { CreateAskAmirhosseinInput } from './dto/create-ask-amirhossein.input';
 import { UpdateAskAmirhosseinInput } from './dto/update-ask-amirhossein.input';
-import { AskAmirhossein } from './entities/ask-amirhossein.entity';
 import { AnswerAskAmirhosseinInput } from './dto/answer-ask-amirhossein.input';
 import { FindAllAskAmirhosseinInput } from './dto/find-all-ask-amirhossein.input';
 import { FindOneAskAmirhosseinInput } from './dto/find-one-ask-amirhossein.input';
 import { RequestUser, UserRole } from '../types';
-import { User } from '../user/entities/user.entity';
-import { UserService } from '../user/user.service';
 import { getMailOptions } from '../utils/getMailOptions';
 import { sendEmail } from '../utils/sendEmail';
-import { toCamelCase } from '../utils/toCamelCase';
 import { purifiedTurndown } from '../utils/purifiedTurndown';
 
 const ASK_AMIRHOSSEINS_PER_PAGE = 15;

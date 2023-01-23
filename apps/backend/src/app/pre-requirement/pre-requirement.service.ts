@@ -1,22 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { PrismaService } from '@zeenzen/database';
-import { DataSource, Repository } from 'typeorm';
 
 import { purifiedTurndown } from '../utils/purifiedTurndown';
-import { toCamelCase } from '../utils/toCamelCase';
 import { CreatePreRequirementInput } from './dto/create-pre-requirement.input';
 import { UpdatePreRequirementInput } from './dto/update-pre-requirement.input';
 import { PreRequirement } from './entities/pre-requirement.entity';
 
 @Injectable()
 export class PreRequirementService {
-  constructor(
-    // @InjectRepository(PreRequirement)
-    // private preRequirementRepository: Repository<PreRequirement>,
-    // private dataSource: DataSource,
-    private readonly prismaService: PrismaService
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   private async validateInstructor(
     preRequirement: PreRequirement,
@@ -37,20 +29,6 @@ export class PreRequirementService {
     instructorId?: number,
     withDeleted = false
   ) {
-    // const preRequirement = await this.preRequirementRepository.findOne({
-    //   where: { id },
-    //   relations: {
-    //     course: {
-    //       instructors: checkInstructor,
-    //     },
-    //   },
-    //   withDeleted,
-    // });
-
-    // if (checkInstructor) {
-    //   this.validateInstructor(preRequirement, instructorId);
-    // }
-
     // TODO: adds withDeleted
     const preRequirement = await this.prismaService.preRequirement.findUnique({
       where: {
@@ -78,16 +56,6 @@ export class PreRequirementService {
     level,
     image,
   }: CreatePreRequirementInput) {
-    // const newPreRequirement = new PreRequirement();
-    // newPreRequirement.label = label;
-    // newPreRequirement.description = purifiedTurndown(description);
-    // newPreRequirement.level = level;
-    // newPreRequirement.image = image;
-
-    // await this.preRequirementRepository.manager.save(newPreRequirement);
-
-    // return newPreRequirement;
-
     return await this.prismaService.preRequirement.create({
       data: {
         label,
@@ -99,11 +67,6 @@ export class PreRequirementService {
   }
 
   async findAll(id: number) {
-    // return await this.preRequirementRepository.find({
-    //   where: {
-    //     course: { id },
-    //   },
-    // });
     return await this.prismaService.preRequirement.findMany({
       where: {
         course: {
@@ -130,16 +93,6 @@ export class PreRequirementService {
       );
     }
 
-    // const preRequirement = await this.dataSource
-    //   .createQueryBuilder()
-    //   .update(PreRequirement)
-    //   .set(updatePreRequirementInput)
-    //   .where({ id })
-    //   .returning('*')
-    //   .execute();
-
-    // return toCamelCase(preRequirement.raw[0]);
-
     return await this.prismaService.preRequirement.update({
       where: {
         id,
@@ -150,14 +103,6 @@ export class PreRequirementService {
 
   async remove(id: number, instructorId: number) {
     await this.validatePreRequirement(id, true, instructorId);
-
-    // await this.preRequirementRepository
-    //   .createQueryBuilder()
-    //   .softDelete()
-    //   .where({ id })
-    //   .execute();
-
-    // return preRequirement;
 
     return await this.prismaService.preRequirement.delete({
       where: {
@@ -174,13 +119,5 @@ export class PreRequirementService {
       instructorId,
       true
     );
-
-    // await this.preRequirementRepository
-    //   .createQueryBuilder()
-    //   .restore()
-    //   .where({ id })
-    //   .execute();
-
-    // return preRequirement;
   }
 }

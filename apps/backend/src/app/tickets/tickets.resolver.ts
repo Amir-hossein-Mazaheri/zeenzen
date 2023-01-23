@@ -5,7 +5,6 @@ import {
   Args,
   Subscription,
   Int,
-  Context,
 } from '@nestjs/graphql';
 
 import { TicketsService } from './tickets.service';
@@ -32,17 +31,8 @@ export class TicketsResolver {
 
   @Subscription(() => [Ticket], {
     name: 'tickets',
-    filter(payload, variables, context) {
-      console.log('payload: ', payload);
-      console.log('variables: ', variables);
-      console.log('context: ', context);
-
-      return true;
-    },
   })
-  findAll(@Context() ctx: any) {
-    // console.log(user);
-    console.log(ctx);
+  findAll() {
     return this.ticketsService.findAll();
   }
 

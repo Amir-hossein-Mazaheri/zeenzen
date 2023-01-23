@@ -3,48 +3,19 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@zeenzen/database';
-import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
-import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 import { RequestUser, UserRole } from '../types';
-import { User } from '../user/entities/user.entity';
-import { toCamelCase } from '../utils/toCamelCase';
 import { CreateQuestionInput } from './dto/create-question.input';
 import { UpdateQuestionAnswerInput } from './dto/update-question-answer.input';
 import { UpdateQuestionInput } from './dto/update-question.input';
-import { Question } from './entities/question.entity';
 
 @Injectable()
 export class QuestionService {
-  private readonly relations = ['whoAnswered', 'whoAsked', 'course'];
-
-  constructor(
-    // @InjectRepository(Question)
-    // private questionRepository: Repository<Question>,
-    // @InjectRepository(User)
-    // private userRepository: Repository<User>,
-    // private dataSource: DataSource,
-    private readonly prismaService: PrismaService
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   getWhereOptions(user: RequestUser, id?: number) {
-    // const whereOptions: FindOptionsWhere<Question> = {};
-
-    // if (id) {
-    //   whereOptions.id = id;
-    // }
-
-    // if (user && user.role == UserRole.CUSTOMER) {
-    //   whereOptions.course = { participants: { id: user.sub } };
-    // }
-
-    // if (user.role === UserRole.INSTRUCTOR) {
-    //   whereOptions.course = { instructors: { id: user.sub } };
-    // }
-
     const whereOptions: Prisma.QuestionWhereInput = {};
 
     if (id) {
@@ -77,12 +48,6 @@ export class QuestionService {
 
   validateQuestion(id: number, user?: RequestUser) {
     return async (withDeleted = false) => {
-      // const question = await this.questionRepository.findOne({
-      //   where: this.getWhereOptions(user, id),
-      //   relations: this.relations,
-      //   withDeleted,
-      // });
-
       // TODO: add withDeleted
       const question = await this.prismaService.question.findFirst({
         where: this.getWhereOptions(user, id),
@@ -102,16 +67,6 @@ export class QuestionService {
   }
 
   async updateQuestionBuilder(id: number, input: Prisma.QuestionUpdateInput) {
-    // const updatedQuestion = await this.dataSource
-    //   .createQueryBuilder()
-    //   .update<Question>(Question)
-    //   .set(input)
-    //   .where({ id })
-    //   .returning('*')
-    //   .execute();
-
-    // return toCamelCase(updatedQuestion);
-
     return await this.prismaService.question.update({
       where: {
         id,
@@ -121,15 +76,6 @@ export class QuestionService {
   }
 
   async create({ question }: CreateQuestionInput, user: RequestUser) {
-    // const currUser = await this.userRepository.findOneBy({ id: user.sub });
-    // const newQuestion = new Question();
-    // newQuestion.question = question;
-    // newQuestion.whoAsked = currUser;
-
-    // await this.questionRepository.manager.save(newQuestion);
-
-    // return newQuestion;
-
     return await this.prismaService.question.create({
       data: {
         question,
@@ -144,10 +90,6 @@ export class QuestionService {
   }
 
   async findAll(user: RequestUser) {
-    // return await this.questionRepository.find({
-    //   where: this.getWhereOptions(user),
-    //   relations: this.relations,
-    // });
     return await this.prismaService.question.findMany({
       where: this.getWhereOptions(user),
       include: {
@@ -193,14 +135,6 @@ export class QuestionService {
   async remove(id: number) {
     await this.validateQuestion(id)();
 
-    // await this.questionRepository
-    //   .createQueryBuilder()
-    //   .softDelete()
-    //   .where({ id })
-    //   .execute();
-
-    // return question;
-
     // TODO: make delete to soft delete
     return await this.prismaService.question.delete({
       where: {
@@ -212,12 +146,6 @@ export class QuestionService {
   // TODO: replace with prisma
   async restore(id: number) {
     const question = await this.validateQuestion(id)(true);
-
-    // await this.questionRepository
-    //   .createQueryBuilder()
-    //   .restore()
-    //   .where({ id })
-    //   .execute();
 
     return question;
   }
