@@ -4,10 +4,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import { createClient } from 'redis';
 import passport from 'passport';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import Redis from 'ioredis';
 
 import configuration from './app/config/configuration';
 import { AppModule } from './app/app.module';
@@ -16,11 +16,9 @@ const port = +process.env.PORT || 4000;
 
 const RedisStore = connectRedis(session);
 
-const redisClient = createClient({
-  legacyMode: true,
-});
+const redisClient = new Redis();
 
-redisClient.connect().catch(console.error);
+redisClient.on('error', console.error);
 
 async function bootstrap() {
   const { redis, sessionSecret } = configuration();
@@ -43,10 +41,8 @@ async function bootstrap() {
 
   app.use(
     session({
-      name: 'zeenzen_sess',
+      name: 'zeenzen_session',
       store: new RedisStore({
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         client: redisClient,
         port: redis.port,
         host: redis.host,
