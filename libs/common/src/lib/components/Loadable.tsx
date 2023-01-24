@@ -9,6 +9,7 @@ interface LoadableProps {
   skeleton?: ReactNode;
   children: ReactNode;
   fragment?: boolean;
+  error?: string;
 }
 
 export const Loadable: React.FC<LoadableProps> = ({
@@ -17,6 +18,7 @@ export const Loadable: React.FC<LoadableProps> = ({
   isLoading,
   skeleton,
   fragment = false,
+  error,
 }) => {
   // if isLoading is true and skeleton is present skeleton will be rendered but if there is no skeleton a spinner will be rendered
   const child = isLoading ? (
@@ -28,6 +30,10 @@ export const Loadable: React.FC<LoadableProps> = ({
   ) : (
     children
   );
+
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
 
   if (fragment) {
     return <>{child}</>;

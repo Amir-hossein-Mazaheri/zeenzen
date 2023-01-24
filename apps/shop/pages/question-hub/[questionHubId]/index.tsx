@@ -4,9 +4,9 @@ import { useSingleQuestionHubQuery } from '@zeenzen/data';
 import { graphqlClient, Loadable } from '@zeenzen/common';
 
 import { NextPageWithLayout } from '../../_app';
-import ShopLayout from 'apps/shop/src/layouts/ShopLayout';
-import useProtectedRoute from 'apps/shop/src/hooks/useProtectedRoute';
-import AskAmirhosseinQuestion from 'apps/shop/src/common/AskAmirhosseinQuestion';
+import ShopLayout from '../../../src/layouts/ShopLayout';
+import useProtectedRoute from '../../../src/hooks/useProtectedRoute';
+import AskAmirhosseinQuestion from '../../../src/common/AskAmirhosseinQuestion';
 
 const SingleQuestionHubPage: NextPageWithLayout = () => {
   useProtectedRoute();
@@ -15,15 +15,16 @@ const SingleQuestionHubPage: NextPageWithLayout = () => {
 
   const { data, isLoading, error } = useSingleQuestionHubQuery(graphqlClient, {
     questionHubInput: {
-      id: Number(query?.questionHubId),
+      id: query?.questionHubId?.toString() ?? '',
     },
   });
 
   return (
     <div>
-      <Loadable isLoading={isLoading}>
+      <Loadable isLoading={isLoading} error={String(error)}>
         <div>
           {data?.questionHub.questions.map((question) => (
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             <AskAmirhosseinQuestion key={question.id} {...question} />
           ))}

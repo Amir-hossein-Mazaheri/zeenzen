@@ -37,13 +37,13 @@ const ShopPage: NextPageWithLayout = () => {
     levels,
   } = useFilterStore();
 
-  const { data, isLoading } = usePaginatedCoursesQuery(
+  const { data, isLoading, error } = usePaginatedCoursesQuery(
     graphqlClient,
     {
       paginatedCoursesFilterInput: {
         page,
         levels: levels.map(({ value }) => value),
-        categories: categories.map(({ value }) => String(value)),
+        categories: categories.map(({ value }) => +value),
       },
     },
     { keepPreviousData: true }
@@ -131,6 +131,7 @@ const ShopPage: NextPageWithLayout = () => {
                 center={false}
                 isLoading={isLoading}
                 skeleton={<SidebarSkeleton />}
+                error={String(error)}
               >
                 <CourseSidebar
                   title={sidebar.title}

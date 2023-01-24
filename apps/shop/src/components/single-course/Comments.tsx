@@ -48,7 +48,7 @@ const Comments: React.FC<CommentsProps> = ({ courseId }) => {
       <PostComment courseId={courseId} />
 
       <ShadowBox title="دیدگاه ها" titleSize="lg" className="py-12">
-        <Loadable isLoading={isLoading}>
+        <Loadable isLoading={isLoading} error={String(error)}>
           <div className="space-y-16">
             {data?.comments.map((comment) => (
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment

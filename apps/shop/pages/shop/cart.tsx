@@ -63,6 +63,7 @@ const CartPage: NextPageWithLayout = () => {
     isFetching,
     refetchCart,
     id: cartId,
+    error,
   } = useCart();
 
   const removeCartItem = useRemoveCartItem({
@@ -108,7 +109,7 @@ const CartPage: NextPageWithLayout = () => {
                 titleSize="lg"
                 className="px-7 py-12 basis-2/3"
               >
-                <Loadable isLoading={!!(isLoading || isFetching)}>
+                <Loadable isLoading={!!(isLoading || isFetching)} error={error}>
                   <div className="space-y-10">
                     {items?.map((item) => (
                       <CartItem
@@ -127,7 +128,7 @@ const CartPage: NextPageWithLayout = () => {
                 titleSize="lg"
                 className="basis-1/4 sticky top-12"
               >
-                <Loadable isLoading={!!(isLoading || isFetching)}>
+                <Loadable isLoading={!!(isLoading || isFetching)} error={error}>
                   <form onSubmit={handlePayment}>
                     <PaymentMethods
                       className="mb-5 mt-2"

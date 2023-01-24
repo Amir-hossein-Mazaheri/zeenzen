@@ -4,8 +4,8 @@ import { m as motion } from 'framer-motion';
 import { Alert, graphqlClient, Loadable } from '@zeenzen/common';
 import { useAskAmirhosseinsUserRelatedQuery } from '@zeenzen/data';
 
-import AskAmirhosseinQuestion from 'apps/shop/src/common/AskAmirhosseinQuestion';
-import { tabAnimation } from 'apps/shop/pages/user/dashboard/questions';
+import AskAmirhosseinQuestion from '../../../../../src/common/AskAmirhosseinQuestion';
+import { tabAnimation } from '../../../../../pages/user/dashboard/questions';
 
 const AskAmirhosseinTab = () => {
   const { data, isLoading, error } =
@@ -24,7 +24,7 @@ const AskAmirhosseinTab = () => {
         <p>تعداد کل سوالات پرسیده شده: {data?.askAmirhosseinsRelated.length}</p>
       </Alert>
 
-      <Loadable isLoading={isLoading} fragment>
+      <Loadable isLoading={isLoading} error={String(error)} fragment>
         {data?.askAmirhosseinsRelated.length &&
         data.askAmirhosseinsRelated.length > 0 ? (
           <div className="space-y-12">

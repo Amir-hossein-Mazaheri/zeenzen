@@ -37,7 +37,7 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
 
   const questionId = useMemo(() => Number(query.questionId) ?? 1, [query]);
 
-  const { data, error } = useAskAmirhosseinQuery(graphqlClient, {
+  const { data, isLoading, error } = useAskAmirhosseinQuery(graphqlClient, {
     askAmirhosseinInput: {
       id: questionId,
     },
@@ -55,7 +55,7 @@ const SingleAskAmirhosseinQuestionPage: NextPageWithLayout = () => {
         <title>{addToTitle(data?.askAmirhossein.title ?? '')}</title>
       </Head>
 
-      <Loadable isLoading={isFallback}>
+      <Loadable isLoading={isFallback || isLoading} error={String(error)}>
         <div className="w-[95%] mx-auto">
           <Breadcrumbs crumbs={crumbs} />
 
@@ -167,7 +167,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         await useAskAmirhosseinsQuery.fetcher(graphqlClient)()
       ).paginatedAskAmirhosseins.askAmirhosseins.map(({ id }) => ({
         params: {
-          questionId: id,
+          questionId: id.toString(),
         },
       })),
     fallback: true,

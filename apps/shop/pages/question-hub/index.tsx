@@ -29,7 +29,7 @@ const QuestionHubPage: NextPageWithLayout = () => {
     useQuestionHubsUserRelatedQuery(graphqlClient);
 
   return (
-    <Loadable isLoading={isLoading}>
+    <Loadable isLoading={isLoading} error={String(error)}>
       {data?.questionHubsRelated?.length &&
       data?.questionHubsRelated?.length > 0 ? (
         <>

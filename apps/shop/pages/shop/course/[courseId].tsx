@@ -22,7 +22,11 @@ const tabs = ['توضیحات دوره', 'پیشنیاز های دوره', 'مح
 const SingleCoursePage: NextPageWithLayout = () => {
   const { query } = useRouter();
 
-  const { data: courseData, isLoading } = useCourseQuery(graphqlClient, {
+  const {
+    data: courseData,
+    isLoading,
+    error,
+  } = useCourseQuery(graphqlClient, {
     courseId: Number(query?.courseId),
   });
 
@@ -36,6 +40,7 @@ const SingleCoursePage: NextPageWithLayout = () => {
         center={false}
         isLoading={isLoading}
         skeleton={<SingleCourseSkeleton />}
+        error={String(error)}
       >
         <Hero
           image={courseData?.course?.image?.image ?? ''}

@@ -20,12 +20,13 @@ const QuestionHubTab = () => {
       variants={tabAnimation}
       className="pb-12"
     >
-      <Loadable isLoading={isLoading}>
+      <Loadable isLoading={isLoading} error={String(error)}>
         {data?.questionHubQuestionsRelated.length &&
         data?.questionHubQuestionsRelated.length > 0 ? (
           <div className="space-y-12">
             {data?.questionHubQuestionsRelated.map((questionHubQuestion) => (
               // TODO: fix this type issue
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               <AskAmirhosseinQuestion
                 key={questionHubQuestion.id}

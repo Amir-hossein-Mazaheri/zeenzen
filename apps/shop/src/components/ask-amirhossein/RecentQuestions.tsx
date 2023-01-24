@@ -13,7 +13,7 @@ const AskAmirhosseinRecentQuestions = () => {
   } = useAskAmirhosseinsQuery(graphqlClient);
 
   return (
-    <Loadable isLoading={isLoading} fragment>
+    <Loadable isLoading={isLoading} error={String(error)} fragment>
       <div className="mt-24">
         <h3 className="mb-16 font-bold md:text-4xl text-3xl text-center text-light-blue">
           آخرین سوالات پرسیده شده

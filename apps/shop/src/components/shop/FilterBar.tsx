@@ -1,6 +1,7 @@
 import React from 'react';
 import { CourseLevel, useCategoriesQuery } from '@zeenzen/data';
 import { graphqlClient, Loadable, Select, Types } from '@zeenzen/common';
+
 import FilterBarSkeleton from '../../common/Skeleton/FilterBarSkeleton';
 
 interface FilterBarProps {
@@ -16,11 +17,16 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onCourseLevelChange,
   onCourseCategoryChange,
 }) => {
-  const { data, isLoading } = useCategoriesQuery(graphqlClient);
+  const { data, isLoading, error } = useCategoriesQuery(graphqlClient);
 
   return (
     <div className="relative flex justify-between items-center w-full">
-      <Loadable fragment isLoading={isLoading} skeleton={<FilterBarSkeleton />}>
+      <Loadable
+        fragment
+        isLoading={isLoading}
+        skeleton={<FilterBarSkeleton />}
+        error={String(error)}
+      >
         <Select
           title="دسته بندی دوره ها"
           items={
@@ -40,22 +46,22 @@ const FilterBar: React.FC<FilterBarProps> = ({
           title="سطح دوره ها"
           items={[
             {
-              id: '1',
+              id: 1,
               text: 'آسان',
               value: CourseLevel.Elementary,
             },
             {
-              id: '2',
+              id: 2,
               text: 'متوسط',
               value: CourseLevel.Intermediate,
             },
             {
-              id: '3',
+              id: 3,
               text: 'پیشرفته',
               value: CourseLevel.Advanced,
             },
             {
-              id: '4',
+              id: 4,
               text: 'همه سطوح',
               value: CourseLevel.Mixed,
             },

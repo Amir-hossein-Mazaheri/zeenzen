@@ -36,7 +36,7 @@ const PreRequirementsTab: React.FC<PreRequirementsTabProps> = ({
         titleSize="lg"
         className="px-14 pb-8 pt-3 space-y-12"
       >
-        <Loadable fragment isLoading={isLoading}>
+        <Loadable fragment isLoading={isLoading} error={String(error)}>
           <Conditional invert condition={data?.preRequirements.length === 0}>
             <TrueCondition>
               {data?.preRequirements.map((preRequirement) => (
