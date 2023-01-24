@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 
 import { defaultAvatar } from '../assets';
+import BaseUrlContext from '../context/BaseUrlContext';
+import sanitizeSlash from '../utils/sanitizeSlash';
 
 interface AvatarProps {
   image?: StaticImageData | string;
@@ -18,7 +20,13 @@ export const Avatar: React.FC<AvatarProps> = ({
   height,
   width,
 }) => {
-  const [src, setSrc] = useState(image || defaultAvatar);
+  const { baseUrl } = useContext(BaseUrlContext);
+
+  const [src, setSrc] = useState(
+    (typeof image === 'string'
+      ? `${sanitizeSlash(baseUrl)}/${image}`
+      : image) ?? defaultAvatar
+  );
 
   return (
     <div
@@ -27,8 +35,8 @@ export const Avatar: React.FC<AvatarProps> = ({
       <Image
         src={src}
         alt="user-avatar"
-        width={width || 100}
-        height={height || 100}
+        width={width ?? 100}
+        height={height ?? 100}
         className={imageClassName}
         onError={() => setSrc(defaultAvatar)}
       />
