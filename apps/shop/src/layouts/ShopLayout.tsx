@@ -3,6 +3,7 @@ import React from 'react';
 import Navbar from '../common/Navbar';
 import Footer from '../components/landing-page/Footer';
 import AnimationLayout from './AnimationLayout';
+import AccessMenu from '../common/AccessMenu';
 
 interface ShopLayoutProps {
   children: React.ReactNode;
@@ -30,6 +31,7 @@ const ShopLayout: React.FC<ShopLayoutProps> = ({
         )}
       </main>
       <Footer />
+      <AccessMenu />
     </>
   );
 };
