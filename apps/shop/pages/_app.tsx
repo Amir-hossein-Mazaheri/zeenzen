@@ -24,6 +24,7 @@ import '../src/styles/globals.css';
 import '../src/styles/nprogress.css';
 import useAddPageLoading from '../src/hooks/useAddPageLoading';
 import useCartStore from '../src/store/useCartStore';
+import BaseUrlProvider from 'libs/common/src/lib/components/BaseUrlProvider';
 
 const OnlineStatus = dynamic(() => import('../src/common/OnlineStatus'), {
   ssr: false,
@@ -78,7 +79,11 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <Hydrate state={pageProps.dehydratedState}>
             <LazyMotion features={domAnimation}>
               <AnimatePresence initial={false} mode="sync">
-                {getLayout(<Component {...pageProps} />)}
+                <BaseUrlProvider
+                  baseUrl={process.env.NEXT_PUBLIC_BASE_URL ?? ''}
+                >
+                  {getLayout(<Component {...pageProps} />)}
+                </BaseUrlProvider>
 
                 <OnlineStatus />
               </AnimatePresence>
