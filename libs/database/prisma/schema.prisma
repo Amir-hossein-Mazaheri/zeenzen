@@ -488,6 +488,7 @@ model User {
   stackOverflowTranslations  StackOverflow[]
   questionHubAnswers         QuestionHubAnswer[]
   questionHubQuestions       QuestionHubQuestion[]
+  notifications              Notification[]
 
   @@map("user")
 }
@@ -510,6 +511,29 @@ model ValidatedEmail {
   expiresAt DateTime @map("expires_at")
 
   @@map("validated_email")
+}
+
+model Notification {
+  id        String             @id @default(cuid())
+  message   String             @db.VarChar(255)
+  action    NotificationAction
+  manual    Boolean            @default(false)
+  createdAt DateTime           @default(now()) @map("created_at")
+  userId    Int
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification")
+}
+
+enum NotificationAction {
+  TICKET
+  COURSE
+  PAYMENT
+  INSTRUCTOR
+  SCORE
+  OTHER
+
+  @@map("notification_action")
 }
 
 enum CourseLevel {
