@@ -118,6 +118,19 @@ registerEnumType(PreRequirementLevel, {
   name: 'PreRequirementLevel',
 });
 
+export enum NotificationAction {
+  TICKET = 'TICKET',
+  COURSE = 'COURSE',
+  PAYMENT = 'PAYMENT',
+  INSTRUCTOR = 'INSTRUCTOR',
+  SCORE = 'SCORE',
+  OTHER = 'OTHER',
+}
+
+registerEnumType(NotificationAction, {
+  name: 'NotificationAction',
+});
+
 export type ID = string | number;
 
 export type Session = Record<string, any>;

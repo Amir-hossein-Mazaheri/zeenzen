@@ -41,6 +41,7 @@ import { AskAmirhosseinModule } from './ask-amirhossein/ask-amirhossein.module';
 import { ReportModule } from './report/report.module';
 import { EmailSubscriptionModule } from './email-subscription/email-subscription.module';
 import { QuestionHubModule } from './question-hub/question-hub.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -142,6 +143,7 @@ import { QuestionHubModule } from './question-hub/question-hub.module';
     ReportModule,
     EmailSubscriptionModule,
     QuestionHubModule,
+    NotificationsModule,
   ],
   providers: [
     {

@@ -12,28 +12,23 @@ import { UpdateAskAmirhosseinInput } from './dto/update-ask-amirhossein.input';
 import { AnswerAskAmirhosseinInput } from './dto/answer-ask-amirhossein.input';
 import { FindAllAskAmirhosseinInput } from './dto/find-all-ask-amirhossein.input';
 import { FindOneAskAmirhosseinInput } from './dto/find-one-ask-amirhossein.input';
-import { RequestUser, UserRole } from '../types';
+import { NotificationAction, RequestUser, UserRole } from '../types';
 import { getMailOptions } from '../utils/getMailOptions';
 import { sendEmail } from '../utils/sendEmail';
 import { purifiedTurndown } from '../utils/purifiedTurndown';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const ASK_AMIRHOSSEINS_PER_PAGE = 15;
 
 @Injectable()
 export class AskAmirhosseinService {
   constructor(
-    // @InjectRepository(AskAmirhossein)
-    // private readonly askAmirhosseinRepository: Repository<AskAmirhossein>,
-    // @InjectRepository(User)
-    // private readonly userRepository: Repository<User>,
-    // private readonly userService: UserService,
-    // private readonly dataSource: DataSource,
-    private readonly prismaService: PrismaService
+    private readonly prismaService: PrismaService,
+    private readonly notificationService: NotificationsService
   ) {}
 
   async getWhereOptions(email: string, user: RequestUser) {
     if (email) {
-      // const registeredUser = await this.userRepository.findOneBy({ email });
       const registeredUser = await this.prismaService.user.findUnique({
         where: {
           email,
@@ -60,10 +55,6 @@ export class AskAmirhosseinService {
 
   validateAskAmirhossein(id: number) {
     return async (whereOptions?: Prisma.AskAmirhosseinWhereInput) => {
-      // const askAmirhossein = await this.askAmirhosseinRepository.findOne({
-      //   where: { id, ...whereOptions },
-      // });
-
       const askAmirhossein = await this.prismaService.askAmirhossein.findFirst({
         where: {
           id,
@@ -97,8 +88,6 @@ export class AskAmirhosseinService {
         },
       });
 
-      console.log('single ask amirhossein: ', whereOptions, askAmirhossein);
-
       if (!askAmirhossein) {
         throw new NotFoundException('Invalid ask amirhossein id.');
       }
@@ -117,30 +106,6 @@ export class AskAmirhosseinService {
     { title, email, fullName, description }: CreateAskAmirhosseinInput,
     user: RequestUser
   ) {
-    // if (!user && !email) {
-    //   throw new BadRequestException(
-    //     'Either you should enter email address or be logged in.'
-    //   );
-    // }
-
-    // const currEmail = user?.email || email;
-
-    // const newAskAmirhossein = new AskAmirhossein();
-    // newAskAmirhossein.question = question;
-    // newAskAmirhossein.email = currEmail;
-
-    // if (currUser) {
-    //   newAskAmirhossein.user = currUser;
-    // }
-
-    // if (email) {
-    //   newAskAmirhossein.email = email;
-    // }
-
-    // await this.askAmirhosseinRepository.manager.save(newAskAmirhossein);
-
-    // return newAskAmirhossein;
-
     const createAskAmirhosseinData: Prisma.AskAmirhosseinCreateArgs = {
       data: {
         title,
@@ -157,6 +122,12 @@ export class AskAmirhosseinService {
         },
       };
     }
+
+    await this.notificationService.pushNotification(
+      `سوال جدیدی در از امیرحسین ثبت شده است.`,
+      NotificationAction.OTHER,
+      user
+    )(true);
 
     return await this.prismaService.askAmirhossein.create(
       createAskAmirhosseinData
@@ -177,14 +148,9 @@ export class AskAmirhosseinService {
   ) {
     const askAmirhossein = await this.validateAskAmirhossein(id)();
 
-    // askAmirhossein.answer = answer;
-    // askAmirhossein.answeredAt = moment.utc().toDate();
-
     const subject = `ZeenZen - از امیرحسین بپرس - یک نفر به سوال ${askAmirhossein.title} پاسخ داده است`;
 
     await sendEmail(getMailOptions(askAmirhossein.email, subject, answer));
-
-    // await this.askAmirhosseinRepository.manager.save(askAmirhossein);
 
     return await this.prismaService.askAmirhossein.update({
       where: { id: askAmirhossein.id },
@@ -204,8 +170,6 @@ export class AskAmirhosseinService {
         },
       },
     });
-
-    // return askAmirhossein;
   }
 
   async removeLike(
@@ -314,10 +278,6 @@ export class AskAmirhosseinService {
     findAllAskAmirhosseinInput: FindAllAskAmirhosseinInput,
     user: RequestUser
   ) {
-    // return await this.askAmirhosseinRepository.findBy(
-    //   await this.getWhereOptions(findAllAskAmirhosseinInput?.email, user)
-    // );
-
     return await this.prismaService.askAmirhossein.findMany({
       where: await this.getWhereOptions(
         findAllAskAmirhosseinInput?.email,
@@ -345,16 +305,6 @@ export class AskAmirhosseinService {
     await sendEmail(
       getMailOptions(email, subject, updateAskAmirhosseinInput.answer)
     );
-
-    // const updatedAskAmirhossein = await this.dataSource
-    //   .createQueryBuilder()
-    //   .update(AskAmirhossein)
-    //   .set(updateAskAmirhosseinInput)
-    //   .where({ id })
-    //   .returning('*')
-    //   .execute();
-
-    // return toCamelCase(updatedAskAmirhossein);
 
     return await this.prismaService.askAmirhossein.update({
       where: {
