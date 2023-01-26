@@ -1,6 +1,7 @@
 import React, { ChangeEventHandler } from 'react';
 import { FormProvider, useForm, SubmitHandler } from 'react-hook-form';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLimitedUpdateUserMutation } from '@zeenzen/data';
@@ -21,8 +22,8 @@ import useProtectedRoute from '../../../src/hooks/useProtectedRoute';
 import getFormErrorMessages from '../../../src/utils/getFormErrorMessages';
 import useToast from '../../../src/hooks/useToast';
 import addToTitle from '../../../src/utils/addToTitle';
-import getPasswordRegex from 'apps/shop/src/utils/getPasswordRegex';
-import getErrorMessages from 'apps/shop/src/utils/getErrorMessages';
+import getPasswordRegex from '../../../src/utils/getPasswordRegex';
+import getErrorMessages from '../../../src/utils/getErrorMessages';
 
 const userProfileSchema = z
   .object({
@@ -56,7 +57,7 @@ const userProfileSchema = z
   });
 
 const UserProfilePage: NextPageWithLayout = () => {
-  const { loading, user, refetch: refetchUser } = useProtectedRoute();
+  const { loading, user } = useProtectedRoute();
 
   const updateUserMutation = useLimitedUpdateUserMutation(graphqlClient);
 
@@ -68,10 +69,12 @@ const UserProfilePage: NextPageWithLayout = () => {
 
   const alert = useAlert();
 
+  const router = useRouter();
+
   const handleChangeAvatar: ChangeEventHandler<HTMLInputElement> = async (
     event
   ) => {
-    const avatarImage = event.target?.files?.[0] || '';
+    const avatarImage = event.target?.files?.[0] ?? '';
 
     const { isConfirmed } = await alert({
       title: 'آیا از تغییر عکس پروفایل اطمینان دارید؟',
@@ -94,15 +97,13 @@ const UserProfilePage: NextPageWithLayout = () => {
           },
         });
 
-        refetchUser();
+        router.reload();
 
         toast().fire({
           title: 'عکس پروفایل شما با موفقیت آپلود شد.',
           icon: 'success',
         });
       } catch (err: any) {
-        console.log(err);
-
         toast().fire({
           title:
             err?.response?.data?.message ||
@@ -135,8 +136,6 @@ const UserProfilePage: NextPageWithLayout = () => {
         description: 'تغییرات شما با موفقیت اعمال شد.',
       }).fire();
     } catch (err: any) {
-      console.log(err);
-
       getErrorMessages(err).map((message) => {
         alert({
           title: 'مشکلی پیش آمده است',
