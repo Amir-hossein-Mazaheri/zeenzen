@@ -9,7 +9,7 @@ interface InstructorProps {
 
 const Instructors: React.FC<InstructorProps> = ({ instructors }) => {
   return (
-    <div>
+    <div className="space-y-12">
       {instructors.map((instructors) => (
         <InstructorBox key={instructors.id} {...instructors} />
       ))}
