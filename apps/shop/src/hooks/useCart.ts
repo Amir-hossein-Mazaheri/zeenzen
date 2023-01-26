@@ -18,6 +18,7 @@ export default function useCart() {
     isLoading,
     isFetching,
     refetch: refetchCart,
+    error,
   } = useCartQuery(
     graphqlClient,
     {
@@ -42,6 +43,7 @@ export default function useCart() {
       refetchCart,
       totalPrice: data?.cart.totalPrice ?? 0,
       totalPriceWithDiscount: data?.cart.totalPriceWithDiscount ?? 0,
+      error,
       items: data?.cart.cartItems?.map<Types.CartItem>(
         ({
           unitPriceWithDiscount,
