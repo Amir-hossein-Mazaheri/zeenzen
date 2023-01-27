@@ -6,6 +6,7 @@ interface HamburgerMenuProps {
   onClick: () => void;
   show?: boolean;
   className?: string;
+  color?: string;
 }
 
 const movingVariants: (negateRotate?: boolean) => Variants = (
@@ -51,6 +52,7 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
   onClick,
   className,
   show = false,
+  color = 'bg-gray-700',
 }) => {
   return (
     <div
@@ -62,20 +64,20 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({
         variants={movingVariants()}
         animate={show ? 'show' : 'hide'}
         style={{ transformOrigin: '0% 0%' }}
-        className="rounded-full h-1 w-[1.85rem] bg-gray-700"
+        className={`rounded-full h-1 w-[1.85rem] ${color}`}
       />
       <motion.div
         initial={false}
         variants={middleVariants}
         animate={show ? 'show' : 'hide'}
-        className="rounded-full h-1 w-[1.85rem] bg-gray-700"
+        className={`rounded-full h-1 w-[1.85rem] ${color}`}
       />
       <motion.div
         initial={false}
         variants={movingVariants(true)}
         animate={show ? 'show' : 'hide'}
         style={{ transformOrigin: '0% 100%' }}
-        className="rounded-full h-1 w-[1.85rem] bg-gray-700"
+        className={`rounded-full h-1 w-[1.85rem] ${color}`}
       />
     </div>
   );
