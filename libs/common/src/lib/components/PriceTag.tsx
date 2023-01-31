@@ -10,6 +10,7 @@ interface PriceTagProps {
   color?: string;
   crossedColor?: string;
   crossed?: boolean;
+  mb?: string;
 }
 
 export const PriceTag: React.FC<PriceTagProps> = ({
@@ -20,10 +21,11 @@ export const PriceTag: React.FC<PriceTagProps> = ({
   color = 'text-light-blue',
   crossedColor = 'before:bg-light-blue',
   crossed = false,
+  mb = 'mb-5',
 }) => {
   return (
     <p
-      className={`relative font-bold ${fontSize} mb-5 ${color} flex items-center justify-center gap-1 before:content-[''] before:absolute ${crossedColor} before:right-0 before:left-0 before:z-10 before:h-[2px] before:rotate-3 ${
+      className={`relative font-bold ${fontSize} ${mb} ${color} flex items-center justify-center gap-1 before:content-[''] before:absolute ${crossedColor} before:right-0 before:left-0 before:z-10 before:h-[2px] before:rotate-3 ${
         crossed ? '' : 'before:hidden'
       } ${className}`}
     >

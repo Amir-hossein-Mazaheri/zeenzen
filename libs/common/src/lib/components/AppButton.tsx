@@ -9,10 +9,13 @@ interface AppButtonProps {
   href?: string;
   className?: string;
   rounded?: boolean;
+  roundness?: string;
   children: React.ReactNode;
   disabled?: boolean;
   loading?: boolean;
   loadingSpinnerSize?: number;
+  px?: string;
+  py?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
@@ -24,9 +27,12 @@ export const AppButton: React.FC<AppButtonProps> = ({
   className,
   href = '/',
   rounded = false,
+  roundness = 'rounded-[8.73529px]',
   disabled = false,
   loading = false,
   loadingSpinnerSize = 30,
+  px = 'md:px-8 px-6',
+  py = 'py-2',
   onClick,
 }) => {
   const outlineStyle = useMemo(
@@ -51,10 +57,21 @@ export const AppButton: React.FC<AppButtonProps> = ({
     () =>
       `${outline ? outlineStyle : defaultStyle} ${
         disabled || loading ? 'pointer-events-none' : 'cursor-pointer'
-      } outline-none md:px-8 px-6 py-2 md:text-base text-sm ${
-        rounded ? 'rounded-full' : 'rounded-[8.73529px]'
+      } outline-none ${px} ${py} md:text-base text-sm ${
+        rounded ? 'rounded-full' : roundness
       } ${loading ? 'flex justify-center items-center' : ''} ${className}`,
-    [className, defaultStyle, disabled, loading, outline, outlineStyle, rounded]
+    [
+      className,
+      defaultStyle,
+      disabled,
+      loading,
+      outline,
+      outlineStyle,
+      px,
+      py,
+      rounded,
+      roundness,
+    ]
   );
 
   return link ? (
