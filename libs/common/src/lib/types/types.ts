@@ -17,7 +17,7 @@ export type AccordionItem = {
 };
 
 export type SelectItem = {
-  id: string;
+  id: number;
   text: string;
   value: string | number;
 };
