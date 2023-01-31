@@ -238,8 +238,8 @@ export async function seedDb() {
 
         image: {
           create: {
-            image: 'https://google.com',
-            coverImage: 'https://google.com',
+            image: '/uploads/course-one.png',
+            coverImage: '/uploads/course-one-cover.png',
           },
         },
 
@@ -354,8 +354,8 @@ export async function seedDb() {
 
         image: {
           create: {
-            image: 'https://google.com',
-            coverImage: 'https://google.com',
+            image: '/uploads/course-one.png',
+            coverImage: '/uploads/course-one-cover.png',
           },
         },
 
