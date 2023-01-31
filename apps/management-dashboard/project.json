@@ -29,6 +29,7 @@
       "configurations": {
         "development": {
           "buildTarget": "management-dashboard:build:development",
+          "port": 7000,
           "dev": true
         },
         "production": {

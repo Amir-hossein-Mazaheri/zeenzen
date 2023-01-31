@@ -3,3 +3,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: 'Vazirmatn FD', sans-serif;
+  text-align: right;
+  direction: rtl;
+  scroll-behavior: smooth;
+}
+
+code,
+pre {
+  direction: ltr;
+  text-align: left;
+}
+
+.svg-inline--fa {
+  aspect-ratio: 1/1;
+}
