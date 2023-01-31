@@ -14,10 +14,4 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import { seedDb } from '@zeenzen/database';
-
 import './commands';
-
-beforeEach(async () => {
-  // await seedDb();
-});
