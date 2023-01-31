@@ -51,3 +51,5 @@ apps/backend/.env
 libs/data/src/lib/generated/queries.ts
 
 apps/shop-e2e/cypress
+
+*.env
