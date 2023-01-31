@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { NotificationAction, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '@zeenzen/database';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 
-import { RequestUser } from '../types';
+import { NotificationAction, RequestUser } from '../types';
 import { createNotificationInput } from './dto/create-notification.input';
 
 export const adminNotificationPubSub = new RedisPubSub();

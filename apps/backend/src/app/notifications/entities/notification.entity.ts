@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { NotificationAction } from '@prisma/client';
 
+import { NotificationAction } from '../../types';
 import { User } from '../../user/entities/user.entity';
 
 @ObjectType()

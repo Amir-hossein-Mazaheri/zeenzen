@@ -1,5 +1,6 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { NotificationAction } from '@prisma/client';
+
+import { NotificationAction } from '../../types';
 
 @InputType()
 export class createNotificationInput {
