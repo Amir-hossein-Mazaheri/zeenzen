@@ -17,6 +17,21 @@
         }
       }
     },
+    "e2e-headed": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/shop-e2e/cypress.config.ts",
+        "devServerTarget": "shop:serve:development backend:serve",
+        "testingType": "e2e",
+        "headed": true,
+        "watch": true
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "shop:serve:production"
+        }
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
@@ -26,5 +41,5 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["shop"]
+  "implicitDependencies": ["shop", "backend"]
 }
