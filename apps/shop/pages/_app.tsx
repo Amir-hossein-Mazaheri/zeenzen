@@ -16,7 +16,7 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AnimatePresence, LazyMotion, domAnimation } from 'framer-motion';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { BreadcrumbProvider, isServer } from '@zeenzen/common';
+import { BreadcrumbProvider, BaseUrlProvider, isServer } from '@zeenzen/common';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -24,7 +24,6 @@ import '../src/styles/globals.css';
 import '../src/styles/nprogress.css';
 import useAddPageLoading from '../src/hooks/useAddPageLoading';
 import useCartStore from '../src/store/useCartStore';
-import BaseUrlProvider from 'libs/common/src/lib/components/BaseUrlProvider';
 
 const OnlineStatus = dynamic(() => import('../src/common/OnlineStatus'), {
   ssr: false,
