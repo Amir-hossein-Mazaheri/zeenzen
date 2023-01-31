@@ -9,3 +9,4 @@ export * from './flattenObject';
 export * from './parseUrl';
 export * from './promiseWithTimeout';
 export * from './isServer';
+export * from './sanitizeSlash';
