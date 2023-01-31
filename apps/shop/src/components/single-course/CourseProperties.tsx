@@ -150,7 +150,7 @@ const CourseProperties: React.FC<Course> = ({
         {isInCart ? (
           <>
             <FontAwesomeIcon icon={faCircleCheck} />
-            <p className="text-sm">به سبد خرید اضافه شده است.</p>
+            <p className="text-[0.8rem]">به سبد خرید اضافه شده است.</p>
           </>
         ) : (
           <>
