@@ -30,3 +30,5 @@ export * from './BreadcrumbProvider';
 export * from './Portal';
 export * from './HamburgerMenu';
 export * from './Drawer';
+export * from './BaseUrlProvider';
+export * from './CourseCard';

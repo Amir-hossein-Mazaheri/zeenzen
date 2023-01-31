@@ -7,7 +7,7 @@ interface BaseUrlProviderProps {
   baseUrl: string;
 }
 
-const BaseUrlProvider: React.FC<BaseUrlProviderProps> = ({
+export const BaseUrlProvider: React.FC<BaseUrlProviderProps> = ({
   baseUrl,
   children,
 }) => {
@@ -17,5 +17,3 @@ const BaseUrlProvider: React.FC<BaseUrlProviderProps> = ({
     </BaseUrlContext.Provider>
   );
 };
-
-export default BaseUrlProvider;
