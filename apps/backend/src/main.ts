@@ -28,7 +28,11 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: ['https://studio.apollographql.com', 'http://localhost:3000'],
+    origin: [
+      'https://studio.apollographql.com',
+      'http://localhost:3000',
+      'http://localhost:7000',
+    ],
   });
 
   app.useGlobalPipes(new ValidationPipe());
