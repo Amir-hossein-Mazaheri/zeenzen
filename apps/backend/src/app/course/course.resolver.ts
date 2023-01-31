@@ -17,10 +17,11 @@ import { PaginatedCoursesFilterInput } from './dto/paginated-courses-filter.inpu
 import { Public } from '../auth/decorators/public.decorator';
 import { GetInstructorId } from '../instructor/decorators/instructor.decorator';
 import { Instructor } from '../instructor/entities/instructor.entity';
-import { UserRole } from '../types';
+import { RequestUser, UserRole } from '../types';
 import { CourseImage } from '../uploads/entities/course-image.entity';
 import { Roles } from '../user/decorators/roles.decorator';
 import { GetUserRole } from '../user/decorators/user-role.decorator';
+import { GetUser } from '../user/decorators/user.decorator';
 
 @Roles(UserRole.INSTRUCTOR)
 @Resolver(() => Course)
@@ -65,9 +66,10 @@ export class CourseResolver {
   })
   findAll(
     @Args('paginatedCoursesFilterInput', { nullable: true })
-    paginatedCoursesFilterInput: PaginatedCoursesFilterInput
+    paginatedCoursesFilterInput: PaginatedCoursesFilterInput,
+    @GetUser() user: RequestUser
   ) {
-    return this.coursesService.findAll(paginatedCoursesFilterInput);
+    return this.coursesService.findAll(paginatedCoursesFilterInput, user);
   }
 
   @Public()

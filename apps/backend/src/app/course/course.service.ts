@@ -4,7 +4,7 @@ import { PrismaService } from '@zeenzen/database';
 import { CreateCourseInput } from './dto/create-course.input';
 import { UpdateCourseInput } from './dto/update-course.input';
 import { PaginatedCoursesFilterInput } from './dto/paginated-courses-filter.input';
-import { UserRole } from '../types';
+import { RequestUser, UserRole } from '../types';
 import { purifiedTurndown } from '../utils/purifiedTurndown';
 import { Prisma } from '@prisma/client';
 
@@ -230,7 +230,10 @@ export class CourseService {
   // because its a huge load for back-end
   // and also front end
   // each other parts should be called separately
-  async findAll({ page, levels, categories }: PaginatedCoursesFilterInput) {
+  async findAll(
+    { page, levels, categories }: PaginatedCoursesFilterInput,
+    user?: RequestUser
+  ) {
     const whereOption: Prisma.CourseWhereInput = { isDraft: false };
 
     if (levels && levels.length > 0) {
@@ -247,6 +250,10 @@ export class CourseService {
           },
         },
       };
+    }
+
+    if (user?.role !== UserRole.ADMIN) {
+      whereOption.deletedAt = null;
     }
 
     const coursesCount = await this.prismaService.course.count();
